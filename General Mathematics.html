@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>General Mathematics 1st Term — Item Analysis Report</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary: #1a3a5c;
+    --primary-light: #2c5f8a;
+    --accent: #e8a838;
+    --accent-dark: #c88a20;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #e1e8ed;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 30px 20px;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(26, 58, 92, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(232, 168, 56, 0.04) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 60%, #3a7ca5 100%);
+    padding: 50px 50px 40px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(232,168,56,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -5%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero-content { position: relative; z-index: 2; }
+
+  .hero .school-name {
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-bottom: 3px;
+    font-weight: 500;
+  }
+
+  .hero .school-sub {
+    font-size: 12px;
+    opacity: 0.7;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .hero .school-name-main {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin: 15px 0 3px;
+    color: var(--accent);
+  }
+
+  .hero .school-address {
+    font-size: 12px;
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+    margin-bottom: 25px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero h1 .gold { color: var(--accent); }
+
+  .hero .subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    font-weight: 300;
+    margin-bottom: 30px;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 25px;
+  }
+
+  .meta-chip {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .meta-chip .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .teacher-badge {
+    display: inline-block;
+    background: rgba(232,168,56,0.15);
+    border: 1px solid rgba(232,168,56,0.4);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 20px;
+  }
+
+  /* ===== CONTENT ===== */
+  .content { padding: 40px 50px 50px; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--primary);
+    margin: 45px 0 8px;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 5px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+    border-radius: 3px;
+  }
+
+  .section-sub {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 25px;
+    padding-left: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+  }
+
+  .section-title:first-of-type { margin-top: 0; }
+
+  /* ===== STAT CARDS ===== */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, #f8fafc, #eef3f8);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+  }
+
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(26,58,92,0.12);
+  }
+
+  .stat-card .label {
+    font-size: 11px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .stat-card .value {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  .stat-card .unit {
+    font-size: 14px;
+    color: var(--text-light);
+    font-weight: 400;
+    margin-left: 2px;
+  }
+
+  .stat-card.highlight-green { background: linear-gradient(135deg, #e8f8ee, #d5f5e3); }
+  .stat-card.highlight-green::before { background: linear-gradient(90deg, var(--success), #58d68d); }
+  .stat-card.highlight-green .value { color: var(--success); }
+
+  .stat-card.highlight-red { background: linear-gradient(135deg, #fdedec, #fadbd8); }
+  .stat-card.highlight-red::before { background: linear-gradient(90deg, var(--danger), #ec7063); }
+  .stat-card.highlight-red .value { color: var(--danger); }
+
+  .stat-card.highlight-gold { background: linear-gradient(135deg, #fef8e7, #fdf0d5); }
+  .stat-card.highlight-gold::before { background: linear-gradient(90deg, var(--accent), var(--accent-dark)); }
+  .stat-card.highlight-gold .value { color: var(--accent-dark); }
+
+  /* ===== TABLES ===== */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 25px;
+    font-size: 13px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  thead th {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #fff;
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: sticky;
+    top: 0;
+  }
+
+  tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    background: #fff;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: #fafbfd; }
+  tbody tr:hover td { background: #eef5fb; }
+
+  .center { text-align: center; }
+
+  tr.row-mastered td { background: #f0fbf4 !important; }
+  tr.row-mastered:hover td { background: #e0f5e8 !important; }
+
+  tr.row-least td { background: #fffbf0 !important; }
+  tr.row-least:hover td { background: #fdf3dc !important; }
+
+  tr.row-not td { background: #fef5f4 !important; }
+  tr.row-not:hover td { background: #fce4e1 !important; }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-green { background: #d5f5e3; color: #1e8449; }
+  .badge-yellow { background: #fef9e7; color: #b7950b; }
+  .badge-red { background: #fadbd8; color: #c0392b; }
+
+  /* ===== DONUT CHART ===== */
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  @media (max-width: 800px) {
+    .chart-row { grid-template-columns: 1fr; }
+  }
+
+  .chart-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .chart-card h4 {
+    font-size: 14px;
+    color: var(--primary);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .donut-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    justify-content: center;
+  }
+
+  .donut {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .donut-inner {
+    position: absolute;
+    top: 25px; left: 25px; right: 25px; bottom: 25px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .donut-inner .big {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  .donut-inner .small {
+    font-size: 10px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 3px;
+  }
+
+  .legend { flex: 1; }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .legend-item .name { flex: 1; color: var(--text); }
+  .legend-item .val { font-weight: 700; color: var(--primary); }
+
+  /* ===== BAR CHART ===== */
+  .bar-chart { margin-top: 10px; }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 50px;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+
+  .bar-row .label { color: var(--text-light); font-weight: 500; }
+
+  .bar-track {
+    height: 22px;
+    background: #f0f4f8;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    transition: width 0.6s ease;
+  }
+
+  .bar-row .count {
+    text-align: right;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  /* ===== RECOMMENDATION CARDS ===== */
+  .rec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .rec-card {
+    background: linear-gradient(135deg, #f8fafc, #eef3f8);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: all 0.3s ease;
+  }
+
+  .rec-card:hover {
+    transform: translateX(3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+  }
+
+  .rec-card .rec-num {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  .rec-card .rec-text {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .rec-card .rec-text strong { color: var(--primary); }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #fff;
+    padding: 30px 50px;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .footer .prepared {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+  }
+
+  .footer .role {
+    font-size: 12px;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+  }
+
+  .footer .divider {
+    width: 60px;
+    height: 3px;
+    background: var(--accent);
+    margin: 15px auto;
+    border-radius: 2px;
+  }
+
+  /* ===== PRINT ===== */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .container { box-shadow: none; border-radius: 0; }
+    .hero { padding: 30px 40px; }
+    .hero h1 { font-size: 30px; }
+    .content { padding: 30px 40px; }
+    .stat-card:hover, .rec-card:hover { transform: none; box-shadow: none; }
+    .section-title { page-break-after: avoid; }
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; }
+    thead { display: table-header-group; }
+    .chart-row { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== HERO ===== -->
+  <div class="hero">
+    <div class="hero-content">
+      <div class="school-name">Republic of the Philippines</div>
+      <div class="school-sub">Department of Education · Region XII</div>
+      <div class="school-sub">Schools Division of Sarangani</div>
+      <div class="school-name-main">PABLO OMEREZ CEDEÑO MEMORIAL LEARNING CENTER, INC.</div>
+      <div class="school-address">Lanzones St., Malungon, Sarangani</div>
+      <h1>General Mathematics<br><span class="gold">1st Term Item Analysis</span></h1>
+      <div class="subtitle">Item Analysis &amp; Student Performance Report</div>
+      <div class="hero-meta">
+        <div class="meta-chip"><span class="dot"></span> Grade 11 - St. Augustine</div>
+        <div class="meta-chip"><span class="dot"></span> 19 Students</div>
+        <div class="meta-chip"><span class="dot"></span> 60 Items</div>
+        <div class="meta-chip"><span class="dot"></span> Passing: 36/60</div>
+      </div>
+      <div class="teacher-badge">Teacher: Jemmuel A. Alon</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== PART 1: STUDENT PERFORMANCE ===== -->
+    <div class="section-title">Student Performance</div>
+    <div class="section-sub">Part 1 — Descriptive Statistics &amp; Distribution</div>
+
+    <div class="stat-grid">
+      <div class="stat-card highlight-green">
+        <div class="label">Passing Rate</div>
+        <div class="value">78.95<span class="unit">%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Mean Score</div>
+        <div class="value">40.58<span class="unit">/60</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Median</div>
+        <div class="value">43</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Mode</div>
+        <div class="value">44</div>
+      </div>
+      <div class="stat-card highlight-gold">
+        <div class="label">Highest</div>
+        <div class="value">48</div>
+      </div>
+      <div class="stat-card highlight-red">
+        <div class="label">Lowest</div>
+        <div class="value">25</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Std. Deviation</div>
+        <div class="value">6.68</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Range</div>
+        <div class="value">23</div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h4>Pass / Fail Distribution</h4>
+        <div class="donut-wrapper">
+          <div class="donut" style="background: conic-gradient(#27ae60 0% 78.95%, #e74c3c 78.95% 100%);">
+            <div class="donut-inner">
+              <div class="big">78.95%</div>
+              <div class="small">Passed</div>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#27ae60;"></div>
+              <div class="name">Passed (≥36)</div>
+              <div class="val">15</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#e74c3c;"></div>
+              <div class="name">Failed (&lt;36)</div>
+              <div class="val">4</div>
+            </div>
+            <div class="legend-item" style="margin-top:15px; border-top:1px solid #eee; padding-top:10px;">
+              <div class="name" style="font-weight:600;">Total Students</div>
+              <div class="val">19</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h4>Score Distribution</h4>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="label">46–48</div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%; background:linear-gradient(90deg,#27ae60,#58d68d);">Outstanding</div></div>
+            <div class="count">3</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">43–45</div>
+            <div class="bar-track"><div class="bar-fill" style="width:88%; background:linear-gradient(90deg,#2ecc71,#58d68d);">Very Good</div></div>
+            <div class="count">7</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">40–42</div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%; background:linear-gradient(90deg,#f39c12,#f7c45e);">Good</div></div>
+            <div class="count">2</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">36–39</div>
+            <div class="bar-track"><div class="bar-fill" style="width:33%; background:linear-gradient(90deg,#f1c40f,#f7dc6f);">Passing</div></div>
+            <div class="count">3</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">31–35</div>
+            <div class="bar-track"><div class="bar-fill" style="width:22%; background:linear-gradient(90deg,#e67e22,#f0a04b);">Needs Imp.</div></div>
+            <div class="count">2</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">25–30</div>
+            <div class="bar-track"><div class="bar-fill" style="width:22%; background:linear-gradient(90deg,#e74c3c,#ec7063);">At Risk</div></div>
+            <div class="count">2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PART 2: ITEM ANALYSIS ===== -->
+    <div class="section-title">Item Analysis</div>
+    <div class="section-sub">Part 2 — 60 Items with Mastery Levels</div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h4>Mastery Summary</h4>
+        <div class="donut-wrapper">
+          <div class="donut" style="background: conic-gradient(#27ae60 0% 38.3%, #f39c12 38.3% 80%, #e74c3c 80% 100%);">
+            <div class="donut-inner">
+              <div class="big">60</div>
+              <div class="small">Items</div>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#27ae60;"></div>
+              <div class="name">Mastered</div>
+              <div class="val">23 (38.3%)</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#f39c12;"></div>
+              <div class="name">Least Mastered</div>
+              <div class="val">25 (41.7%)</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#e74c3c;"></div>
+              <div class="name">Not Mastered</div>
+              <div class="val">12 (20.0%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h4>Top 10 Hardest Items</h4>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="label">Item 58</div>
+            <div class="bar-track"><div class="bar-fill" style="width:26%; background:linear-gradient(90deg,#c0392b,#e74c3c);">26.3%</div></div>
+            <div class="count">26.3%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 55</div>
+            <div class="bar-track"><div class="bar-fill" style="width:32%; background:linear-gradient(90deg,#c0392b,#e74c3c);">31.6%</div></div>
+            <div class="count">31.6%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 54</div>
+            <div class="bar-track"><div class="bar-fill" style="width:37%; background:linear-gradient(90deg,#e67e22,#f0a04b);">36.8%</div></div>
+            <div class="count">36.8%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 53</div>
+            <div class="bar-track"><div class="bar-fill" style="width:37%; background:linear-gradient(90deg,#e67e22,#f0a04b);">36.8%</div></div>
+            <div class="count">36.8%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 48</div>
+            <div class="bar-track"><div class="bar-fill" style="width:42%; background:linear-gradient(90deg,#e67e22,#f0a04b);">42.1%</div></div>
+            <div class="count">42.1%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 49</div>
+            <div class="bar-track"><div class="bar-fill" style="width:42%; background:linear-gradient(90deg,#e67e22,#f0a04b);">42.1%</div></div>
+            <div class="count">42.1%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 50</div>
+            <div class="bar-track"><div class="bar-fill" style="width:42%; background:linear-gradient(90deg,#e67e22,#f0a04b);">42.1%</div></div>
+            <div class="count">42.1%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 44</div>
+            <div class="bar-track"><div class="bar-fill" style="width:47%; background:linear-gradient(90deg,#f39c12,#f7c45e);">47.4%</div></div>
+            <div class="count">47.4%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 45</div>
+            <div class="bar-track"><div class="bar-fill" style="width:47%; background:linear-gradient(90deg,#f39c12,#f7c45e);">47.4%</div></div>
+            <div class="count">47.4%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 52</div>
+            <div class="bar-track"><div class="bar-fill" style="width:47%; background:linear-gradient(90deg,#f39c12,#f7c45e);">47.4%</div></div>
+            <div class="count">47.4%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Topic / Skill Tested</th>
+          <th class="center">Errors</th>
+          <th class="center">Correct</th>
+          <th class="center">% Mastery</th>
+          <th class="center">Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-mastered"><td>1</td><td>Gross income definition</td><td class="center">4</td><td class="center">15</td><td class="center">78.95%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>2</td><td>Fixed annual salary structure</td><td class="center">4</td><td class="center">15</td><td class="center">78.95%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>3</td><td>Overtime pay multiplier</td><td class="center">3</td><td class="center">16</td><td class="center">84.21%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>4</td><td>Net income computation</td><td class="center">2</td><td class="center">17</td><td class="center">89.47%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>5</td><td>Commission computation</td><td class="center">3</td><td class="center">16</td><td class="center">84.21%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>6</td><td>Piecework gross pay</td><td class="center">4</td><td class="center">15</td><td class="center">78.95%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>7</td><td>Weekly wage from annual salary</td><td class="center">6</td><td class="center">13</td><td class="center">68.42%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>8</td><td>Overtime earnings computation</td><td class="center">4</td><td class="center">15</td><td class="center">78.95%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>9</td><td>Base + commission gross income</td><td class="center">7</td><td class="center">12</td><td class="center">63.16%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>10</td><td>Total gross pay with OT</td><td class="center">7</td><td class="center">12</td><td class="center">63.16%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>11</td><td>Holiday pay computation</td><td class="center">5</td><td class="center">14</td><td class="center">73.68%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>12</td><td>Withholding tax (progressive)</td><td class="center">8</td><td class="center">11</td><td class="center">57.89%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>13</td><td>Tiered commission</td><td class="center">8</td><td class="center">11</td><td class="center">57.89%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>14</td><td>Compensation package comparison</td><td class="center">9</td><td class="center">10</td><td class="center">52.63%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>15</td><td>Statutory deductions</td><td class="center">9</td><td class="center">10</td><td class="center">52.63%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-not"><td>16</td><td>Tiered piecework pay</td><td class="center">11</td><td class="center">8</td><td class="center">42.11%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-least"><td>17</td><td>Weekly gross income (multiple rates)</td><td class="center">9</td><td class="center">10</td><td class="center">52.63%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>18</td><td>Semi-monthly salary deductions</td><td class="center">8</td><td class="center">11</td><td class="center">57.89%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-not"><td>19</td><td>Special holiday + OT pay</td><td class="center">11</td><td class="center">8</td><td class="center">42.11%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-least"><td>20</td><td>Job offer comparison</td><td class="center">8</td><td class="center">11</td><td class="center">57.89%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>21</td><td>Percentage increase</td><td class="center">3</td><td class="center">16</td><td class="center">84.21%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>22</td><td>Discount computation</td><td class="center">2</td><td class="center">17</td><td class="center">89.47%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>23</td><td>VAT rate identification</td><td class="center">2</td><td class="center">17</td><td class="center">89.47%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>24</td><td>Percentage increase (inflation)</td><td class="center">4</td><td class="center">15</td><td class="center">78.95%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>25</td><td>VAT-inclusive total</td><td class="center">3</td><td class="center">16</td><td class="center">84.21%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>26</td><td>Mark-up percentage</td><td class="center">4</td><td class="center">15</td><td class="center">78.95%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>27</td><td>Trade discount series</td><td class="center">7</td><td class="center">12</td><td class="center">63.16%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>28</td><td>VAT-exclusive price (reverse)</td><td class="center">8</td><td class="center">11</td><td class="center">57.89%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>29</td><td>Mark-up + discount (final price)</td><td class="center">9</td><td class="center">10</td><td class="center">52.63%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>30</td><td>Loss and loss percentage</td><td class="center">5</td><td class="center">14</td><td class="center">73.68%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>31</td><td>Arithmetic sequence (next term)</td><td class="center">3</td><td class="center">16</td><td class="center">84.21%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>32</td><td>Fibonacci sequence (9th term)</td><td class="center">4</td><td class="center">15</td><td class="center">78.95%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>33</td><td>Common ratio (geometric)</td><td class="center">3</td><td class="center">16</td><td class="center">84.21%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>34</td><td>Explicit formula (arithmetic)</td><td class="center">5</td><td class="center">14</td><td class="center">73.68%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>35</td><td>15th term (arithmetic)</td><td class="center">5</td><td class="center">14</td><td class="center">73.68%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>36</td><td>6th term (geometric)</td><td class="center">4</td><td class="center">15</td><td class="center">78.95%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>37</td><td>First term from two given terms</td><td class="center">7</td><td class="center">12</td><td class="center">63.16%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>38</td><td>Bacteria population (doubling)</td><td class="center">7</td><td class="center">12</td><td class="center">63.16%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-not"><td>39</td><td>Geometric means insertion</td><td class="center">10</td><td class="center">9</td><td class="center">47.37%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-least"><td>40</td><td>Fibonacci (F13 from F10, F11)</td><td class="center">7</td><td class="center">12</td><td class="center">63.16%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>41</td><td>Sequence vs series</td><td class="center">3</td><td class="center">16</td><td class="center">84.21%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>42</td><td>Sigma notation symbol</td><td class="center">2</td><td class="center">17</td><td class="center">89.47%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>43</td><td>Sigma evaluation (basic)</td><td class="center">5</td><td class="center">14</td><td class="center">73.68%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-not"><td>44</td><td>Arithmetic series sum (S20)</td><td class="center">10</td><td class="center">9</td><td class="center">47.37%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-not"><td>45</td><td>Geometric series sum (S8)</td><td class="center">10</td><td class="center">9</td><td class="center">47.37%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-least"><td>46</td><td>Express sum in sigma notation</td><td class="center">8</td><td class="center">11</td><td class="center">57.89%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>47</td><td>Arithmetic series (a1, an given)</td><td class="center">8</td><td class="center">11</td><td class="center">57.89%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-not"><td>48</td><td>Infinite geometric series sum</td><td class="center">11</td><td class="center">8</td><td class="center">42.11%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-not"><td>49</td><td>Sigma evaluation (i² − 2)</td><td class="center">11</td><td class="center">8</td><td class="center">42.11%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-not"><td>50</td><td>Arithmetic series formula</td><td class="center">11</td><td class="center">8</td><td class="center">42.11%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-mastered"><td>51</td><td>Kilometers to meters</td><td class="center">3</td><td class="center">16</td><td class="center">84.21%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-not"><td>52</td><td>Grams to kilograms</td><td class="center">10</td><td class="center">9</td><td class="center">47.37%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-not"><td>53</td><td>Arithmetic loan repayment</td><td class="center">12</td><td class="center">7</td><td class="center">36.84%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-not"><td>54</td><td>Total loan paid (12 months)</td><td class="center">12</td><td class="center">7</td><td class="center">36.84%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-not"><td>55</td><td>Compound interest (annual deposit)</td><td class="center">13</td><td class="center">6</td><td class="center">31.58%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-least"><td>56</td><td>Yards to meters (multi-step)</td><td class="center">9</td><td class="center">10</td><td class="center">52.63%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>57</td><td>Vehicle financing installments</td><td class="center">9</td><td class="center">10</td><td class="center">52.63%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-not"><td>58</td><td>Cubic meters to liters</td><td class="center">14</td><td class="center">5</td><td class="center">26.32%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-least"><td>59</td><td>Geometric savings accumulation</td><td class="center">9</td><td class="center">10</td><td class="center">52.63%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>60</td><td>Average speed (km/h to m/s)</td><td class="center">8</td><td class="center">11</td><td class="center">57.89%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- ===== PART 3: SUMMARY & RECOMMENDATIONS ===== -->
+    <div class="section-title">Summary &amp; Recommendations</div>
+    <div class="section-sub">Part 3 — Findings and Action Plan</div>
+
+    <div class="rec-grid">
+      <div class="rec-card">
+        <span class="rec-num">1</span>
+        <span class="rec-text"><strong>Re-teaching needed:</strong> Sequences &amp; Series (Items 44–50) — arithmetic/geometric series sum, infinite geometric series, sigma notation</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">2</span>
+        <span class="rec-text"><strong>Remediation:</strong> Salary &amp; Wage computations (Items 12–20) — tiered commission, withholding tax, holiday + OT pay</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">3</span>
+        <span class="rec-text"><strong>Practice exercises:</strong> Measurement conversions (Items 52–58) — grams to kg, cubic meters to liters, multi-step conversions</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">4</span>
+        <span class="rec-text"><strong>Real-world applications:</strong> Business Math (Items 27–29) — trade discount series, VAT reverse computation, mark-up + discount</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">5</span>
+        <span class="rec-text"><strong>Targeted support:</strong> 4 students below passing (scores 25, 29, 31, 31) — one-on-one consultation at remediation</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">6</span>
+        <span class="rec-text"><strong>Intervention program:</strong> At-risk students (scores 25–35) — peer mentoring at additional practice sets</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <div class="footer">
+    <div class="prepared">JEMMUEL A. ALON</div>
+    <div class="role">Teacher</div>
+    <div class="divider"></div>
+    <div>PABLO OMEREZ CEDEÑO MEMORIAL LEARNING CENTER, INC.</div>
+    <div style="opacity:0.7; margin-top:5px;">General Mathematics 1st Term — Item Analysis Report</div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,2368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POCMLC • Class Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',system-ui,sans-serif}
+  :root{--bg-0:#050814;--cyan:#22d3ee;--purple:#a855f7;--pink:#ec4899;--gold:#fbbf24;--green:#10b981;--red:#ef4444;--text-0:#f8fafc;--text-1:#cbd5e1;--text-2:#64748b;--glass:rgba(255,255,255,.04);--glass-b:rgba(255,255,255,.08)}
+  html,body{height:100%}
+  body{background:var(--bg-0);color:var(--text-0);min-height:100vh;position:relative;overflow-x:hidden;transition:background .4s,color .4s}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 15% 10%, rgba(34,211,238,.15), transparent 45%),radial-gradient(ellipse at 85% 20%, rgba(168,85,247,.13), transparent 45%),radial-gradient(ellipse at 50% 100%, rgba(236,72,153,.10), transparent 55%);transition:.4s}
+  body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(34,211,238,.03) 1px, transparent 1px),linear-gradient(90deg, rgba(34,211,238,.03) 1px, transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse at center, black 30%, transparent 80%);-webkit-mask-image:radial-gradient(ellipse at center, black 30%, transparent 80%)}
+  .app{position:relative;z-index:1;min-height:100vh;padding:26px 34px 60px;max-width:1500px;margin:0 auto}
+
+  /* ===== LIGHT THEME ===== */
+  body.light-theme{--bg-0:#f1f5f9;--text-0:#0f172a;--text-1:#334155;--text-2:#64748b;--glass:rgba(0,0,0,.03);--glass-b:rgba(0,0,0,.08);background:#f1f5f9;color:#0f172a}
+  body.light-theme::before{background:radial-gradient(ellipse at 15% 10%, rgba(34,211,238,.18), transparent 45%),radial-gradient(ellipse at 85% 20%, rgba(168,85,247,.15), transparent 45%),radial-gradient(ellipse at 50% 100%, rgba(236,72,153,.1), transparent 55%)}
+  body.light-theme::after{background-image:linear-gradient(rgba(34,211,238,.08) 1px, transparent 1px),linear-gradient(90deg, rgba(34,211,238,.08) 1px, transparent 1px)}
+  body.light-theme .grade-card,body.light-theme .student-card,body.light-theme .admin-card,body.light-theme .chart-box-lg,body.light-theme .panel,body.light-theme .score-card,body.light-theme .personal-card,body.light-theme .item-row,body.light-theme .podium-card,body.light-theme .student-hero,body.light-theme .modal{background:linear-gradient(155deg, rgba(255,255,255,.96), rgba(255,255,255,.75))!important;border-color:rgba(0,0,0,.08)!important;box-shadow:0 10px 30px -15px rgba(0,0,0,.1)!important}
+  body.light-theme .school-banner{background:linear-gradient(155deg, rgba(34,211,238,.18), rgba(168,85,247,.12), rgba(236,72,153,.08))!important;border-color:rgba(34,211,238,.35)!important}
+  body.light-theme .school-text h2{background:linear-gradient(135deg, #0f172a 0%, #0891b2 50%, #7c3aed 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important}
+  body.light-theme .brand h1{background:linear-gradient(90deg, #0891b2, #7c3aed, #db2777, #d97706)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;background-size:200% auto!important}
+  body.light-theme .live{background:rgba(16,185,129,.15)!important;border-color:rgba(16,185,129,.4)!important;color:#047857!important}
+  body.light-theme .user-chip{background:rgba(168,85,247,.15)!important;border-color:rgba(168,85,247,.4)!important;color:#6b21a8!important}
+  body.light-theme .user-chip.admin{background:rgba(251,191,36,.2)!important;border-color:rgba(251,191,36,.5)!important;color:#92400e!important}
+  body.light-theme .user-chip.student{background:rgba(34,211,238,.15)!important;border-color:rgba(34,211,238,.4)!important;color:#0e7490!important}
+  body.light-theme .logout-btn{background:rgba(239,68,68,.1)!important;border-color:rgba(239,68,68,.35)!important;color:#b91c1c!important}
+  body.light-theme .admin-btn{background:linear-gradient(135deg, rgba(251,191,36,.2), rgba(236,72,153,.2))!important;border-color:rgba(251,191,36,.5)!important;color:#92400e!important}
+  body.light-theme .login-screen{background:radial-gradient(ellipse at center, #dbeafe 0%, #f8fafc 100%)!important}
+  body.light-theme .login-card{background:linear-gradient(155deg, rgba(255,255,255,.96), rgba(241,245,249,.98))!important;border-color:rgba(34,211,238,.4)!important}
+  body.light-theme .login-card h1{background:linear-gradient(90deg, #0891b2, #7c3aed, #db2777, #d97706)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;background-size:200% auto!important}
+  body.light-theme .login-field input{background:rgba(255,255,255,.85)!important;color:#0f172a!important;border-color:rgba(0,0,0,.1)!important}
+  body.light-theme .login-field input::placeholder{color:rgba(100,116,139,.7)!important}
+  body.light-theme .login-field label{color:#0891b2!important}
+  body.light-theme .admin-panel{background:radial-gradient(ellipse at center, #e2e8f0 0%, #f8fafc 100%)!important}
+  body.light-theme .admin-header h1{background:linear-gradient(90deg, #d97706, #db2777, #7c3aed)!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important}
+  body.light-theme .admin-tab{background:rgba(0,0,0,.04)!important;border-color:rgba(0,0,0,.08)!important;color:#334155!important}
+  body.light-theme .admin-tab:hover{background:rgba(34,211,238,.15)!important;color:#0e7490!important}
+  body.light-theme .admin-tab.active{background:linear-gradient(135deg, #22d3ee, #a855f7)!important;color:#fff!important}
+  body.light-theme .form-field input,body.light-theme .form-field select,body.light-theme .search-input,body.light-theme #newSectionInput,body.light-theme input[type="text"],body.light-theme input[type="password"],body.light-theme input[type="number"],body.light-theme select,body.light-theme textarea{background:rgba(255,255,255,.85)!important;color:#0f172a!important;border-color:rgba(0,0,0,.1)!important}
+  body.light-theme .form-field label{color:#0891b2!important}
+  body.light-theme .btn.primary{background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(168,85,247,.25))!important;border-color:rgba(34,211,238,.55)!important;color:#0e7490!important}
+  body.light-theme .btn.gold{background:linear-gradient(135deg, rgba(251,191,36,.25), rgba(236,72,153,.25))!important;border-color:rgba(251,191,36,.55)!important;color:#92400e!important}
+  body.light-theme .chip{background:rgba(0,0,0,.04)!important;border-color:rgba(0,0,0,.08)!important;color:#334155!important}
+  body.light-theme .chip.active{background:linear-gradient(90deg, #22d3ee, #a855f7)!important;color:#fff!important}
+  body.light-theme .ranking-table th{background:rgba(0,0,0,.04)!important;color:#475569!important}
+  body.light-theme .ranking-table td{color:#1e293b!important;border-bottom-color:rgba(0,0,0,.06)!important}
+  body.light-theme .ranking-table .name-cell,body.light-theme .ranking-table .rank{color:#0f172a!important}
+  body.light-theme .hero h2{color:#0f172a!important}
+  body.light-theme .hero p{color:#334155!important}
+  body.light-theme .crumb button{background:rgba(0,0,0,.04)!important;border-color:rgba(0,0,0,.08)!important;color:#334155!important}
+  body.light-theme .crumb .current{color:#0891b2!important}
+  body.light-theme .back-btn{background:rgba(34,211,238,.15)!important;border-color:rgba(34,211,238,.5)!important;color:#0e7490!important}
+  body.light-theme .student-mode-banner{background:linear-gradient(135deg, rgba(34,211,238,.15), rgba(168,85,247,.12))!important;border-color:rgba(34,211,238,.4)!important;color:#0e7490!important}
+  body.light-theme .logo-preview-box{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.15)}
+
+  /* LOGIN */
+  .login-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center, #0a0f24 0%, #02040d 100%);transition:.6s;overflow-y:auto;padding:20px 0}
+  .login-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  .login-screen::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(34,211,238,.06) 1px, transparent 1px),linear-gradient(90deg, rgba(34,211,238,.06) 1px, transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse at center, black 20%, transparent 70%);animation:gridMove 20s linear infinite}
+  @keyframes gridMove{to{background-position:60px 60px}}
+  .login-card{position:relative;z-index:2;width:440px;max-width:94vw;padding:44px 40px 36px;border-radius:24px;background:linear-gradient(155deg, rgba(20,28,56,.85), rgba(10,15,36,.9));border:1px solid rgba(34,211,238,.3);box-shadow:0 30px 80px -20px rgba(34,211,238,.3),0 0 120px -40px rgba(168,85,247,.5);backdrop-filter:blur(24px);animation:cardIn .9s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes cardIn{from{opacity:0;transform:translateY(40px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .login-logo{width:80px;height:80px;margin:0 auto 22px;position:relative;display:flex;align-items:center;justify-content:center;font-size:38px}
+  .login-logo::before,.login-logo::after{content:'';position:absolute;inset:0;border-radius:30%;background:linear-gradient(135deg, rgba(34,211,238,.5), rgba(168,85,247,.5));animation:morphA 8s ease-in-out infinite;z-index:0}
+  .login-logo::after{background:linear-gradient(135deg, rgba(236,72,153,.4), rgba(251,191,36,.4));animation:morphB 8s ease-in-out infinite;mix-blend-mode:screen;opacity:.7}
+  .login-logo span{position:relative;z-index:1;filter:drop-shadow(0 0 12px rgba(34,211,238,.8))}
+  .login-card h1{text-align:center;font-size:22px;font-weight:900;margin-bottom:6px;background:linear-gradient(90deg,#22d3ee,#a855f7,#ec4899,#fbbf24);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shine 6s linear infinite}
+  @keyframes shine{to{background-position:200% center}}
+  .login-card .subtitle{text-align:center;font-size:11.5px;color:var(--text-2);letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:32px;display:flex;align-items:center;justify-content:center;gap:10px}
+  .login-card .subtitle::before,.login-card .subtitle::after{content:'';width:30px;height:1px;background:linear-gradient(90deg, transparent, rgba(34,211,238,.5))}
+  .login-card .subtitle::after{background:linear-gradient(90deg, rgba(34,211,238,.5), transparent)}
+  .login-field{position:relative;margin-bottom:16px}
+  .login-field label{display:block;font-size:10.5px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
+  .login-field input,textarea{width:100%;padding:14px 16px 14px 46px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);color:#fff;font-size:13.5px;font-family:inherit;font-weight:600;transition:.25s;outline:none}
+  textarea{padding-left:16px!important;min-height:80px;resize:vertical}
+  .login-field input:focus,textarea:focus{border-color:rgba(34,211,238,.6);box-shadow:0 0 0 4px rgba(34,211,238,.1)}
+  .login-field input::placeholder{color:rgba(100,116,139,.7)}
+  .login-field .icon{position:absolute;left:16px;top:calc(50% + 10px);transform:translateY(-50%);font-size:16px;opacity:.7;pointer-events:none}
+  .login-btn{width:100%;padding:15px;border-radius:12px;margin-top:8px;background:linear-gradient(135deg,#22d3ee,#a855f7);border:none;color:#fff;font-size:13.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:inherit;box-shadow:0 10px 30px -10px rgba(34,211,238,.6);transition:.3s}
+  .login-btn:hover{transform:translateY(-2px);box-shadow:0 15px 40px -10px rgba(168,85,247,.7)}
+  .login-error{margin-top:14px;padding:10px 14px;border-radius:10px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:#fca5a5;font-size:12px;font-weight:700;text-align:center;display:none}
+  .login-error.show{display:block}
+  .register-link{margin-top:18px;text-align:center;font-size:12px;color:var(--text-2)}
+  .register-link a{color:var(--cyan);font-weight:700;cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(34,211,238,.4)}
+  .forgot-link{margin-top:12px;text-align:center;font-size:11.5px;color:var(--text-2)}
+  .forgot-link a{color:#fbbf24;font-weight:700;cursor:pointer;text-decoration:none;border-bottom:1px dashed rgba(251,191,36,.4);padding-bottom:1px}
+  .forgot-link a:hover{color:#fcd34d}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;z-index:1500;background:rgba(2,4,13,.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+  .modal-overlay.show{display:flex}
+  .modal{position:relative;width:640px;max-width:96vw;max-height:90vh;overflow-y:auto;border-radius:22px;padding:32px;background:linear-gradient(155deg, rgba(20,28,56,.97), rgba(10,15,36,.98));border:1px solid rgba(34,211,238,.3);box-shadow:0 40px 100px -20px rgba(34,211,238,.3);animation:cardIn .5s}
+  .modal h2{font-size:20px;font-weight:900;margin-bottom:6px;background:linear-gradient(90deg,#22d3ee,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .modal .sub{font-size:12px;color:var(--text-2);margin-bottom:22px}
+  .modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;cursor:pointer;font-size:16px;font-family:inherit}
+  .modal-close:hover{background:rgba(239,68,68,.25)}
+
+  /* ADMIN PANEL */
+  .admin-panel{position:fixed;inset:0;z-index:1400;background:radial-gradient(ellipse at center, #0a0f24 0%, #02040d 100%);overflow-y:auto;display:none}
+  .admin-panel.show{display:block}
+  .admin-inner{position:relative;max-width:1400px;margin:0 auto;padding:26px 34px 60px}
+  .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--glass-b)}
+  .admin-header h1{font-size:24px;font-weight:900;background:linear-gradient(90deg,#fbbf24,#ec4899,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .admin-header .sub{font-size:11px;color:var(--text-2);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-top:4px}
+  .admin-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+  .admin-tab{padding:11px 18px;border-radius:12px;background:var(--glass);border:1px solid var(--glass-b);color:var(--text-1);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+  .admin-tab:hover{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.4);color:#67e8f9}
+  .admin-tab.active{background:linear-gradient(135deg,#22d3ee,#a855f7);color:#fff;border-color:transparent}
+  .admin-section{display:none}
+  .admin-section.active{display:block}
+  .admin-card{border-radius:18px;padding:22px 24px;background:linear-gradient(155deg, rgba(255,255,255,.05), rgba(255,255,255,.01));border:1px solid var(--glass-b);margin-bottom:16px}
+  .admin-card h3{font-size:14px;font-weight:800;margin-bottom:16px;color:var(--text-0);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .admin-card h3 span{font-size:11px;color:var(--text-2);font-weight:600}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px}
+  .form-field{display:flex;flex-direction:column;gap:5px}
+  .form-field label{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--cyan)}
+  .form-field input,.form-field select,.form-field textarea{padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);color:#fff;font-size:13px;font-family:inherit;font-weight:600;outline:none;width:100%}
+  .form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:rgba(34,211,238,.6)}
+  .form-field select option{background:#0a0f24;color:#fff}
+  .btn{padding:10px 18px;border-radius:10px;font-size:12px;font-weight:800;letter-spacing:.4px;cursor:pointer;font-family:inherit;transition:.25s;border:1px solid;display:inline-flex;align-items:center;gap:7px}
+  .btn.primary{background:linear-gradient(135deg,rgba(34,211,238,.2),rgba(168,85,247,.2));border-color:rgba(34,211,238,.5);color:#67e8f9}
+  .btn.primary:hover{background:linear-gradient(135deg,rgba(34,211,238,.35),rgba(168,85,247,.35));transform:translateY(-1px)}
+  .btn.gold{background:linear-gradient(135deg,rgba(251,191,36,.2),rgba(236,72,153,.2));border-color:rgba(251,191,36,.5);color:#fcd34d}
+  .btn.gold:hover{background:linear-gradient(135deg,rgba(251,191,36,.35),rgba(236,72,153,.35));transform:translateY(-1px)}
+  .btn.danger{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4);color:#fca5a5}
+  .btn.danger:hover{background:rgba(239,68,68,.25);color:#fecaca}
+  .btn.success{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.4);color:#6ee7b7}
+  .btn.success:hover{background:rgba(16,185,129,.25)}
+  .btn.sm{padding:7px 12px;font-size:11px}
+  .item-list{display:flex;flex-direction:column;gap:10px}
+  .item-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--glass-b);flex-wrap:wrap}
+  .item-row .info{flex:1;min-width:200px}
+  .item-row .info .name{font-size:13.5px;font-weight:700;color:var(--text-0);margin-bottom:3px}
+  .item-row .info .meta{font-size:11px;color:var(--text-2)}
+  .item-row .actions{display:flex;gap:6px;flex-wrap:wrap}
+  .empty-state{text-align:center;padding:40px 20px;color:var(--text-2);font-size:13px;font-style:italic}
+  .info-box{padding:14px 16px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.3);color:#a5f3fc;font-size:12px;line-height:1.7;margin-bottom:16px}
+  .info-box.warn{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.35);color:#fde68a}
+  .info-box.danger{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.35);color:#fecaca}
+
+  .search-box{position:relative}
+  .search-input{width:100%;padding:14px 16px 14px 46px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:14px;font-family:inherit;font-weight:600;outline:none}
+  .search-input:focus{border-color:rgba(34,211,238,.6)}
+  .search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.7;pointer-events:none}
+  .search-results{margin-top:8px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);max-height:280px;overflow-y:auto;display:none}
+  .search-results.show{display:block}
+  .search-result{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;display:flex;align-items:center;gap:10px}
+  .search-result:hover{background:rgba(34,211,238,.1)}
+  .search-result .sex{display:inline-block;width:22px;height:22px;border-radius:6px;font-size:10px;font-weight:800;line-height:22px;text-align:center;flex-shrink:0}
+  .search-result .sex.M{background:rgba(34,211,238,.15);color:#67e8f9;border:1px solid rgba(34,211,238,.3)}
+  .search-result .sex.F{background:rgba(236,72,153,.15);color:#f9a8d4;border:1px solid rgba(236,72,153,.3)}
+  .search-result .text{font-size:13px;font-weight:700;color:var(--text-0)}
+  .search-result .already{font-size:10px;color:#fbbf24;margin-left:auto;font-weight:700}
+  .no-match{padding:20px;text-align:center;color:var(--text-2);font-size:12.5px;font-style:italic}
+  .selected-user{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:linear-gradient(135deg,rgba(34,211,238,.1),rgba(168,85,247,.1));border:1px solid rgba(34,211,238,.4);margin-top:12px}
+  .selected-user .sex{display:inline-block;width:28px;height:28px;border-radius:8px;font-size:12px;font-weight:800;line-height:28px;text-align:center}
+  .selected-user .name{font-size:14px;font-weight:800;color:var(--text-0)}
+  .selected-user .change{margin-left:auto;font-size:11px;color:var(--cyan);cursor:pointer;font-weight:700;text-decoration:underline}
+
+  /* TOPBAR */
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:16px}
+  .brand{display:flex;align-items:center;gap:16px}
+  .brand h1{font-size:16px;font-weight:800;background:linear-gradient(90deg,#22d3ee,#a855f7,#ec4899,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:shine 6s linear infinite}
+  .brand .sub{font-size:10.5px;color:var(--text-2);letter-spacing:1.2px;margin-top:3px;text-transform:uppercase;font-weight:600}
+  .topbar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .live{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:20px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.35);color:#6ee7b7;font-size:11.5px;font-weight:700}
+  .live .dot{width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 10px #10b981;animation:blink 1.6s infinite}
+  @keyframes blink{50%{opacity:.3}}
+  .user-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 12px 7px 8px;border-radius:20px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.35);color:#e9d5ff;font-size:11.5px;font-weight:700}
+  .user-chip .avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff}
+  .user-chip.admin{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.4);color:#fde68a}
+  .user-chip.admin .avatar{background:linear-gradient(135deg,#fbbf24,#ec4899)}
+  .user-chip.student{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.4);color:#a5f3fc}
+  .user-chip.student .avatar{background:linear-gradient(135deg,#22d3ee,#10b981)}
+  .admin-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:20px;background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(236,72,153,.15));border:1px solid rgba(251,191,36,.4);color:#fcd34d;font-size:11.5px;font-weight:800;cursor:pointer;font-family:inherit;transition:.25s;text-transform:uppercase}
+  .admin-btn:hover{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(236,72,153,.3));transform:translateY(-1px)}
+  .logout-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:20px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);color:#fca5a5;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:.25s}
+  .logout-btn:hover{background:rgba(239,68,68,.2);border-color:#ef4444;color:#fecaca;transform:translateY(-1px)}
+  .theme-toggle{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:20px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.35);color:#fcd34d;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:.25s}
+  .theme-toggle:hover{background:rgba(251,191,36,.2);transform:translateY(-1px)}
+  body.light-theme .theme-toggle{background:rgba(15,23,42,.08);border-color:rgba(15,23,42,.25);color:#0f172a}
+
+  /* MORPH */
+  .morph-icon{position:relative;width:64px;height:64px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .morph-icon .blob{position:absolute;inset:0;background:linear-gradient(135deg, rgba(34,211,238,.55), rgba(168,85,247,.55));border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 32px rgba(34,211,238,.35);animation:morphA 8s ease-in-out infinite}
+  .morph-icon .blob.b2{background:linear-gradient(135deg, rgba(236,72,153,.4), rgba(251,191,36,.4));animation:morphB 8s ease-in-out infinite;opacity:.7;mix-blend-mode:screen}
+  @keyframes morphA{0%,100%{border-radius:30% 70% 70% 30% / 30% 30% 70% 70%;transform:rotate(0deg) scale(1)}25%{border-radius:58% 42% 33% 67% / 63% 47% 53% 37%;transform:rotate(45deg) scale(1.05)}50%{border-radius:42% 58% 62% 38% / 43% 62% 38% 57%;transform:rotate(90deg) scale(.97)}75%{border-radius:66% 34% 42% 58% / 38% 55% 45% 62%;transform:rotate(135deg) scale(1.03)}}
+  @keyframes morphB{0%,100%{border-radius:66% 34% 42% 58% / 38% 55% 45% 62%;transform:rotate(0deg) scale(1)}25%{border-radius:42% 58% 62% 38% / 43% 62% 38% 57%;transform:rotate(-45deg) scale(.95)}50%{border-radius:58% 42% 33% 67% / 63% 47% 53% 37%;transform:rotate(-90deg) scale(1.05)}75%{border-radius:30% 70% 70% 30% / 30% 30% 70% 70%;transform:rotate(-135deg) scale(1)}}
+  .morph-icon .emoji{position:relative;z-index:2;font-size:26px;filter:drop-shadow(0 0 8px rgba(255,255,255,.5))}
+  .custom-logo{position:relative;z-index:2;max-width:68%;max-height:68%;object-fit:contain;filter:drop-shadow(0 0 12px rgba(34,211,238,.6))}
+
+  /* BANNER */
+  .school-banner{position:relative;border-radius:22px;padding:30px 34px;margin-bottom:30px;background:linear-gradient(155deg, rgba(34,211,238,.10), rgba(168,85,247,.08), rgba(236,72,153,.06));border:1px solid rgba(34,211,238,.25);overflow:hidden;backdrop-filter:blur(20px);box-shadow:0 20px 60px -20px rgba(34,211,238,.3)}
+  .school-banner::before{content:'';position:absolute;top:-100px;right:-100px;width:340px;height:340px;background:radial-gradient(circle, rgba(34,211,238,.35), transparent 70%);filter:blur(60px);animation:float1 12s ease-in-out infinite;pointer-events:none}
+  .school-banner::after{content:'';position:absolute;bottom:-120px;left:-80px;width:300px;height:300px;background:radial-gradient(circle, rgba(168,85,247,.3), transparent 70%);filter:blur(70px);animation:float2 14s ease-in-out infinite;pointer-events:none}
+  @keyframes float1{50%{transform:translate(-30px,30px) scale(1.15)}}
+  @keyframes float2{50%{transform:translate(30px,-30px) scale(1.1)}}
+  .school-banner .inner{position:relative;z-index:2;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+  .school-text{flex:1;min-width:260px}
+  .school-text .label{font-size:10.5px;color:var(--cyan);letter-spacing:2.5px;font-weight:800;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .school-text .label::before{content:'';width:24px;height:1px;background:var(--cyan)}
+  .school-text h2{font-size:26px;font-weight:900;line-height:1.2;background:linear-gradient(135deg,#fff 0%,#a5f3fc 50%,#c4b5fd 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .school-text .tagline{font-size:12px;color:var(--text-2);margin-top:8px;letter-spacing:.5px}
+
+  /* ANNOUNCEMENT */
+  .announcement-banner{display:none;margin-bottom:22px;border-radius:16px;padding:18px 22px 18px 22px;position:relative;border:1px solid;font-size:13px;line-height:1.6;animation:slideDown .5s cubic-bezier(.34,1.56,.64,1);align-items:flex-start;gap:14px;flex-wrap:wrap}
+  .announcement-banner.show{display:flex}
+  @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+  .announcement-banner.info{background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(168,85,247,.08));border-color:rgba(34,211,238,.4);color:#a5f3fc}
+  .announcement-banner.warning{background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(236,72,153,.08));border-color:rgba(251,191,36,.4);color:#fde68a}
+  .announcement-banner.danger{background:linear-gradient(135deg,rgba(239,68,68,.12),rgba(220,38,38,.08));border-color:rgba(239,68,68,.4);color:#fecaca}
+  .announcement-banner.success{background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(5,150,105,.08));border-color:rgba(16,185,129,.4);color:#a7f3d0}
+  .announcement-banner .an-icon{font-size:22px;flex-shrink:0;line-height:1}
+  .announcement-banner .an-body{flex:1;min-width:200px}
+  .announcement-banner .an-title{font-weight:900;font-size:13.5px;margin-bottom:4px;letter-spacing:.3px}
+  .announcement-banner .an-msg{font-size:12.5px;opacity:.95;line-height:1.6;white-space:pre-wrap}
+  .announcement-banner .an-meta{font-size:10.5px;opacity:.7;margin-top:8px;letter-spacing:.3px}
+  .announcement-banner .an-close{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.15);color:inherit;width:26px;height:26px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:12px;transition:.2s}
+  .announcement-banner .an-close:hover{background:rgba(0,0,0,.4)}
+  body.light-theme .announcement-banner.info{color:#0e7490}
+  body.light-theme .announcement-banner.warning{color:#92400e}
+  body.light-theme .announcement-banner.danger{color:#b91c1c}
+  body.light-theme .announcement-banner.success{color:#047857}
+
+  .crumb{display:flex;align-items:center;gap:10px;margin-bottom:24px;font-size:12.5px;color:var(--text-2);flex-wrap:wrap;min-height:32px}
+  .crumb button{background:var(--glass);border:1px solid var(--glass-b);color:var(--text-1);padding:7px 14px;border-radius:10px;font-size:12px;cursor:pointer;transition:.2s;font-family:inherit;display:inline-flex;align-items:center;gap:7px;font-weight:600}
+  .crumb button:hover{background:rgba(34,211,238,.1);border-color:var(--cyan);color:#67e8f9}
+  .crumb .sep{color:var(--text-2)}
+  .crumb .current{color:var(--cyan);font-weight:700}
+
+  .view{display:none;animation:fadeUp .5s cubic-bezier(.4,0,.2,1)}
+  .view.active{display:block}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+  .hero{margin-bottom:26px}
+  .hero h2{font-size:26px;font-weight:800;margin-bottom:8px}
+  .hero h2 span{background:linear-gradient(90deg,#22d3ee,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero p{color:var(--text-1);font-size:13.5px;max-width:680px;line-height:1.6}
+  .student-mode-banner{display:none;margin-bottom:20px;padding:14px 18px;border-radius:14px;background:linear-gradient(135deg,rgba(34,211,238,.1),rgba(168,85,247,.1));border:1px solid rgba(34,211,238,.4);color:#a5f3fc;font-size:12.5px;font-weight:600;line-height:1.5;align-items:center;gap:12px}
+  .student-mode-banner.show{display:flex}
+  .student-mode-banner .icon{font-size:20px;flex-shrink:0}
+
+  .grade-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+  .grade-card{position:relative;border-radius:22px;padding:28px 26px;background:linear-gradient(155deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border:1px solid var(--glass-b);cursor:pointer;overflow:hidden;transition:.35s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(14px)}
+  .grade-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 24px 50px -20px var(--accent-glow);border-color:var(--accent)}
+  .grade-card .glow{position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:var(--accent);filter:blur(70px);opacity:.25;transition:.4s;pointer-events:none}
+  .grade-card:hover .glow{opacity:.5;transform:scale(1.2)}
+  .grade-card .code{display:inline-block;padding:5px 12px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:10.5px;font-weight:800;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin-bottom:16px}
+  .grade-card h3{font-size:23px;font-weight:800;margin-bottom:5px}
+  .grade-card .section-name{font-size:12.5px;color:var(--text-2);margin-bottom:20px}
+  .grade-card .teacher{font-size:11.5px;color:var(--text-2);margin-bottom:20px}
+  .grade-card .teacher b{color:var(--text-1);font-weight:600}
+  .grade-stats{display:flex;gap:20px;padding-top:18px;border-top:1px solid var(--glass-b)}
+  .grade-stats .stat{flex:1}
+  .grade-stats .stat .n{font-size:22px;font-weight:800;color:var(--text-0)}
+  .grade-stats .stat .l{font-size:10px;color:var(--text-2);text-transform:uppercase;letter-spacing:.6px;margin-top:3px;font-weight:600}
+  .grade-card .go{position:absolute;top:24px;right:24px;width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--glass-b);display:flex;align-items:center;justify-content:center;font-size:15px;transition:.3s}
+  .grade-card:hover .go{background:var(--accent);color:#000;transform:translateX(4px)}
+
+  .grade-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:26px;flex-wrap:wrap;gap:18px;padding-bottom:22px;border-bottom:1px solid var(--glass-b)}
+  .grade-header h2{font-size:26px;font-weight:800}
+  .grade-header .meta{font-size:12.5px;color:var(--text-2);margin-top:6px;line-height:1.5}
+  .grade-header .meta b{color:var(--text-1)}
+  .action-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+  .filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+  .chip{padding:7px 15px;border-radius:20px;font-size:12px;font-weight:600;background:var(--glass);border:1px solid var(--glass-b);color:var(--text-1);cursor:pointer;transition:.2s;font-family:inherit}
+  .chip:hover{background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.4)}
+  .chip.active{background:linear-gradient(90deg,#22d3ee,#a855f7);color:#fff;border-color:transparent}
+
+  .student-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .student-card{position:relative;border-radius:16px;padding:18px 18px 16px;background:linear-gradient(155deg, rgba(255,255,255,.055), rgba(255,255,255,.015));border:1px solid var(--glass-b);cursor:pointer;transition:.3s cubic-bezier(.4,0,.2,1);overflow:hidden}
+  .student-card:hover{transform:translateY(-4px);border-color:rgba(34,211,238,.5);box-shadow:0 16px 32px -14px rgba(34,211,238,.3)}
+  .student-card.locked{cursor:not-allowed;opacity:.55;filter:grayscale(.4)}
+  .student-card.locked:hover{transform:none;border-color:var(--glass-b);box-shadow:none}
+  .student-card.locked::before{content:'🔒';position:absolute;top:12px;left:12px;font-size:16px;z-index:3}
+  .student-card.locked .num{display:none}
+  .student-card.mine{border-color:#22d3ee;box-shadow:0 0 0 2px rgba(34,211,238,.4), 0 0 30px -8px rgba(34,211,238,.8);animation:pulseMine 2.2s infinite}
+  @keyframes pulseMine{0%,100%{box-shadow:0 0 0 2px rgba(34,211,238,.4), 0 0 30px -8px rgba(34,211,238,.8)}50%{box-shadow:0 0 0 3px rgba(34,211,238,.9), 0 0 45px -5px rgba(34,211,238,1)}}
+  .student-card.mine::before{content:'⭐ IYO ITO';position:absolute;top:-10px;left:12px;background:linear-gradient(135deg,#22d3ee,#a855f7);color:#fff;font-size:9px;font-weight:900;padding:4px 10px;border-radius:8px;letter-spacing:.6px;z-index:4}
+  .student-card .num{position:absolute;top:14px;right:16px;font-size:11px;font-weight:800;color:var(--text-2);letter-spacing:1px}
+  .student-card .name{font-size:13.5px;font-weight:700;color:var(--text-0);line-height:1.35;margin-bottom:12px;padding-right:24px;min-height:36px}
+  .student-card .row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:11.5px}
+  .student-card .row .lbl{color:var(--text-2);font-weight:600}
+  .student-card .grade-big{font-size:22px;font-weight:800}
+  .sex{display:inline-block;width:20px;height:20px;border-radius:6px;font-size:10px;font-weight:800;line-height:20px;text-align:center;margin-right:6px;vertical-align:middle}
+  .sex.M{background:rgba(34,211,238,.15);color:#67e8f9;border:1px solid rgba(34,211,238,.3)}
+  .sex.F{background:rgba(236,72,153,.15);color:#f9a8d4;border:1px solid rgba(236,72,153,.3)}
+  .student-card .bar{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-top:10px}
+  .student-card .bar>div{height:100%;border-radius:3px;transition:width .8s}
+  .student-card .rank-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;font-size:10px;font-weight:800;background:rgba(34,211,238,.15);color:#67e8f9;border:1px solid rgba(34,211,238,.3);margin-right:6px}
+  .student-card .rank-badge.gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#78350f;border-color:#fbbf24}
+  .student-card .rank-badge.silver{background:linear-gradient(135deg,#e2e8f0,#94a3b8);color:#1e293b;border-color:#e2e8f0}
+  .student-card .rank-badge.bronze{background:linear-gradient(135deg,#cd7f32,#92400e);color:#fff;border-color:#cd7f32}
+
+  .status-pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
+  .status-pill.pass{background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.3)}
+  .status-pill.fail{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+  .status-pill.inc{background:rgba(245,158,11,.15);color:#fcd34d;border:1px solid rgba(245,158,11,.3)}
+  .status-pill.none{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3)}
+
+  .ranking-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:26px;flex-wrap:wrap;gap:18px;padding-bottom:22px;border-bottom:1px solid var(--glass-b)}
+  .ranking-header h2{font-size:26px;font-weight:800;background:linear-gradient(90deg,#fbbf24,#f59e0b,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .ranking-header .meta{font-size:12.5px;color:var(--text-2);margin-top:6px}
+  .podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:28px}
+  @media(max-width:900px){.podium{grid-template-columns:1fr}}
+  .podium-card{position:relative;border-radius:20px;padding:24px 22px;text-align:center;background:linear-gradient(155deg, rgba(255,255,255,.06), rgba(255,255,255,.015));border:1px solid var(--glass-b);overflow:hidden;transition:.35s;animation:podiumIn .8s cubic-bezier(.34,1.56,.64,1) backwards}
+  .podium-card:nth-child(1){animation-delay:.1s}
+  .podium-card:nth-child(2){animation-delay:.2s}
+  .podium-card:nth-child(3){animation-delay:.3s}
+  @keyframes podiumIn{from{opacity:0;transform:translateY(30px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .podium-card.gold{border-color:rgba(251,191,36,.5);box-shadow:0 20px 50px -20px rgba(251,191,36,.5)}
+  .podium-card.silver{border-color:rgba(226,232,240,.4)}
+  .podium-card.bronze{border-color:rgba(205,127,50,.5)}
+  .podium-card .medal{font-size:44px;margin-bottom:10px;display:block}
+  .podium-card .rank-label{font-size:10.5px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--text-2);margin-bottom:10px}
+  .podium-card .pname{font-size:14px;font-weight:800;line-height:1.3;margin-bottom:12px;min-height:38px}
+  .podium-card .pgrade{font-size:42px;font-weight:900;line-height:1}
+  .podium-card .pdesc{font-size:11px;color:var(--text-2);margin-top:8px;font-weight:600}
+  .podium-card.mine-podium{border-color:#22d3ee;box-shadow:0 0 0 2px rgba(34,211,238,.5), 0 20px 50px -20px rgba(34,211,238,.6)}
+  .podium-card.mine-podium::before{content:'⭐ IYO';position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#22d3ee,#a855f7);color:#fff;font-size:9px;font-weight:900;padding:3px 8px;border-radius:8px}
+
+  .chart-box-lg{border-radius:18px;padding:26px 28px;background:linear-gradient(155deg, rgba(255,255,255,.05), rgba(255,255,255,.01));border:1px solid var(--glass-b);margin-bottom:22px}
+  .chart-box-lg h4{font-size:12.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--text-2);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .chart-box-lg h4 .tag{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:800;background:linear-gradient(90deg,rgba(34,211,238,.2),rgba(168,85,247,.2));color:#67e8f9;border:1px solid rgba(34,211,238,.3)}
+  .chart-box-lg .hint{font-size:11.5px;color:var(--text-2);margin-bottom:18px;opacity:.8}
+  .chart-wrap-lg{position:relative;height:520px}
+  .chart-wrap-md{position:relative;height:380px}
+  .analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px}
+  @media(max-width:900px){.analytics-grid{grid-template-columns:1fr}}
+  .ranking-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:22px}
+  .ranking-table th{text-align:left;padding:11px 12px;background:rgba(255,255,255,.03);color:var(--text-2);font-weight:800;font-size:10.5px;text-transform:uppercase;border-bottom:2px solid rgba(255,255,255,.08)}
+  .ranking-table td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--text-1)}
+  .ranking-table tr:hover td{background:rgba(34,211,238,.04)}
+  .ranking-table tr.my-row td{background:linear-gradient(90deg,rgba(34,211,238,.12),rgba(168,85,247,.08));border-top:1px solid rgba(34,211,238,.4);border-bottom:1px solid rgba(34,211,238,.4)}
+  .ranking-table .rank{font-weight:800;color:var(--text-0)}
+  .ranking-table .rank.gold{color:#fbbf24}
+  .ranking-table .rank.silver{color:#e2e8f0}
+  .ranking-table .rank.bronze{color:#cd7f32}
+  .ranking-table .name-cell{font-weight:700;color:var(--text-0)}
+  .ranking-table .grade-cell{font-weight:800;font-size:14px}
+  .ranking-table .mine-label{background:linear-gradient(135deg,#22d3ee,#a855f7);color:#fff;font-size:9px;font-weight:900;padding:2px 7px;border-radius:6px;margin-left:6px}
+
+  .student-hero{position:relative;border-radius:22px;padding:32px 34px;background:linear-gradient(155deg, rgba(255,255,255,.06), rgba(255,255,255,.015));border:1px solid var(--glass-b);margin-bottom:26px;overflow:hidden}
+  .student-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:var(--accent);filter:blur(100px);opacity:.25;pointer-events:none}
+  .student-hero .top{position:relative;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap}
+  .student-hero h2{font-size:26px;font-weight:800;line-height:1.25;max-width:600px}
+  .student-hero .meta{margin-top:10px;font-size:12.5px;color:var(--text-2);display:flex;gap:18px;flex-wrap:wrap}
+  .student-hero .meta span{display:inline-flex;align-items:center;gap:7px}
+  .big-grade{text-align:center;padding:16px 26px;border-radius:18px;background:rgba(0,0,0,.3);border:1px solid var(--glass-b);position:relative}
+  .big-grade .n{font-size:52px;font-weight:900;line-height:1}
+  .big-grade .l{font-size:10.5px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px;margin-top:8px;font-weight:700}
+
+  .score-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:26px}
+  .score-card{border-radius:16px;padding:20px;background:linear-gradient(155deg, rgba(255,255,255,.05), rgba(255,255,255,.01));border:1px solid var(--glass-b);position:relative;overflow:hidden}
+  .score-card .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .score-card .title{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--text-2)}
+  .score-card .pct{font-size:11px;font-weight:800;color:var(--text-1)}
+  .score-card .val{font-size:32px;font-weight:900;line-height:1}
+  .score-card .val small{font-size:14px;color:var(--text-2);font-weight:600;margin-left:4px}
+  .score-card .bar{height:6px;background:rgba(255,255,255,.07);border-radius:3px;margin-top:14px;overflow:hidden}
+  .score-card .bar>div{height:100%;border-radius:3px}
+  .score-card .weight{font-size:10.5px;color:var(--text-2);margin-top:10px;font-weight:600}
+  .analysis-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:20px}
+  @media(max-width:900px){.analysis-grid{grid-template-columns:1fr}}
+  .panel{border-radius:18px;padding:22px 24px;background:linear-gradient(155deg, rgba(255,255,255,.05), rgba(255,255,255,.01));border:1px solid var(--glass-b)}
+  .panel h4{font-size:12.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--text-2);margin-bottom:16px}
+  .chart-box{position:relative;height:280px}
+  .verdict{border-radius:16px;padding:20px 22px;margin-top:20px;display:flex;gap:16px;align-items:flex-start;border:1px solid;line-height:1.55}
+  .verdict .ico{font-size:24px;flex-shrink:0}
+  .verdict h5{font-size:14px;font-weight:800;margin-bottom:5px}
+  .verdict p{font-size:12.5px;opacity:.92}
+  .verdict.pass{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.35);color:#a7f3d0}
+  .verdict.fail{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.35);color:#fecaca}
+  .verdict.inc{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.35);color:#fde68a}
+  .verdict.none{background:rgba(100,116,139,.08);border-color:rgba(100,116,139,.35);color:#cbd5e1}
+  .no-data-big{text-align:center;padding:60px 24px;border-radius:18px;background:rgba(239,68,68,.06);border:1px dashed rgba(239,68,68,.4)}
+  .no-data-big .ico{font-size:52px;margin-bottom:14px;opacity:.7}
+  .no-data-big h3{font-size:18px;font-weight:800;color:#fca5a5;margin-bottom:8px}
+  .no-data-big p{font-size:13px;color:#fecaca;opacity:.85;max-width:480px;margin:0 auto;line-height:1.6}
+  .back-btn{display:inline-flex;align-items:center;gap:9px;padding:10px 18px;border-radius:11px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.35);color:#67e8f9;font-size:12.5px;font-weight:700;cursor:pointer;transition:.2s;font-family:inherit;margin-bottom:22px}
+  .back-btn:hover{background:rgba(34,211,238,.16);border-color:var(--cyan);transform:translateX(-3px)}
+
+  .toast{position:fixed;top:30px;left:50%;transform:translateX(-50%) translateY(-100px);z-index:2000;padding:14px 22px;border-radius:14px;background:linear-gradient(135deg,rgba(239,68,68,.95),rgba(220,38,38,.95));border:1px solid rgba(255,255,255,.2);color:#fff;font-size:13px;font-weight:700;box-shadow:0 20px 50px -10px rgba(239,68,68,.6);opacity:0;transition:.4s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:10px;max-width:90vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.success{background:linear-gradient(135deg,rgba(16,185,129,.95),rgba(5,150,105,.95));box-shadow:0 20px 50px -10px rgba(16,185,129,.6)}
+  .toast .icon{font-size:20px}
+
+  .edit-form{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:10px;align-items:end;padding:12px;border-radius:12px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);margin-bottom:8px}
+  @media(max-width:700px){.edit-form{grid-template-columns:1fr 1fr;gap:8px}}
+  .edit-form .form-field label{font-size:9px}
+  .edit-form input{padding:8px 10px;font-size:12px}
+
+  .logo-preview-box{display:flex;align-items:center;gap:20px;padding:20px;border-radius:14px;background:rgba(0,0,0,.2);border:1px dashed rgba(255,255,255,.15);margin-bottom:16px;flex-wrap:wrap}
+  .logo-preview-img{width:100px;height:100px;border-radius:14px;background:rgba(34,211,238,.1);border:2px solid rgba(34,211,238,.4);display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0;padding:10px;overflow:hidden;box-shadow:0 8px 24px -8px rgba(34,211,238,.4)}
+  .logo-preview-img img{max-width:100%;max-height:100%;object-fit:contain}
+  .logo-info{flex:1;min-width:220px}
+  .logo-info h4{font-size:13px;font-weight:800;margin-bottom:5px;color:var(--text-0)}
+  .logo-info p{font-size:11.5px;color:var(--text-2);margin-bottom:10px;line-height:1.5}
+  .logo-buttons{display:flex;gap:8px;flex-wrap:wrap}
+
+  .announcement-preview{border-radius:14px;padding:16px 20px;margin-bottom:12px;border:1px solid;display:flex;gap:12px;align-items:flex-start}
+  .announcement-preview.info{background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(168,85,247,.08));border-color:rgba(34,211,238,.4);color:#a5f3fc}
+  .announcement-preview.warning{background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(236,72,153,.08));border-color:rgba(251,191,36,.4);color:#fde68a}
+  .announcement-preview.danger{background:linear-gradient(135deg,rgba(239,68,68,.12),rgba(220,38,38,.08));border-color:rgba(239,68,68,.4);color:#fecaca}
+  .announcement-preview.success{background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(5,150,105,.08));border-color:rgba(16,185,129,.4);color:#a7f3d0}
+  .announcement-preview .ico{font-size:22px}
+  .announcement-preview .body{flex:1}
+  .announcement-preview .title{font-weight:900;font-size:13.5px;margin-bottom:4px}
+  .announcement-preview .msg{font-size:12.5px;opacity:.95;line-height:1.6;white-space:pre-wrap}
+
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--bg-0)}
+  ::-webkit-scrollbar-thumb{background:rgba(34,211,238,.25);border-radius:5px}
+
+  @media(max-width:600px){
+    .app{padding:20px 16px 50px}
+    .hero h2{font-size:22px}
+    .student-hero{padding:24px 22px}
+    .student-hero h2{font-size:20px}
+    .big-grade .n{font-size:40px}
+    .school-text h2{font-size:20px}
+    .school-banner{padding:22px 22px}
+    .login-card{padding:32px 26px 26px}
+    .chart-wrap-lg{height:400px}
+    .admin-inner{padding:20px 16px 50px}
+    .modal{padding:24px 20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><span class="icon">🔒</span><span id="toastMsg"></span></div>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo"><span>🎓</span></div>
+    <h1>POCMLC Analytics</h1>
+    <div class="subtitle">Secure Access Portal</div>
+    <form id="loginForm" autocomplete="off" onsubmit="return false;">
+      <div class="login-field">
+        <label for="loginUser">Username</label>
+        <span class="icon">👤</span>
+        <input type="text" id="loginUser" placeholder="Enter username or your name" autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="login-field">
+        <label for="loginPass">Password</label>
+        <span class="icon">🔒</span>
+        <input type="password" id="loginPass" placeholder="Enter password" autocomplete="off">
+      </div>
+      <button type="button" class="login-btn" id="loginBtn">Access Dashboard →</button>
+      <div class="login-error" id="loginError">⚠️ Invalid credentials. Try again.</div>
+    </form>
+    <div class="register-link">Wala pang account? <a id="registerLink">📝 Mag-register dito</a></div>
+    <div class="forgot-link">Nakalimutan mo admin password? <a id="forgotLink">🔑 I-recover</a></div>
+  </div>
+</div>
+
+<!-- REGISTER MODAL -->
+<div class="modal-overlay" id="registerModal">
+  <div class="modal">
+    <button class="modal-close" id="closeRegister">✕</button>
+    <h2>📝 Student Registration</h2>
+    <div class="sub">I-search ang pangalan mo, i-click ito, tapos gumawa ng password.</div>
+    <div id="registerStep1">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="nameSearch" placeholder="I-type ang pangalan mo... (hal. ALEGARIO)">
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <div id="registerStep2" style="display:none">
+      <div class="selected-user" id="selectedUser"></div>
+      <div style="margin-top:20px">
+        <div class="login-field">
+          <label>Create Password</label>
+          <span class="icon">🔐</span>
+          <input type="password" id="regPass1" placeholder="Minimum 6 characters">
+        </div>
+        <div class="login-field">
+          <label>Confirm Password</label>
+          <span class="icon">🔐</span>
+          <input type="password" id="regPass2" placeholder="I-type ulit ang password">
+        </div>
+        <div class="login-error" id="regError"></div>
+        <button type="button" class="login-btn" id="saveRegister">💾 Save & Register</button>
+        <button type="button" class="btn primary" style="width:100%;justify-content:center;margin-top:10px" id="backToSearch">← Iba pang pangalan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal">
+    <button class="modal-close" id="closeForgot">✕</button>
+    <h2>🔑 Admin Password Recovery</h2>
+    <div class="sub" id="forgotSub">I-enter ang recovery code para ma-reset ang admin password.</div>
+    <div id="forgotStep1">
+      <div class="login-field">
+        <label>Recovery Code</label>
+        <span class="icon">🔑</span>
+        <input type="text" id="forgotCode" placeholder="Enter your recovery code" autocomplete="off">
+      </div>
+      <div class="login-error" id="forgotError"></div>
+      <button type="button" class="login-btn" id="verifyCodeBtn">Verify Code →</button>
+    </div>
+    <div id="forgotStep2" style="display:none">
+      <div class="info-box">✅ Verified! Gumawa na ng bagong admin password.</div>
+      <div class="login-field">
+        <label>New Password</label>
+        <span class="icon">🔐</span>
+        <input type="password" id="forgotNewPass" placeholder="Minimum 6 characters">
+      </div>
+      <div class="login-field">
+        <label>Confirm New Password</label>
+        <span class="icon">🔐</span>
+        <input type="password" id="forgotConfirmPass" placeholder="I-type ulit">
+      </div>
+      <div class="login-error" id="forgotError2"></div>
+      <button type="button" class="login-btn" id="saveForgotBtn">💾 Save New Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-inner">
+    <div class="admin-header">
+      <div>
+        <h1>⚙️ Admin Control Panel</h1>
+        <div class="sub">Full Control • Edit Everything</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn primary" id="backToDashboard">← Back to Dashboard</button>
+      </div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="subjects">📚 Subjects</button>
+      <button class="admin-tab" data-tab="students">👥 Students & Grades</button>
+      <button class="admin-tab" data-tab="sections">🏫 Sections</button>
+      <button class="admin-tab" data-tab="branding">🎨 Branding</button>
+      <button class="admin-tab" data-tab="security">🔐 Security</button>
+      <button class="admin-tab" data-tab="announce">📢 Announcements</button>
+      <button class="admin-tab" data-tab="data">💾 Data</button>
+    </div>
+
+    <!-- SUBJECTS TAB -->
+    <div class="admin-section active" id="tab-subjects">
+      <div class="admin-card">
+        <h3>➕ Add New Subject</h3>
+        <div class="form-grid">
+          <div class="form-field"><label>Subject Name</label><input type="text" id="newSubjName" placeholder="e.g. Science 9"></div>
+          <div class="form-field"><label>Code</label><input type="text" id="newSubjCode" placeholder="e.g. SCI 9"></div>
+          <div class="form-field"><label>Grade Level</label><input type="text" id="newSubjGrade" placeholder="e.g. Grade 9"></div>
+          <div class="form-field"><label>Section</label><input type="text" id="newSubjSection" placeholder="e.g. St. Luke"></div>
+          <div class="form-field"><label>Teacher</label><input type="text" id="newSubjTeacher" placeholder="e.g. Juan Dela Cruz"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-field"><label>WW Weight (%)</label><input type="number" id="newSubjWW" value="20" step="1"></div>
+          <div class="form-field"><label>PT Weight (%)</label><input type="number" id="newSubjPT" value="50" step="1"></div>
+          <div class="form-field"><label>ST Weight (%)</label><input type="number" id="newSubjST" value="30" step="1"></div>
+          <div class="form-field"><label>WW Max Score</label><input type="number" id="newSubjWWmax" value="10" step="1"></div>
+          <div class="form-field"><label>PT Max Score</label><input type="number" id="newSubjPTmax" value="30" step="1"></div>
+          <div class="form-field"><label>ST Max Score</label><input type="number" id="newSubjSTmax" value="50" step="1"></div>
+        </div>
+        <button class="btn success" id="addSubjectBtn">➕ Add Subject</button>
+      </div>
+      <div class="admin-card">
+        <h3>📚 Existing Subjects <span id="subjCount"></span></h3>
+        <div class="item-list" id="subjectsList"></div>
+      </div>
+    </div>
+
+    <!-- STUDENTS TAB -->
+    <div class="admin-section" id="tab-students">
+      <div class="admin-card">
+        <h3>👥 Manage Students & Grades</h3>
+        <div class="form-field" style="margin-bottom:16px">
+          <label>Select Subject</label>
+          <select id="studentSubjectSelect"></select>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+          <button class="btn success" id="addStudentBtn">➕ Add Student</button>
+          <button class="btn primary" id="saveGradesBtn">💾 Save All Grades</button>
+        </div>
+        <div id="studentsEditor"></div>
+      </div>
+    </div>
+
+    <!-- SECTIONS TAB -->
+    <div class="admin-section" id="tab-sections">
+      <div class="admin-card">
+        <h3>🏫 Manage Sections</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+          <input type="text" id="newSectionInput" placeholder="Enter section name (e.g. St. Luke)" style="flex:1;min-width:200px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:13px;font-family:inherit;font-weight:600;outline:none">
+          <button class="btn success" id="addSectionBtn">➕ Add Section</button>
+        </div>
+        <div class="item-list" id="sectionsList"></div>
+      </div>
+    </div>
+
+    <!-- BRANDING TAB -->
+    <div class="admin-section" id="tab-branding">
+      <div class="admin-card">
+        <h3>🎨 Dashboard Logo</h3>
+        <div class="logo-preview-box">
+          <div class="logo-preview-img" id="logoPreviewBox">🎓</div>
+          <div class="logo-info">
+            <h4>Current Logo</h4>
+            <p>I-upload ang logo ng school. Lalabas ito sa <b>topbar</b> at <b>school banner</b>. Rekomendado: <b>transparent PNG</b> o SVG, square ratio, max 300KB.</p>
+            <div class="logo-buttons">
+              <button class="btn success" id="uploadLogoBtn">📤 Upload Logo</button>
+              <button class="btn danger" id="removeLogoBtn">🗑 Remove Logo</button>
+              <input type="file" id="logoFileInput" accept="image/*" style="display:none">
+            </div>
+          </div>
+        </div>
+        <div class="info-box">💡 <b>Tip:</b> Para sa transparent logo, gumamit ng <b>PNG na may transparent background</b>. Lalabas ito nang maayos sa dark at light theme.</div>
+      </div>
+      <div class="admin-card">
+        <h3>🌗 Theme Settings</h3>
+        <div class="info-box">Piliin ang theme ng dashboard. Naka-save sa browser ng bawat user.</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">
+          <button class="btn primary" id="setDarkTheme">🌙 Dark Theme (Default)</button>
+          <button class="btn gold" id="setLightTheme">☀️ Light Theme</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY TAB -->
+    <div class="admin-section" id="tab-security">
+      <div class="admin-card">
+        <h3>🔑 Change Admin Password</h3>
+        <div class="info-box">Palitan ang admin password. Kailangan ang current password para makapag-change.</div>
+        <div class="form-grid">
+          <div class="form-field"><label>Current Password</label><input type="password" id="admOldPass" placeholder="Current password"></div>
+          <div class="form-field"><label>New Password</label><input type="password" id="admNewPass" placeholder="Min 6 chars"></div>
+          <div class="form-field"><label>Confirm New</label><input type="password" id="admConfirmPass" placeholder="Type again"></div>
+        </div>
+        <div class="login-error" id="admPassError"></div>
+        <button class="btn success" id="changeAdminPassBtn">💾 Change Admin Password</button>
+      </div>
+      <div class="admin-card">
+        <h3>🆘 Recovery Code <span id="recoveryStatus"></span></h3>
+        <div id="recoveryNotSet">
+          <div class="info-box warn">⚠️ Wala pang recovery code. Kung makalimutan mo ang admin password, hindi ka na makaka-login as admin. <b>Mag-set ngayon.</b></div>
+          <div class="form-grid">
+            <div class="form-field" style="grid-column:span 2"><label>Create Recovery Code (min 8 chars)</label><input type="text" id="newRecoveryCode" placeholder="e.g. POCMLC-2026-SECRET"></div>
+          </div>
+          <button class="btn success" id="setRecoveryBtn">🔑 Set Recovery Code</button>
+        </div>
+        <div id="recoveryIsSet" style="display:none">
+          <div class="info-box">✅ May recovery code ka na. Kung gusto mong palitan, i-type sa ibaba.</div>
+          <div class="form-grid">
+            <div class="form-field" style="grid-column:span 2"><label>New Recovery Code</label><input type="text" id="replaceRecoveryCode" placeholder="New code (min 8 chars)"></div>
+          </div>
+          <button class="btn gold" id="replaceRecoveryBtn">🔄 Replace Recovery Code</button>
+        </div>
+      </div>
+      <div class="admin-card">
+        <h3>👥 Reset Student Password</h3>
+        <div class="info-box">Kung nakalimutan ng student ang password, dito mo ma-reset. May autocomplete ang name field.</div>
+        <div class="form-grid">
+          <div class="form-field" style="grid-column:span 2"><label>Student Name (exact)</label><input type="text" id="resetStuName" placeholder="e.g. ALEGARIO, JOEMARIE JR." list="studentNamesList"></div>
+          <div class="form-field"><label>New Password</label><input type="password" id="resetStuPass" placeholder="Min 6 chars"></div>
+          <div class="form-field"><label>Confirm</label><input type="password" id="resetStuConfirm" placeholder="Type again"></div>
+        </div>
+        <datalist id="studentNamesList"></datalist>
+        <div class="login-error" id="stuResetError"></div>
+        <button class="btn gold" id="resetStuPassBtn">🔓 Reset Student Password</button>
+      </div>
+      <div class="admin-card">
+        <h3>📋 Registered Users <span id="userCountSec"></span></h3>
+        <div class="item-list" id="usersListSec"></div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENTS TAB -->
+    <div class="admin-section" id="tab-announce">
+      <div class="admin-card">
+        <h3>📢 Create Announcement</h3>
+        <div class="info-box">Ang announcement ay lalabas sa <b>taas ng dashboard</b> ng LAHAT ng users — admin at students. Gamitin para sa mga importanteng paalala tulad ng "Server Maintenance", "No Classes", etc.</div>
+        <div class="form-grid">
+          <div class="form-field"><label>Type</label>
+            <select id="anType">
+              <option value="info">ℹ️ Info (Blue)</option>
+              <option value="warning">⚠️ Warning (Yellow)</option>
+              <option value="danger">🚨 Alert (Red)</option>
+              <option value="success">✅ Success (Green)</option>
+            </select>
+          </div>
+          <div class="form-field" style="grid-column:span 2"><label>Title</label><input type="text" id="anTitle" placeholder="e.g. Server Maintenance"></div>
+        </div>
+        <div class="form-field" style="margin-bottom:12px"><label>Message</label><textarea id="anMsg" placeholder="I-type ang buong announcement..."></textarea></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+          <button class="btn success" id="postAnnounceBtn">📢 Post Announcement</button>
+          <button class="btn danger" id="clearAnnounceBtn">🗑 Remove Announcement</button>
+        </div>
+        <div id="announcePreviewBox"></div>
+      </div>
+    </div>
+
+    <!-- DATA TAB -->
+    <div class="admin-section" id="tab-data">
+      <div class="admin-card">
+        <h3>💾 Data Management</h3>
+        <p style="font-size:12.5px;color:var(--text-1);line-height:1.7;margin-bottom:16px">
+          Ang lahat ng data ay naka-save sa browser (localStorage). Puwede mong i-export para sa backup o i-reset kung kailangan.
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn primary" id="exportDataBtn">📤 Export Data (JSON)</button>
+          <button class="btn primary" id="importDataBtn">📥 Import Data</button>
+          <input type="file" id="importFileInput" accept=".json" style="display:none">
+          <button class="btn danger" id="resetAllBtn">⚠️ Reset All Data</button>
+        </div>
+        <div class="info-box warn" style="margin-top:20px">⚠️ <b>Paalala:</b> Ang data ay naka-save lamang sa <b>browser na ito</b>. Kung mag-clear ka ng browser cache, mawawala ang lahat. Regular na mag-export ng backup.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="mainApp" style="display:none">
+  <div class="topbar">
+    <div class="brand">
+      <div class="morph-icon" id="topIcon"><div class="blob"></div><div class="blob b2"></div><span class="emoji">🎓</span></div>
+      <div>
+        <h1>Class Analytics Dashboard</h1>
+        <div class="sub">Academic Performance Monitoring • SY 2026–2027</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="theme-toggle" id="themeToggleBtn">🌙 Dark</button>
+      <div class="live"><span class="dot"></span> LIVE DATA</div>
+      <div class="user-chip" id="userChip">
+        <div class="avatar" id="userAvatar">A</div>
+        <span id="userName">admin123</span>
+      </div>
+      <button class="admin-btn" id="adminBtn" style="display:none">⚙️ Admin Panel</button>
+      <button class="logout-btn" id="logoutBtn">⏻ Logout</button>
+    </div>
+  </div>
+
+  <div class="school-banner">
+    <div class="inner">
+      <div class="morph-icon" id="bannerIcon" style="width:80px;height:80px">
+        <div class="blob"></div><div class="blob b2"></div>
+        <span class="emoji" style="font-size:36px">🏛️</span>
+      </div>
+      <div class="school-text">
+        <div class="label">Official School Record</div>
+        <h2>PABLO OMEREZ CEDEÑO MEMORIAL LEARNING CENTER, INC.</h2>
+        <div class="tagline">Excellence in Education • Fostering Future Leaders</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="announcement-banner" id="announcementBanner"></div>
+
+  <div class="student-mode-banner" id="studentModeBanner">
+    <span class="icon">👁️</span>
+    <span><b>Student View Mode:</b> Makikita mo ang lahat ng dashboard, ranking, at cards — pero <b>tanging ang sarili mong pangalan</b> ang puwedeng i-click. Ang mga card na may 🔒 ay hindi mabubuksan.</span>
+  </div>
+
+  <div class="crumb" id="crumb"></div>
+
+  <div class="view" id="view-home">
+    <div class="hero">
+      <h2>Welcome, <span id="heroName">Admin</span> 👋</h2>
+      <p id="heroMsg">Click any grade card below to view class roster, learner scores, detailed analytics, and rankings.</p>
+    </div>
+    <div class="grade-grid" id="gradeGrid"></div>
+  </div>
+
+  <div class="view" id="view-grade">
+    <button class="back-btn" id="gradeBack">← Back to Home</button>
+    <div class="grade-header">
+      <div><h2 id="gradeTitle">—</h2><div class="meta" id="gradeMeta"></div></div>
+      <div id="gradeSummary"></div>
+    </div>
+    <div class="action-row">
+      <button class="btn gold" id="btnRanking">🏆 View Class Ranking</button>
+    </div>
+    <div class="filter-row" id="filterRow">
+      <button class="chip active" data-filter="all">All Learners</button>
+      <button class="chip" data-filter="pass">✅ Passing</button>
+      <button class="chip" data-filter="fail">⚠️ At-Risk</button>
+      <button class="chip" data-filter="inc">❓ Incomplete</button>
+      <button class="chip" data-filter="M">♂ Male</button>
+      <button class="chip" data-filter="F">♀ Female</button>
+    </div>
+    <div class="student-grid" id="studentGrid"></div>
+  </div>
+
+  <div class="view" id="view-ranking">
+    <button class="back-btn" id="rankingBack">← Back to Class</button>
+    <div class="ranking-header">
+      <div><h2>🏆 Class Ranking</h2><div class="meta" id="rankingMeta"></div></div>
+      <div id="rankingStats"></div>
+    </div>
+    <div class="podium" id="podium"></div>
+    <div class="analytics-grid">
+      <div class="chart-box-lg" style="margin-bottom:0">
+        <h4>🎯 Top 5 Comparison <span class="tag">RADAR</span></h4>
+        <div class="hint">Compare the top 5 learners across WW, PT, and ST components.</div>
+        <div class="chart-wrap-md"><canvas id="radarChart"></canvas></div>
+      </div>
+      <div class="chart-box-lg" style="margin-bottom:0">
+        <h4>📈 Grade Distribution <span class="tag">BREAKDOWN</span></h4>
+        <div class="hint">Number of learners per descriptor category.</div>
+        <div class="chart-wrap-md"><canvas id="distChart"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-box-lg">
+      <h4>📊 Full Class Ranking Chart <span class="tag">BAR</span></h4>
+      <div class="hint">Hover any bar to see learner's name, grade, and component scores.</div>
+      <div class="chart-wrap-lg" id="rankChartWrap"><canvas id="rankChart"></canvas></div>
+    </div>
+    <div class="chart-box-lg">
+      <h4>📋 Complete Ranking Table</h4>
+      <div style="overflow-x:auto">
+      <table class="ranking-table" id="rankingTable">
+        <thead><tr><th>Rank</th><th>Learner</th><th>Sex</th><th>WW</th><th>PT</th><th>ST</th><th>Grade</th><th>Descriptor</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="view" id="view-student"></div>
+</div>
+
+<script>
+/* ===== STORAGE ===== */
+function storageGet(k, def){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } }
+function storageSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+function storageRemove(k){ try{ localStorage.removeItem(k); }catch(e){} }
+function hashPass(str){ var h=0; for(var i=0;i<str.length;i++){ h=((h<<5)-h)+str.charCodeAt(i); h|=0; } return 'p'+Math.abs(h).toString(36)+'_'+str.length; }
+
+/* ===== USERS ===== */
+function getUsers(){ return storageGet('pocmlc_users', []); }
+function saveUsers(u){ storageSet('pocmlc_users', u); }
+function findUser(name){
+  var users = getUsers();
+  var n = String(name||'').trim().toLowerCase();
+  for(var i=0;i<users.length;i++){ if(users[i].name.toLowerCase() === n) return users[i]; }
+  return null;
+}
+function addUser(name, pass){ var users = getUsers(); users.push({ name: String(name).trim(), passHash: hashPass(pass), createdAt: Date.now() }); saveUsers(users); }
+
+/* ===== ADMIN PASS & RECOVERY ===== */
+function getAdminPassHash(){
+  var h = storageGet('pocmlc_admin_pass_hash', null);
+  if(!h){ var def = hashPass('admin123'); storageSet('pocmlc_admin_pass_hash', def); return def; }
+  return h;
+}
+function setAdminPassHash(h){ storageSet('pocmlc_admin_pass_hash', h); }
+function getRecoveryHash(){ return storageGet('pocmlc_recovery_hash', null); }
+function setRecoveryHash(h){ storageSet('pocmlc_recovery_hash', h); }
+
+/* ===== SESSION ===== */
+function getSession(){ return storageGet('pocmlc_session', null); }
+function setSession(s){ storageSet('pocmlc_session', s); }
+function clearSession(){ storageRemove('pocmlc_session'); }
+
+/* ===== SUBJECTS ===== */
+var SUBJECTS_DEFAULT = [
+  {id:'genmath', name:'General Mathematics', code:'MATH 11', grade:'Grade 11', section:'St. Augustine', teacher:'Jemmuel A. Alon', accent:'#22d3ee', accentGlow:'rgba(34,211,238,.35)', weights:{ww:0.2, pt:0.5, st:0.3}, max:{ww:10, pt:40, st:60}, students:[
+    {name:'ALEGARIO, JOEMARIE JR.', sex:'M', ww:10, pt:37, st:47},
+    {name:'BANTILING, MIKO CERBO', sex:'M', ww:10, pt:32, st:44},
+    {name:'DEALA, KARL EMMANUEL COBER', sex:'M', ww:10, pt:36, st:46},
+    {name:'DULAY, RYAN MARTINA', sex:'M', ww:10, pt:null, st:null},
+    {name:'GENTILES, LUIGI BUENDIA', sex:'M', ww:10, pt:34, st:36},
+    {name:'GEONZON, KENT ASH CASTILLO', sex:'M', ww:10, pt:33, st:45},
+    {name:'HIPULAN, KIRTH JOSHUA', sex:'M', ww:10, pt:34, st:null},
+    {name:'HOCAMIS, LANZ TANCONTIAN', sex:'M', ww:10, pt:34, st:44},
+    {name:'LIRAY, GLENN C.', sex:'M', ww:10, pt:33, st:44},
+    {name:'PACHECO, ALJUR TABEROS', sex:'M', ww:10, pt:33, st:48},
+    {name:'SONGCOG, JUNE RIANE DOMOCOL', sex:'M', ww:10, pt:32, st:44},
+    {name:'TOL, JOHN ZEDRICK HIPULAN', sex:'M', ww:10, pt:32, st:40},
+    {name:'AZUCENA, RHIZZEL KATE BITOONON', sex:'F', ww:10, pt:33, st:44},
+    {name:'BALOO, REGINE TOTO', sex:'F', ww:10, pt:33, st:43},
+    {name:'CABISTANTE, DANICA TANTING', sex:'F', ww:10, pt:34, st:40},
+    {name:'CARGASON, PRINCESS SOFIA MORALES', sex:'F', ww:10, pt:34, st:31},
+    {name:'DAGOHOY, RECY MAE LAPIS', sex:'F', ww:10, pt:36, st:39},
+    {name:'LAGSILA, ABIGAIL ABA', sex:'F', ww:10, pt:35, st:null},
+    {name:'LANGOTE, RENA SHANE COLIS', sex:'F', ww:10, pt:35, st:29},
+    {name:'PANDATO, AVELLA BACUS', sex:'F', ww:10, pt:34, st:null},
+    {name:'PANDIAN, BEA ATHENA LUANA', sex:'F', ww:10, pt:35, st:39},
+    {name:'PANGILAN, SHAYNE AKEASHA MANDUON', sex:'F', ww:10, pt:35, st:31},
+    {name:'SABA, HONEY SUMANDIG', sex:'F', ww:10, pt:35, st:25}
+  ]},
+  {id:'sci7', name:'Science 7', code:'SCI 7', grade:'Grade 7', section:'St. Michael', teacher:'Jemmuel A. Alon', accent:'#a855f7', accentGlow:'rgba(168,85,247,.35)', weights:{ww:0.2, pt:0.5, st:0.3}, max:{ww:20, pt:30, st:50}, students:[
+    {name:'AMPON, ARCHIE, ESCOBAR', sex:'M', ww:17, pt:28, st:42},
+    {name:'CARGASON, PRINCE ZHOUREN, SUELLO', sex:'M', ww:18, pt:25, st:40},
+    {name:'DAGOHOY, YUAN JHON, LAPIZ', sex:'M', ww:17, pt:25, st:31},
+    {name:'GOMEZ, KEAN ELEAZAR, WALO', sex:'M', ww:20, pt:25, st:41},
+    {name:'GRAVATA, KHEN CEDRIC, SANCOVER', sex:'M', ww:17, pt:25, st:44},
+    {name:'PAGAGAO, WINDELL, ABA', sex:'M', ww:17, pt:26, st:36},
+    {name:'SABID, JHON PAUL, PANDAYAN', sex:'M', ww:20, pt:25, st:36},
+    {name:'SABID, JHON PETER, PANDAYAN', sex:'M', ww:20, pt:25, st:36},
+    {name:'TABORADA, BRYANT CHRIS, CAMINGAWAN', sex:'M', ww:20, pt:25, st:32},
+    {name:'ANTONIO, PRINCESS KAYE, TOSAN', sex:'F', ww:19, pt:25, st:31},
+    {name:'DAGOHOY, JAYMAE, INSEPIDO', sex:'F', ww:18, pt:27, st:41},
+    {name:'GALLARDO, ZHEINNADEN, LOPEZ', sex:'F', ww:17, pt:27, st:38},
+    {name:'JUMAWID, JOELIANA DHARLIZ, DIOQUINO', sex:'F', ww:null, pt:null, st:null},
+    {name:'LAYA, ARIAN, BUDIONG', sex:'F', ww:20, pt:29, st:44},
+    {name:'MAGPANULONG, JENNELYN, SANIEL', sex:'F', ww:20, pt:26, st:20},
+    {name:'OMAS, PRECIOUS KHATE, PELAYO', sex:'F', ww:null, pt:null, st:null},
+    {name:'PALAPAN, RICH MAE, LEYA', sex:'F', ww:18, pt:28, st:34},
+    {name:'PANDATU, JENEROSE, ALINSUNOG', sex:'F', ww:17, pt:25, st:39},
+    {name:'RAFAEL, JASMINE, TALINO', sex:'F', ww:17, pt:28, st:36},
+    {name:'SERINO, RHEIAN KHATE, OSOTEO', sex:'F', ww:18, pt:28, st:36},
+    {name:'TIPDAS, ALTHEA, BALOLO', sex:'F', ww:17, pt:28, st:39},
+    {name:'VIGAFRIA, REIDONNA THESSIA, MAQUITED', sex:'F', ww:20, pt:29, st:40},
+    {name:'VILLAGONZALO, DYAN BEATRIX, VIGAFRIA', sex:'F', ww:20, pt:29, st:44}
+  ]},
+  {id:'sci8', name:'Science 8', code:'SCI 8', grade:'Grade 8', section:'St. Mark', teacher:'Jemmuel A. Alon', accent:'#ec4899', accentGlow:'rgba(236,72,153,.35)', weights:{ww:0.2, pt:0.5, st:0.3}, max:{ww:10, pt:30, st:100}, students:[
+    {name:'ARTIAGA, PATRICK, MATUS', sex:'M', ww:10, pt:20, st:77},
+    {name:'AYAO, FRANCIS, REMANDO', sex:'M', ww:null, pt:null, st:null},
+    {name:'BACOMO, BRYAN JIN, -', sex:'M', ww:10, pt:30, st:89},
+    {name:'BALBUENA, JHON CUPID, MIRAFUENTES', sex:'M', ww:10, pt:28, st:90},
+    {name:'BALIGUAT, JAYVE, YBANEZ', sex:'M', ww:10, pt:23, st:66},
+    {name:'BERNARDINO, LEXUS JAY, ESPAÑOLA', sex:'M', ww:10, pt:23, st:61},
+    {name:'CAGNAAN, JOHN GERRY, CARGASON', sex:'M', ww:10, pt:25, st:75},
+    {name:'DEALA, JAN IAN KIER, COBER', sex:'M', ww:10, pt:25, st:77},
+    {name:'DIALANE, DENNIS, JR MANIALON', sex:'M', ww:10, pt:27, st:62},
+    {name:'DURADO, PRINCE DAVID, PROVIDO', sex:'M', ww:10, pt:25, st:46},
+    {name:'EMEJAS, JOSHUA, JEMENIS', sex:'M', ww:10, pt:27, st:75},
+    {name:'GONZALES, NAJ EINO, LIRAY', sex:'M', ww:10, pt:20, st:85},
+    {name:'LIRAY, JAN NICO MARI, COBER', sex:'M', ww:10, pt:20, st:72},
+    {name:'MALAYON, ROMAR, ELON', sex:'M', ww:6, pt:29, st:53},
+    {name:'MANZANO, JAMES CARL, JUMAMOY', sex:'M', ww:10, pt:27, st:78},
+    {name:'MARTINEZ, EMMANUEL, COLOBONG', sex:'M', ww:10, pt:27, st:65},
+    {name:'MASUCOL, CLARK KENT, PALLADO', sex:'M', ww:9, pt:26, st:55},
+    {name:'NUCOS, ARIEL, LOPEZ', sex:'M', ww:4, pt:27, st:61},
+    {name:'OCHIA, YUHAN, DAVIS', sex:'M', ww:9, pt:26, st:65},
+    {name:'PANDAYAN, CHRIS JOHN REY, TAGUSE', sex:'M', ww:9, pt:24, st:43},
+    {name:'PANGILAN, FRITZ BON JAMES, MALILA', sex:'M', ww:10, pt:25, st:66},
+    {name:'PANTINOPLE, ROSH NATHAN, SARDIDO', sex:'M', ww:10, pt:27, st:71},
+    {name:'RIMANDO, JUNREY, REMOLLO', sex:'M', ww:8, pt:20, st:67},
+    {name:'TAWARO, REYMARK JOHN, PANDATO', sex:'M', ww:5, pt:27, st:58},
+    {name:'TUBO, NELMARK, AVELINO', sex:'M', ww:null, pt:null, st:null},
+    {name:'APAYART, VICTORIA, ANSAN', sex:'F', ww:10, pt:28, st:83},
+    {name:'CALAMAGAN, MARA, AVELINO', sex:'F', ww:6, pt:null, st:31},
+    {name:'CAMEROS, AYISHA DAWN, ALINDAO', sex:'F', ww:10, pt:29, st:92},
+    {name:'CASADOR, JEHARAH MARIONNE, AGUILA', sex:'F', ww:10, pt:27, st:79},
+    {name:'FERNANDO, CRISTAL KATE, -', sex:'F', ww:5, pt:27, st:51},
+    {name:'GELDORE, PRINCESS, MANSIGIN', sex:'F', ww:8, pt:20, st:63},
+    {name:'GEVELA, ALYSSA, CAÑETE', sex:'F', ww:10, pt:20, st:86},
+    {name:'MACATONAO, FIONA VENIZE, GOTONG', sex:'F', ww:10, pt:20, st:66},
+    {name:'MANANGKA, JASMINE, SALAN', sex:'F', ww:null, pt:null, st:null},
+    {name:'MILLAMA, SOPHIA GLAE, LEGASPI', sex:'F', ww:10, pt:30, st:82},
+    {name:'PARDILLA, ASHLEY NICOLE, PANERIO', sex:'F', ww:9, pt:28, st:64},
+    {name:'YATA, MICHELLE S.', sex:'F', ww:9, pt:20, st:66}
+  ]}
+];
+function getSubjects(){
+  var s = storageGet('pocmlc_subjects', null);
+  if(!s || !s.length){ storageSet('pocmlc_subjects', SUBJECTS_DEFAULT); return SUBJECTS_DEFAULT; }
+  return s;
+}
+function saveSubjects(s){ storageSet('pocmlc_subjects', s); }
+function getSections(){ return storageGet('pocmlc_sections', ['St. Augustine','St. Michael','St. Mark']); }
+function saveSections(s){ storageSet('pocmlc_sections', s); }
+
+/* ===== TRANSMUTATION ===== */
+var TRANS = [
+  [0,39.99,60],[40,42.99,61],[43,45.99,62],[46,47.99,63],[48,49.99,64],
+  [50,51.99,65],[52,53.99,66],[54,55.99,67],[56,57.99,68],[58,59.99,69],
+  [60,61.99,70],[62,63.99,71],[64,65.99,72],[66,67.99,73],[68,69.99,74],
+  [70,72.99,75],[73,74.99,76],[75,75.99,77],[76,76.99,78],[77,77.99,79],
+  [78,78.99,80],[79,79.99,81],[80,80.99,82],[81,81.99,83],[82,82.99,84],
+  [83,83.99,85],[84,84.99,86],[85,85.99,87],[86,86.99,88],[87,87.99,89],
+  [88,88.99,90],[89,89.99,91],[90,90.99,92],[91,91.99,93],[92,92.99,94],
+  [93,93.99,95],[94,94.99,96],[95,95.99,97],[96,97.49,98],[97.5,99.49,99],[99.5,100,100]
+];
+function transmute(v){ for(var i=0;i<TRANS.length;i++){ if(v>=TRANS[i][0] && v<=TRANS[i][1]) return TRANS[i][2]; } return null; }
+function descriptor(g){
+  if(g===null) return {label:'Incomplete', cls:'none'};
+  if(g>=90) return {label:'Advancing', cls:'pass'};
+  if(g>=80) return {label:'Benchmarking', cls:'pass'};
+  if(g>=75) return {label:'Connecting', cls:'pass'};
+  if(g>=65) return {label:'Developing', cls:'fail'};
+  return {label:'Emerging', cls:'fail'};
+}
+function gradeColor(g){
+  if(g===null) return '#64748b';
+  if(g>=90) return '#22d3ee'; if(g>=85) return '#10b981'; if(g>=80) return '#4ade80';
+  if(g>=75) return '#a3e635'; if(g>=70) return '#f59e0b'; if(g>=65) return '#f97316';
+  return '#ef4444';
+}
+function computeStudent(s, subj){
+  var ww=s.ww, pt=s.pt, st=s.st, w=subj.weights, m=subj.max;
+  var wwPS = ww===null?null:(ww/m.ww)*100;
+  var ptPS = pt===null?null:(pt/m.pt)*100;
+  var stPS = st===null?null:(st/m.st)*100;
+  var wwWS = wwPS===null?null:wwPS*w.ww;
+  var ptWS = ptPS===null?null:ptPS*w.pt;
+  var stWS = stPS===null?null:stPS*w.st;
+  var complete = (ww!==null && pt!==null && st!==null);
+  var noData = (ww===null && pt===null && st===null);
+  var initial=null, grade=null;
+  if(complete){ initial = Math.round((wwWS+ptWS+stWS)*100)/100; grade = transmute(initial); }
+  return {name:s.name, sex:s.sex, ww:ww, pt:pt, st:st, subj:subj.name, subjId:subj.id, wwPS:wwPS, ptPS:ptPS, stPS:stPS, wwWS:wwWS, ptWS:ptWS, stWS:stWS, initial:initial, grade:grade, complete:complete, noData:noData};
+}
+
+/* ===== STATE ===== */
+var currentSubject=null, currentStudent=null, currentFilter='all';
+var currentRankChart=null, currentRadarChart=null, currentDistChart=null;
+var currentRole = null, currentStudentName = null;
+
+function el(id){ return document.getElementById(id); }
+
+/* ===== TOAST ===== */
+function showToast(msg, type){
+  var t = el('toast');
+  el('toastMsg').textContent = msg;
+  t.className = 'toast' + (type === 'success' ? ' success' : '');
+  t.querySelector('.icon').textContent = type === 'success' ? '✅' : '🔒';
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.classList.remove('show'); }, 3200);
+}
+
+/* ===== THEME ===== */
+function getTheme(){ return storageGet('pocmlc_theme', 'dark'); }
+function setTheme(t){ storageSet('pocmlc_theme', t); }
+function applyTheme(){
+  if(getTheme() === 'light') document.body.classList.add('light-theme');
+  else document.body.classList.remove('light-theme');
+  var btn = el('themeToggleBtn');
+  if(btn) btn.innerHTML = getTheme() === 'light' ? '☀️ Light' : '🌙 Dark';
+}
+
+/* ===== LOGO ===== */
+function getLogo(){ return storageGet('pocmlc_logo', null); }
+function setLogo(d){ storageSet('pocmlc_logo', d); }
+function applyLogo(){
+  var logo = getLogo();
+  ['topIcon','bannerIcon','loginLogoIcon'].forEach(function(id){
+    var icon = el(id);
+    if(!icon) return;
+    var old = icon.querySelector('.custom-logo');
+    if(old) old.remove();
+    var emoji = icon.querySelector('.emoji');
+    if(logo){
+      var img = document.createElement('img');
+      img.className = 'custom-logo';
+      img.src = logo;
+      img.alt = 'Logo';
+      if(emoji) emoji.style.display = 'none';
+      icon.appendChild(img);
+    } else {
+      if(emoji) emoji.style.display = '';
+    }
+  });
+}
+
+/* ===== ANNOUNCEMENT ===== */
+function getAnnouncement(){ return storageGet('pocmlc_announcement', null); }
+function setAnnouncement(a){ storageSet('pocmlc_announcement', a); }
+function renderAnnouncement(){
+  var an = getAnnouncement();
+  var banner = el('announcementBanner');
+  if(!banner) return;
+  if(!an){ banner.classList.remove('show'); banner.innerHTML = ''; return; }
+  var dismissed = storageGet('pocmlc_an_dismissed', null);
+  if(dismissed === an.id){ banner.classList.remove('show'); banner.innerHTML = ''; return; }
+  var icons = {info:'ℹ️', warning:'⚠️', danger:'🚨', success:'✅'};
+  banner.className = 'announcement-banner show ' + (an.type || 'info');
+  banner.innerHTML =
+    '<span class="an-icon">' + (icons[an.type] || 'ℹ️') + '</span>' +
+    '<div class="an-body">' +
+      '<div class="an-title">' + (an.title || 'Announcement') + '</div>' +
+      '<div class="an-msg">' + (an.message || '') + '</div>' +
+      '<div class="an-meta">📅 Posted: ' + new Date(an.postedAt).toLocaleString() + '</div>' +
+    '</div>' +
+    '<button class="an-close" id="anCloseBtn" title="Dismiss">✕</button>';
+  el('anCloseBtn').onclick = function(){
+    storageSet('pocmlc_an_dismissed', an.id);
+    banner.classList.remove('show');
+  };
+}
+
+/* ===== LOGIN ===== */
+function doLogin(user, pass){
+  var u = String(user||'').trim();
+  var p = String(pass||'').trim();
+  if(u.toLowerCase() === 'admin123' || u.toLowerCase() === 'admin'){
+    if(getAdminPassHash() === hashPass(p)){
+      setSession({ type:'admin', name:'admin123', display:'Admin' });
+      return { ok:true, role:'admin' };
+    }
+    return { ok:false };
+  }
+  var found = findUser(u);
+  if(found && found.passHash === hashPass(p)){
+    setSession({ type:'student', name:found.name, display:found.name });
+    return { ok:true, role:'student', name:found.name };
+  }
+  return { ok:false };
+}
+function logout(){ clearSession(); location.reload(); }
+
+/* ===== ROLE ===== */
+function applyRole(){
+  var sess = getSession();
+  if(!sess) return;
+  ['view-home','view-grade','view-ranking','view-student'].forEach(function(v){
+    var e = el(v); if(e){ e.classList.remove('active'); e.style.display = ''; }
+  });
+  var chip = el('userChip'), avatar = el('userAvatar'), uname = el('userName'), adminBtn = el('adminBtn'), studentBanner = el('studentModeBanner');
+  chip.classList.remove('admin','student');
+  if(sess.type === 'admin'){
+    chip.classList.add('admin'); avatar.textContent = 'A'; uname.textContent = 'Admin';
+    adminBtn.style.display = 'inline-flex';
+    studentBanner.classList.remove('show');
+    el('heroName').textContent = 'Admin';
+    el('heroMsg').textContent = 'Click any grade card below to view class roster, learner scores, detailed analytics, and rankings.';
+    currentRole = 'admin'; currentStudentName = null;
+    renderHome(); renderCrumb('home');
+    el('view-home').classList.add('active');
+  } else {
+    chip.classList.add('student');
+    avatar.textContent = sess.name.charAt(0).toUpperCase();
+    uname.textContent = sess.name;
+    adminBtn.style.display = 'none';
+    studentBanner.classList.add('show');
+    el('heroName').textContent = sess.name;
+    el('heroMsg').textContent = 'Puwede mong tingnan ang lahat ng dashboard at ranking, pero tanging ang sarili mong pangalan lang ang puwedeng i-click.';
+    currentRole = 'student'; currentStudentName = sess.name;
+    renderHome(); renderCrumb('home');
+    el('view-home').classList.add('active');
+  }
+  applyLogo();
+}
+
+/* ===== INIT ===== */
+function init(){
+  applyTheme();
+  applyLogo();
+  renderAnnouncement();
+
+  var sess = getSession();
+  if(sess){
+    el('loginScreen').classList.add('hidden');
+    el('mainApp').style.display = 'block';
+    applyRole();
+  } else {
+    el('loginScreen').classList.remove('hidden');
+    el('mainApp').style.display = 'none';
+  }
+
+  var loginBtn = el('loginBtn'), loginErr = el('loginError');
+  var uInp = el('loginUser'), pInp = el('loginPass');
+  uInp.value=''; pInp.value='';
+
+  function attemptLogin(){
+    loginErr.classList.remove('show');
+    if(!uInp.value || !pInp.value){
+      loginErr.textContent = '⚠️ Please enter username and password.';
+      loginErr.classList.add('show'); return;
+    }
+    var r = doLogin(uInp.value, pInp.value);
+    if(r.ok){
+      el('loginScreen').classList.add('hidden');
+      el('mainApp').style.display = 'block';
+      applyRole();
+      renderAnnouncement();
+    } else {
+      loginErr.textContent = '⚠️ Invalid credentials. Kung wala pang account, mag-register muna.';
+      loginErr.classList.add('show');
+      pInp.value=''; pInp.focus();
+    }
+  }
+  loginBtn.onclick = attemptLogin;
+  [uInp,pInp].forEach(function(i){ i.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); attemptLogin(); } }); });
+
+  el('registerLink').onclick = function(){ el('registerModal').classList.add('show'); resetRegisterModal(); };
+  el('closeRegister').onclick = function(){ el('registerModal').classList.remove('show'); };
+  el('registerModal').addEventListener('click', function(e){ if(e.target === el('registerModal')) el('registerModal').classList.remove('show'); });
+
+  el('forgotLink').onclick = function(){ el('forgotModal').classList.add('show'); resetForgotModal(); };
+  el('closeForgot').onclick = function(){ el('forgotModal').classList.remove('show'); };
+  el('forgotModal').addEventListener('click', function(e){ if(e.target === el('forgotModal')) el('forgotModal').classList.remove('show'); });
+
+  el('logoutBtn').onclick = function(){ if(confirm('End session and logout?')) logout(); };
+  el('themeToggleBtn').onclick = function(){ setTheme(getTheme() === 'dark' ? 'light' : 'dark'); applyTheme(); };
+
+  el('adminBtn').onclick = function(){ el('adminPanel').classList.add('show'); renderAdmin(); };
+  el('backToDashboard').onclick = function(){ el('adminPanel').classList.remove('show'); };
+
+  var tabs = document.querySelectorAll('.admin-tab');
+  for(var i=0;i<tabs.length;i++){
+    (function(t){
+      t.onclick = function(){
+        for(var j=0;j<tabs.length;j++) tabs[j].classList.remove('active');
+        t.classList.add('active');
+        var sections = document.querySelectorAll('.admin-section');
+        for(var k=0;k<sections.length;k++) sections[k].classList.remove('active');
+        el('tab-' + t.dataset.tab).classList.add('active');
+        renderAdmin();
+      };
+    })(tabs[i]);
+  }
+
+  // Register search
+  var searchInput = el('nameSearch');
+  searchInput.addEventListener('input', function(){
+    var q = searchInput.value.trim().toLowerCase();
+    var results = el('searchResults');
+    if(!q){ results.classList.remove('show'); results.innerHTML = ''; return; }
+    var allStudents = getAllStudents();
+    var matches = allStudents.filter(function(s){ return s.name.toLowerCase().indexOf(q) !== -1; }).slice(0, 20);
+    results.innerHTML = '';
+    if(!matches.length){
+      results.innerHTML = '<div class="no-match">Walang nahanap. Subukan ang ibang spelling.</div>';
+    } else {
+      matches.forEach(function(m){
+        var u = findUser(m.name);
+        var div = document.createElement('div');
+        div.className = 'search-result';
+        div.innerHTML = '<span class="sex ' + m.sex + '">' + m.sex + '</span><span class="text">' + m.name + '</span>' + (u ? '<span class="already">✓ REGISTERED</span>' : '');
+        div.onclick = function(){
+          if(u){ alert('Naka-register na ang pangalan na ito.'); return; }
+          selectStudentForRegister(m);
+        };
+        results.appendChild(div);
+      });
+    }
+    results.classList.add('show');
+  });
+
+  el('backToSearch').onclick = function(){ resetRegisterModal(); };
+  el('saveRegister').onclick = saveRegistration;
+
+  // Forgot password
+  el('verifyCodeBtn').onclick = verifyRecoveryCode;
+  el('saveForgotBtn').onclick = saveForgotPassword;
+
+  // Admin buttons
+  el('addSubjectBtn').onclick = addSubject;
+  el('addSectionBtn').onclick = addSection;
+  el('studentSubjectSelect').onchange = function(){ renderStudentsEditor(); };
+  el('addStudentBtn').onclick = addStudentRow;
+  el('saveGradesBtn').onclick = saveAllGrades;
+  el('exportDataBtn').onclick = exportData;
+  el('importDataBtn').onclick = function(){ el('importFileInput').click(); };
+  el('importFileInput').onchange = importData;
+  el('resetAllBtn').onclick = resetAllData;
+
+  // Branding
+  el('uploadLogoBtn').onclick = function(){ el('logoFileInput').click(); };
+  el('logoFileInput').onchange = handleLogoUpload;
+  el('removeLogoBtn').onclick = function(){
+    if(!getLogo()){ alert('Walang logo na naka-set.'); return; }
+    if(!confirm('Tanggalin ang logo?')) return;
+    storageSet('pocmlc_logo', null); applyLogo(); renderBrandingTab();
+    showToast('Natanggal na ang logo.', 'success');
+  };
+  el('setDarkTheme').onclick = function(){ setTheme('dark'); applyTheme(); showToast('Dark theme set.', 'success'); };
+  el('setLightTheme').onclick = function(){ setTheme('light'); applyTheme(); showToast('Light theme set.', 'success'); };
+
+  // Security
+  el('changeAdminPassBtn').onclick = changeAdminPass;
+  el('setRecoveryBtn').onclick = setRecovery;
+  el('replaceRecoveryBtn').onclick = replaceRecovery;
+  el('resetStuPassBtn').onclick = resetStudentPass;
+
+  // Announcements
+  el('postAnnounceBtn').onclick = postAnnouncement;
+  el('clearAnnounceBtn').onclick = clearAnnouncement;
+}
+
+/* ===== REGISTRATION ===== */
+var registerSelected = null;
+function resetRegisterModal(){
+  registerSelected = null;
+  el('nameSearch').value = '';
+  el('searchResults').classList.remove('show');
+  el('searchResults').innerHTML = '';
+  el('registerStep1').style.display = 'block';
+  el('registerStep2').style.display = 'none';
+  el('regPass1').value = '';
+  el('regPass2').value = '';
+  el('regError').classList.remove('show');
+}
+function selectStudentForRegister(m){
+  registerSelected = m;
+  el('registerStep1').style.display = 'none';
+  el('registerStep2').style.display = 'block';
+  el('selectedUser').innerHTML = '<span class="sex ' + m.sex + '">' + m.sex + '</span><div><div class="name">' + m.name + '</div></div><span class="change" id="changeName">Change</span>';
+  el('changeName').onclick = resetRegisterModal;
+}
+function saveRegistration(){
+  if(!registerSelected) return;
+  var p1 = el('regPass1').value, p2 = el('regPass2').value, err = el('regError');
+  err.classList.remove('show');
+  if(p1.length < 6){ err.textContent = '⚠️ Minimum 6 characters.'; err.classList.add('show'); return; }
+  if(p1 !== p2){ err.textContent = '⚠️ Hindi tugma ang passwords.'; err.classList.add('show'); return; }
+  addUser(registerSelected.name, p1);
+  alert('✅ Matagumpay na nakarehistro!');
+  el('registerModal').classList.remove('show');
+  el('loginUser').value = registerSelected.name;
+  el('loginPass').value = '';
+  el('loginPass').focus();
+}
+function getAllStudents(){
+  var subjects = getSubjects();
+  var map = {};
+  subjects.forEach(function(subj){
+    subj.students.forEach(function(s){
+      var key = s.name.toLowerCase();
+      if(!map[key]) map[key] = { name: s.name, sex: s.sex };
+    });
+  });
+  return Object.values(map).sort(function(a,b){ return a.name.localeCompare(b.name); });
+}
+
+/* ===== FORGOT PASSWORD ===== */
+var _recoveryVerified = false;
+function resetForgotModal(){
+  _recoveryVerified = false;
+  el('forgotStep1').style.display = 'block';
+  el('forgotStep2').style.display = 'none';
+  el('forgotCode').value = '';
+  el('forgotNewPass').value = '';
+  el('forgotConfirmPass').value = '';
+  el('forgotError').classList.remove('show');
+  el('forgotError2').classList.remove('show');
+  var rec = getRecoveryHash();
+  el('forgotSub').textContent = rec ? 'I-enter ang recovery code para ma-reset ang admin password.' : 'Walang recovery code na na-set. Mag-login muna as admin at i-set ito sa Security tab.';
+}
+function verifyRecoveryCode(){
+  var err = el('forgotError');
+  err.classList.remove('show');
+  var code = el('forgotCode').value.trim();
+  var stored = getRecoveryHash();
+  if(!stored){ err.textContent = '⚠️ Wala pang recovery code.'; err.classList.add('show'); return; }
+  if(hashPass(code) === stored){
+    _recoveryVerified = true;
+    el('forgotStep1').style.display = 'none';
+    el('forgotStep2').style.display = 'block';
+  } else {
+    err.textContent = '⚠️ Mali ang recovery code.';
+    err.classList.add('show');
+  }
+}
+function saveForgotPassword(){
+  if(!_recoveryVerified) return;
+  var err = el('forgotError2');
+  err.classList.remove('show');
+  var p1 = el('forgotNewPass').value, p2 = el('forgotConfirmPass').value;
+  if(p1.length < 6){ err.textContent = '⚠️ Minimum 6 characters.'; err.classList.add('show'); return; }
+  if(p1 !== p2){ err.textContent = '⚠️ Hindi tugma ang passwords.'; err.classList.add('show'); return; }
+  setAdminPassHash(hashPass(p1));
+  alert('✅ Na-reset na ang admin password!');
+  el('forgotModal').classList.remove('show');
+  el('loginUser').value = 'admin123';
+  el('loginPass').value = '';
+  el('loginPass').focus();
+}
+
+/* ===== ADMIN ===== */
+function renderAdmin(){
+  renderSubjectsList();
+  renderStudentsEditor();
+  renderSectionsList();
+  renderBrandingTab();
+  renderSecurityTab();
+  renderAnnounceTab();
+}
+
+function renderSubjectsList(){
+  var subjects = getSubjects();
+  el('subjCount').textContent = '(' + subjects.length + ')';
+  var list = el('subjectsList');
+  list.innerHTML = '';
+  if(!subjects.length){ list.innerHTML = '<div class="empty-state">Walang subject.</div>'; return; }
+  subjects.forEach(function(subj, idx){
+    var div = document.createElement('div');
+    div.className = 'item-row';
+    div.innerHTML = '<div class="info"><div class="name">' + subj.code + ' — ' + subj.name + '</div><div class="meta">' + subj.grade + ' • ' + subj.section + ' • ' + subj.teacher + ' • ' + subj.students.length + ' students</div></div><div class="actions"><button class="btn sm danger" data-idx="' + idx + '">🗑 Delete</button></div>';
+    list.appendChild(div);
+  });
+  list.querySelectorAll('.btn.danger').forEach(function(b){
+    b.onclick = function(){
+      var i = parseInt(b.dataset.idx);
+      if(confirm('Delete this subject and all its students?')){
+        var s = getSubjects(); s.splice(i,1); saveSubjects(s); renderAdmin(); renderHome();
+      }
+    };
+  });
+}
+
+function renderStudentsEditor(){
+  var sel = el('studentSubjectSelect');
+  var subjects = getSubjects();
+  if(sel.options.length !== subjects.length){
+    sel.innerHTML = '';
+    subjects.forEach(function(subj, i){
+      var opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = subj.grade + ' — ' + subj.name + ' (' + subj.section + ')';
+      sel.appendChild(opt);
+    });
+  }
+  var idx = parseInt(sel.value) || 0;
+  var subj = subjects[idx];
+  var box = el('studentsEditor');
+  box.innerHTML = '';
+  if(!subj){ box.innerHTML = '<div class="empty-state">Walang subject.</div>'; return; }
+  subj.students.forEach(function(s, sIdx){
+    var form = document.createElement('div');
+    form.className = 'edit-form';
+    form.innerHTML = '<div class="form-field"><label>Name</label><input type="text" class="edit-name" value="' + s.name.replace(/"/g,'&quot;') + '"></div>' +
+      '<div class="form-field"><label>Sex</label><select class="edit-sex"><option value="M"' + (s.sex==='M'?' selected':'') + '>M</option><option value="F"' + (s.sex==='F'?' selected':'') + '>F</option></select></div>' +
+      '<div class="form-field"><label>WW</label><input type="number" class="edit-ww" value="' + (s.ww===null?'':s.ww) + '" placeholder="—" step="0.01"></div>' +
+      '<div class="form-field"><label>PT</label><input type="number" class="edit-pt" value="' + (s.pt===null?'':s.pt) + '" placeholder="—" step="0.01"></div>' +
+      '<div class="form-field"><label>ST</label><input type="number" class="edit-st" value="' + (s.st===null?'':s.st) + '" placeholder="—" step="0.01"></div>' +
+      '<div style="display:flex;gap:6px"><button class="btn sm danger del-btn">🗑</button></div>';
+    box.appendChild(form);
+    form.querySelector('.del-btn').onclick = function(){
+      if(confirm('Delete ' + s.name + '?')){
+        var all = getSubjects(); all[idx].students.splice(sIdx,1); saveSubjects(all); renderStudentsEditor(); renderHome();
+      }
+    };
+  });
+}
+
+function addStudentRow(){
+  var sel = el('studentSubjectSelect');
+  var idx = parseInt(sel.value) || 0;
+  var all = getSubjects();
+  if(!all[idx]) return;
+  all[idx].students.push({ name:'NEW STUDENT', sex:'M', ww:null, pt:null, st:null });
+  saveSubjects(all); renderStudentsEditor(); renderHome();
+}
+
+function saveAllGrades(){
+  var sel = el('studentSubjectSelect');
+  var idx = parseInt(sel.value) || 0;
+  var all = getSubjects();
+  if(!all[idx]) return;
+  var forms = document.querySelectorAll('#studentsEditor .edit-form');
+  var newStudents = [];
+  forms.forEach(function(form){
+    var wwVal = form.querySelector('.edit-ww').value;
+    var ptVal = form.querySelector('.edit-pt').value;
+    var stVal = form.querySelector('.edit-st').value;
+    newStudents.push({
+      name: form.querySelector('.edit-name').value.trim(),
+      sex: form.querySelector('.edit-sex').value,
+      ww: wwVal === '' ? null : parseFloat(wwVal),
+      pt: ptVal === '' ? null : parseFloat(ptVal),
+      st: stVal === '' ? null : parseFloat(stVal)
+    });
+  });
+  all[idx].students = newStudents;
+  saveSubjects(all);
+  showToast('Saved!', 'success');
+  renderHome();
+}
+
+function addSubject(){
+  var name = el('newSubjName').value.trim();
+  var code = el('newSubjCode').value.trim();
+  var grade = el('newSubjGrade').value.trim();
+  var section = el('newSubjSection').value.trim();
+  var teacher = el('newSubjTeacher').value.trim();
+  if(!name || !code || !grade){ alert('Please fill Name, Code, Grade Level.'); return; }
+  var ww = parseFloat(el('newSubjWW').value) || 0;
+  var pt = parseFloat(el('newSubjPT').value) || 0;
+  var st = parseFloat(el('newSubjST').value) || 0;
+  if(ww + pt + st !== 100){ alert('Weights must total 100%.'); return; }
+  var colors = ['#22d3ee','#a855f7','#ec4899','#fbbf24','#10b981','#f97316'];
+  var idx = getSubjects().length % colors.length;
+  var subj = {
+    id: 'subj_' + Date.now(),
+    name: name, code: code, grade: grade, section: section || 'Unassigned', teacher: teacher || 'TBD',
+    accent: colors[idx], accentGlow: colors[idx] + '55',
+    weights: { ww: ww/100, pt: pt/100, st: st/100 },
+    max: { ww: parseFloat(el('newSubjWWmax').value)||10, pt: parseFloat(el('newSubjPTmax').value)||30, st: parseFloat(el('newSubjSTmax').value)||50 },
+    students: []
+  };
+  var s = getSubjects(); s.push(subj); saveSubjects(s);
+  showToast('Subject added!', 'success');
+  ['newSubjName','newSubjCode','newSubjGrade','newSubjSection','newSubjTeacher'].forEach(function(id){ el(id).value = ''; });
+  renderAdmin(); renderHome();
+}
+
+function renderSectionsList(){
+  var sections = getSections();
+  var list = el('sectionsList');
+  list.innerHTML = '';
+  if(!sections.length){ list.innerHTML = '<div class="empty-state">Walang section.</div>'; return; }
+  sections.forEach(function(sec, idx){
+    var div = document.createElement('div');
+    div.className = 'item-row';
+    div.innerHTML = '<div class="info"><div class="name">🏫 ' + sec + '</div></div><div class="actions"><button class="btn sm danger" data-idx="' + idx + '">🗑</button></div>';
+    list.appendChild(div);
+  });
+  list.querySelectorAll('.btn.danger').forEach(function(b){
+    b.onclick = function(){
+      var i = parseInt(b.dataset.idx);
+      if(confirm('Delete section?')){ var s = getSections(); s.splice(i,1); saveSections(s); renderSectionsList(); }
+    };
+  });
+}
+
+function addSection(){
+  var v = el('newSectionInput').value.trim();
+  if(!v){ alert('Enter section name.'); return; }
+  var s = getSections();
+  if(s.indexOf(v) !== -1){ alert('Section already exists.'); return; }
+  s.push(v); saveSections(s);
+  el('newSectionInput').value = '';
+  renderSectionsList();
+  showToast('Section added!', 'success');
+}
+
+/* ===== BRANDING ===== */
+function renderBrandingTab(){
+  var logo = getLogo();
+  var box = el('logoPreviewBox');
+  if(!box) return;
+  box.innerHTML = logo ? '<img src="' + logo + '" alt="Logo">' : '🎓';
+}
+function handleLogoUpload(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  if(file.size > 500 * 1024){
+    if(!confirm('Malaki ang file (' + Math.round(file.size/1024) + 'KB). Ituloy?')) return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    setLogo(ev.target.result);
+    applyLogo();
+    renderBrandingTab();
+    showToast('Logo uploaded!', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ===== SECURITY ===== */
+function renderSecurityTab(){
+  var rec = getRecoveryHash();
+  var statusEl = el('recoveryStatus');
+  var notSet = el('recoveryNotSet');
+  var isSet = el('recoveryIsSet');
+  if(rec){
+    statusEl.innerHTML = '<span style="color:#6ee7b7">✅ Set na</span>';
+    notSet.style.display = 'none';
+    isSet.style.display = 'block';
+  } else {
+    statusEl.innerHTML = '<span style="color:#fbbf24">⚠️ Wala pa</span>';
+    notSet.style.display = 'block';
+    isSet.style.display = 'none';
+  }
+  var dl = el('studentNamesList');
+  dl.innerHTML = '';
+  getUsers().forEach(function(u){
+    var opt = document.createElement('option'); opt.value = u.name; dl.appendChild(opt);
+  });
+  var users = getUsers();
+  el('userCountSec').textContent = '(' + users.length + ')';
+  var list = el('usersListSec');
+  list.innerHTML = '';
+  if(!users.length){ list.innerHTML = '<div class="empty-state">Wala pang nag-register.</div>'; return; }
+  users.forEach(function(u, idx){
+    var date = new Date(u.createdAt).toLocaleDateString();
+    var resetNote = u.resetAt ? ' • Last reset: ' + new Date(u.resetAt).toLocaleDateString() : '';
+    var div = document.createElement('div');
+    div.className = 'item-row';
+    div.innerHTML = '<div class="info"><div class="name">' + u.name + '</div><div class="meta">Registered: ' + date + resetNote + '</div></div><div class="actions"><button class="btn sm gold" data-name="' + u.name.replace(/"/g,'&quot;') + '" data-act="reset">🔓 Reset PW</button><button class="btn sm danger" data-idx="' + idx + '" data-act="remove">🗑</button></div>';
+    list.appendChild(div);
+  });
+  list.querySelectorAll('[data-act="remove"]').forEach(function(b){
+    b.onclick = function(){
+      var i = parseInt(b.dataset.idx);
+      if(confirm('Remove this user?')){ var u = getUsers(); u.splice(i,1); saveUsers(u); renderSecurityTab(); }
+    };
+  });
+  list.querySelectorAll('[data-act="reset"]').forEach(function(b){
+    b.onclick = function(){
+      el('resetStuName').value = b.dataset.name;
+      el('resetStuPass').focus();
+      window.scrollTo({top:0, behavior:'smooth'});
+      showToast('Nakapili na si ' + b.dataset.name + '. I-type ang bagong password.');
+    };
+  });
+}
+function changeAdminPass(){
+  var err = el('admPassError');
+  err.classList.remove('show');
+  var oldP = el('admOldPass').value, newP = el('admNewPass').value, confP = el('admConfirmPass').value;
+  if(!oldP || !newP || !confP){ err.textContent = '⚠️ Punan lahat.'; err.classList.add('show'); return; }
+  if(getAdminPassHash() !== hashPass(oldP)){ err.textContent = '⚠️ Mali ang current password.'; err.classList.add('show'); return; }
+  if(newP.length < 6){ err.textContent = '⚠️ Minimum 6 chars.'; err.classList.add('show'); return; }
+  if(newP !== confP){ err.textContent = '⚠️ Hindi tugma.'; err.classList.add('show'); return; }
+  setAdminPassHash(hashPass(newP));
+  el('admOldPass').value = ''; el('admNewPass').value = ''; el('admConfirmPass').value = '';
+  showToast('Nabago ang admin password!', 'success');
+}
+function setRecovery(){
+  var code = el('newRecoveryCode').value.trim();
+  if(code.length < 8){ alert('Minimum 8 characters.'); return; }
+  if(!confirm('ITALA ANG CODE NA ITO:\n\n' + code + '\n\nNai-save mo na ba?')) return;
+  setRecoveryHash(hashPass(code));
+  el('newRecoveryCode').value = '';
+  showToast('Recovery code set!', 'success');
+  renderSecurityTab();
+}
+function replaceRecovery(){
+  var code = el('replaceRecoveryCode').value.trim();
+  if(code.length < 8){ alert('Minimum 8 characters.'); return; }
+  if(!confirm('Palitan ang recovery code?\n\nBagong: ' + code + '\n\nNai-save mo na ba?')) return;
+  setRecoveryHash(hashPass(code));
+  el('replaceRecoveryCode').value = '';
+  showToast('Recovery code replaced!', 'success');
+  renderSecurityTab();
+}
+function resetStudentPass(){
+  var err = el('stuResetError');
+  err.classList.remove('show');
+  var name = el('resetStuName').value.trim();
+  var p1 = el('resetStuPass').value, p2 = el('resetStuConfirm').value;
+  if(!name || !p1 || !p2){ err.textContent = '⚠️ Punan lahat.'; err.classList.add('show'); return; }
+  if(p1.length < 6){ err.textContent = '⚠️ Minimum 6 chars.'; err.classList.add('show'); return; }
+  if(p1 !== p2){ err.textContent = '⚠️ Hindi tugma.'; err.classList.add('show'); return; }
+  var found = findUser(name);
+  if(!found){ err.textContent = '⚠️ Walang registered user na "' + name + '".'; err.classList.add('show'); return; }
+  var users = getUsers();
+  for(var i=0;i<users.length;i++){
+    if(users[i].name.toLowerCase() === name.toLowerCase()){
+      users[i].passHash = hashPass(p1);
+      users[i].resetAt = Date.now();
+      saveUsers(users);
+      break;
+    }
+  }
+  el('resetStuName').value = ''; el('resetStuPass').value = ''; el('resetStuConfirm').value = '';
+  showToast('Na-reset ang password ni ' + found.name + '!', 'success');
+  renderSecurityTab();
+}
+
+/* ===== ANNOUNCEMENTS ===== */
+function renderAnnounceTab(){
+  var an = getAnnouncement();
+  var box = el('announcePreviewBox');
+  if(!box) return;
+  if(!an){
+    box.innerHTML = '<div class="info-box">Walang active na announcement sa ngayon.</div>';
+    return;
+  }
+  var icons = {info:'ℹ️', warning:'⚠️', danger:'🚨', success:'✅'};
+  var titles = {info:'Information', warning:'Warning', danger:'Alert', success:'Success'};
+  box.innerHTML = '<div style="font-size:11px;color:var(--text-2);text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:10px">📌 Current Active Announcement:</div>' +
+    '<div class="announcement-preview ' + (an.type || 'info') + '">' +
+      '<span class="ico">' + (icons[an.type] || 'ℹ️') + '</span>' +
+      '<div class="body">' +
+        '<div class="title">' + (an.title || titles[an.type] || 'Announcement') + '</div>' +
+        '<div class="msg">' + (an.message || '') + '</div>' +
+        '<div style="font-size:10.5px;opacity:.7;margin-top:8px">Posted: ' + new Date(an.postedAt).toLocaleString() + '</div>' +
+      '</div>' +
+    '</div>';
+}
+function postAnnouncement(){
+  var type = el('anType').value;
+  var title = el('anTitle').value.trim();
+  var msg = el('anMsg').value.trim();
+  if(!title || !msg){ alert('Punan ang Title at Message.'); return; }
+  var an = { id: 'an_' + Date.now(), type: type, title: title, message: msg, postedAt: Date.now() };
+  setAnnouncement(an);
+  storageSet('pocmlc_an_dismissed', null);
+  el('anTitle').value = '';
+  el('anMsg').value = '';
+  renderAnnounceTab();
+  renderAnnouncement();
+  showToast('Announcement posted!', 'success');
+}
+function clearAnnouncement(){
+  if(!getAnnouncement()){ alert('Walang announcement.'); return; }
+  if(!confirm('Remove the announcement from all users?')) return;
+  setAnnouncement(null);
+  storageSet('pocmlc_an_dismissed', null);
+  renderAnnounceTab();
+  renderAnnouncement();
+  showToast('Announcement removed.', 'success');
+}
+
+/* ===== DATA ===== */
+function exportData(){
+  var data = { subjects: getSubjects(), sections: getSections(), users: getUsers(), announcement: getAnnouncement(), adminPass: getAdminPassHash(), recovery: getRecoveryHash(), logo: getLogo(), exportedAt: new Date().toISOString() };
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type:'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'pocmlc_backup_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup exported!', 'success');
+}
+function importData(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    try {
+      var data = JSON.parse(ev.target.result);
+      if(data.subjects) saveSubjects(data.subjects);
+      if(data.sections) saveSections(data.sections);
+      if(data.users) saveUsers(data.users);
+      if(data.announcement !== undefined) setAnnouncement(data.announcement);
+      if(data.adminPass) storageSet('pocmlc_admin_pass_hash', data.adminPass);
+      if(data.recovery) setRecoveryHash(data.recovery);
+      if(data.logo) setLogo(data.logo);
+      showToast('Data imported!', 'success');
+      renderAdmin(); renderHome(); applyLogo(); renderAnnouncement();
+    } catch(err){ alert('❌ Invalid file.'); }
+  };
+  reader.readAsText(file);
+}
+function resetAllData(){
+  if(!confirm('⚠️ LAHAT ng data ay mabubura. Sigurado ka?')) return;
+  if(!confirm('Sigurado ka talaga?')) return;
+  ['pocmlc_subjects','pocmlc_sections','pocmlc_users','pocmlc_announcement','pocmlc_admin_pass_hash','pocmlc_recovery_hash','pocmlc_logo','pocmlc_an_dismissed','pocmlc_session'].forEach(storageRemove);
+  alert('✅ Reset. Refresh na lang.');
+  location.reload();
+}
+
+/* ===== VIEWS ===== */
+function showView(name){
+  ['view-home','view-grade','view-ranking','view-student'].forEach(function(v){ var e=el(v); if(e) e.classList.remove('active'); });
+  var target = el('view-' + name);
+  if(target) target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  renderCrumb(name);
+}
+function renderCrumb(name){
+  var html = '';
+  if(name==='home') html = '<span class="current">🏠 Home</span>';
+  else if(name==='grade' && currentSubject) html = '<button id="crumbHome">🏠 Home</button><span class="sep">›</span><span class="current">' + currentSubject.grade + ' — ' + currentSubject.name + '</span>';
+  else if(name==='ranking' && currentSubject) html = '<button id="crumbHome2">🏠 Home</button><span class="sep">›</span><button id="crumbGrade">' + currentSubject.grade + '</button><span class="sep">›</span><span class="current">🏆 Class Ranking</span>';
+  else if(name==='student' && currentSubject && currentStudent) html = '<button id="crumbHome3">🏠 Home</button><span class="sep">›</span><button id="crumbGrade2">' + currentSubject.grade + '</button><span class="sep">›</span><span class="current">' + currentStudent.name + '</span>';
+  el('crumb').innerHTML = html;
+  var ch = el('crumbHome') || el('crumbHome2') || el('crumbHome3'); if(ch) ch.onclick = goHome;
+  var cg = el('crumbGrade') || el('crumbGrade2'); if(cg) cg.onclick = function(){ goGrade(currentSubject.id); };
+}
+function goHome(){ currentSubject=null; currentStudent=null; showView('home'); renderHome(); }
+function goGrade(id){
+  var subj = null; var subs = getSubjects();
+  for(var i=0;i<subs.length;i++){ if(subs[i].id===id){ subj = subs[i]; break; } }
+  if(!subj) return;
+  currentSubject = subj; currentStudent=null; currentFilter='all';
+  showView('grade'); renderGrade();
+}
+function goRanking(){ if(!currentSubject) return; showView('ranking'); renderRanking(); }
+function goStudent(index){
+  if(!currentSubject) return;
+  if(currentRole === 'student'){
+    var target = currentSubject.students[index];
+    if(!target || target.name.toLowerCase() !== String(currentStudentName).toLowerCase()){
+      showToast('Hindi mo puwedeng buksan ang grade ng ibang estudyante.');
+      return;
+    }
+  }
+  var students = currentSubject.students.map(function(s){ return computeStudent(s, currentSubject); });
+  currentStudent = students[index];
+  showView('student'); renderStudent();
+}
+
+function renderHome(){
+  var grid = el('gradeGrid'); grid.innerHTML = '';
+  var subjects = getSubjects();
+  for(var i=0;i<subjects.length;i++){
+    var subj = subjects[i];
+    var computed = subj.students.map(function(s){ return computeStudent(s, subj); });
+    var complete = computed.filter(function(s){ return s.complete; });
+    var passed = complete.filter(function(s){ return s.grade>=75; }).length;
+    var passRate = complete.length ? Math.round((passed/complete.length)*100) : 0;
+    var card = document.createElement('div');
+    card.className = 'grade-card';
+    card.style.setProperty('--accent', subj.accent);
+    card.style.setProperty('--accent-glow', subj.accentGlow);
+    card.innerHTML = '<div class="glow"></div><div class="go">→</div>' +
+      '<div class="code">' + subj.code + '</div>' +
+      '<h3>' + subj.grade + '</h3>' +
+      '<div class="section-name">' + subj.name + ' • ' + subj.section + '</div>' +
+      '<div class="teacher">Teacher: <b>' + subj.teacher + '</b></div>' +
+      '<div class="grade-stats"><div class="stat"><div class="n">' + subj.students.length + '</div><div class="l">Learners</div></div><div class="stat"><div class="n" style="color:' + subj.accent + '">' + passRate + '%</div><div class="l">Pass Rate</div></div></div>';
+    (function(sid){ card.onclick = function(){ goGrade(sid); }; })(subj.id);
+    grid.appendChild(card);
+  }
+}
+
+function renderGrade(){
+  var subj = currentSubject;
+  el('gradeTitle').textContent = subj.grade + ' — ' + subj.name;
+  el('gradeMeta').innerHTML = 'Section: <b>' + subj.section + '</b> &nbsp;•&nbsp; Teacher: <b>' + subj.teacher + '</b> &nbsp;•&nbsp; WW ' + (subj.weights.ww*100) + '% • PT ' + (subj.weights.pt*100) + '% • ST ' + (subj.weights.st*100) + '%';
+  var computed = subj.students.map(function(s){ return computeStudent(s, subj); });
+  var complete = computed.filter(function(s){ return s.complete; });
+  var passed = complete.filter(function(s){ return s.grade>=75; }).length;
+  var failed = complete.filter(function(s){ return s.grade<75; }).length;
+  var incomplete = computed.filter(function(s){ return !s.complete; }).length;
+  el('gradeSummary').innerHTML = '<div style="display:flex;gap:14px;flex-wrap:wrap"><div class="status-pill pass">✅ ' + passed + ' Passing</div><div class="status-pill fail">⚠️ ' + failed + ' At-Risk</div><div class="status-pill inc">❓ ' + incomplete + ' Incomplete</div></div>';
+  el('gradeBack').onclick = goHome;
+  el('btnRanking').onclick = goRanking;
+  var chips = document.querySelectorAll('#filterRow .chip');
+  for(var i=0;i<chips.length;i++){
+    (function(chip){
+      if(chip.dataset.filter === currentFilter) chip.classList.add('active');
+      else chip.classList.remove('active');
+      chip.onclick = function(){
+        currentFilter = chip.dataset.filter;
+        var allChips = document.querySelectorAll('#filterRow .chip');
+        for(var j=0;j<allChips.length;j++){
+          if(allChips[j].dataset.filter === currentFilter) allChips[j].classList.add('active');
+          else allChips[j].classList.remove('active');
+        }
+        renderStudentGrid();
+      };
+    })(chips[i]);
+  }
+  renderStudentGrid();
+}
+
+function renderStudentGrid(){
+  var subj = currentSubject;
+  var grid = el('studentGrid'); grid.innerHTML = '';
+  var computedAll = subj.students.map(function(s, idx){ var c = computeStudent(s, subj); c.origIdx = idx; return c; });
+  var ranked = computedAll.filter(function(s){ return s.complete; }).sort(function(a,b){ return b.grade - a.grade; });
+  var rankMap = {};
+  for(var r=0;r<ranked.length;r++) rankMap[ranked[r].origIdx] = r+1;
+  var isStudent = (currentRole === 'student');
+  var myName = currentStudentName ? String(currentStudentName).toLowerCase() : '';
+
+  for(var idx=0;idx<subj.students.length;idx++){
+    var st = computeStudent(subj.students[idx], subj);
+    var show = false;
+    if(currentFilter==='all') show = true;
+    else if(currentFilter==='pass') show = st.complete && st.grade>=75;
+    else if(currentFilter==='fail') show = st.complete && st.grade<75;
+    else if(currentFilter==='inc') show = !st.complete;
+    else if(currentFilter==='M') show = st.sex==='M';
+    else if(currentFilter==='F') show = st.sex==='F';
+    if(!show) continue;
+    var isMine = isStudent && (st.name.toLowerCase() === myName);
+    var statusPill, statusColor, barPct;
+    if(st.complete){
+      statusPill = st.grade>=75 ? '<span class="status-pill pass">PASSED</span>' : '<span class="status-pill fail">AT-RISK</span>';
+      statusColor = gradeColor(st.grade); barPct = st.grade;
+    } else if(st.noData){ statusPill = '<span class="status-pill none">NO DATA</span>'; statusColor = '#64748b'; barPct = 0; }
+    else { statusPill = '<span class="status-pill inc">INCOMPLETE</span>'; statusColor = '#f59e0b'; barPct = 0; }
+    var rank = rankMap[idx], rankBadge = '';
+    if(rank){
+      var cls = '';
+      if(rank===1) cls='gold'; else if(rank===2) cls='silver'; else if(rank===3) cls='bronze';
+      rankBadge = '<span class="rank-badge ' + cls + '">' + rank + '</span>';
+    }
+    var card = document.createElement('div');
+    card.className = 'student-card';
+    if(isStudent){ if(isMine) card.classList.add('mine'); else card.classList.add('locked'); }
+    card.innerHTML = '<div class="num">#' + (idx+1) + '</div><div class="name"><span class="sex ' + st.sex + '">' + st.sex + '</span>' + st.name + '</div>' +
+      '<div class="row"><span class="lbl">' + rankBadge + 'Grade</span><span class="grade-big" style="color:' + statusColor + '">' + (st.grade===null?'—':st.grade) + '</span></div>' +
+      '<div class="bar"><div style="width:' + barPct + '%;background:' + statusColor + ';box-shadow:0 0 12px ' + statusColor + '"></div></div>' +
+      '<div class="row" style="margin-top:12px">' + statusPill + '<span class="lbl" style="font-size:10px">' + (isStudent && !isMine ? '🔒 Private' : (st.complete?'View Details →':(st.noData?'No scores':'Partial'))) + '</span></div>';
+    if(isStudent && !isMine){
+      card.onclick = function(){ showToast('Hindi mo puwedeng buksan ang grade ng ibang estudyante.'); };
+    } else {
+      (function(i){ card.onclick = function(){ goStudent(i); }; })(idx);
+    }
+    grid.appendChild(card);
+  }
+}
+
+function renderRanking(){
+  var subj = currentSubject;
+  var computed = subj.students.map(function(s, idx){ var c = computeStudent(s, subj); c.origIdx = idx; return c; });
+  var complete = computed.filter(function(s){ return s.complete; }).sort(function(a,b){ return b.grade - a.grade; });
+  var incomplete = computed.filter(function(s){ return !s.complete; });
+  var completeWithRank = complete.map(function(s, i){ s.rank = i+1; return s; });
+  var incompleteRanked = incomplete.map(function(s){ s.rank = '—'; return s; });
+
+  el('rankingMeta').innerHTML = subj.grade + ' — ' + subj.name + ' &nbsp;•&nbsp; Section: <b>' + subj.section + '</b>';
+  var completeCount = complete.length;
+  var passedCount = complete.filter(function(s){ return s.grade>=75; }).length;
+  var avg = completeCount ? (complete.reduce(function(a,b){ return a+b.grade; },0)/completeCount).toFixed(1) : '—';
+  var top = complete[0];
+  el('rankingStats').innerHTML = '<div style="display:flex;gap:14px;flex-wrap:wrap"><div class="status-pill pass">✅ ' + passedCount + '/' + completeCount + ' Passing</div><div class="status-pill inc">📊 Average: ' + avg + '</div><div class="status-pill none">🏅 Top: ' + (top ? top.grade : '—') + '</div></div>';
+  el('rankingBack').onclick = function(){ goGrade(currentSubject.id); };
+
+  var isStudent = (currentRole === 'student');
+  var myName = currentStudentName ? String(currentStudentName).toLowerCase() : '';
+
+  var podium = el('podium'); podium.innerHTML = '';
+  var top3 = completeWithRank.slice(0,3);
+  var medals = ['🥇','🥈','🥉'], labels = ['1st Place','2nd Place','3rd Place'], classes = ['gold','silver','bronze'];
+  for(var i=0;i<top3.length;i++){
+    var s = top3[i], d = descriptor(s.grade);
+    var isMine = isStudent && (s.name.toLowerCase() === myName);
+    var div = document.createElement('div');
+    div.className = 'podium-card ' + classes[i] + (isMine ? ' mine-podium' : '');
+    div.innerHTML = '<span class="medal">' + medals[i] + '</span><div class="rank-label">' + labels[i] + '</div><div class="pname">' + s.name + '</div><div class="pgrade" style="color:' + gradeColor(s.grade) + '">' + s.grade + '</div><div class="pdesc">' + d.label + '</div>';
+    podium.appendChild(div);
+  }
+
+  if(currentRankChart){ try{currentRankChart.destroy();}catch(e){} currentRankChart=null; }
+  if(currentRadarChart){ try{currentRadarChart.destroy();}catch(e){} currentRadarChart=null; }
+  if(currentDistChart){ try{currentDistChart.destroy();}catch(e){} currentDistChart=null; }
+
+  var top5 = completeWithRank.slice(0,5);
+  var radarColors = ['#fbbf24','#e2e8f0','#cd7f32','#22d3ee','#a855f7'];
+  var radarCtx = el('radarChart');
+  if(radarCtx && typeof Chart !== 'undefined' && top5.length){
+    currentRadarChart = new Chart(radarCtx, {
+      type: 'radar',
+      data: { labels: ['Written Works','Performance Tasks','Summative Tests'],
+        datasets: top5.map(function(s, i){ return { label: s.name.split(',')[0], data: [s.wwPS, s.ptPS, s.stPS], backgroundColor: radarColors[i] + '33', borderColor: radarColors[i], borderWidth: 2, pointBackgroundColor: radarColors[i], pointBorderColor: '#0a0f24', pointBorderWidth: 2, pointRadius: 5 }; })},
+      options: { responsive:true, maintainAspectRatio:false, plugins: { legend:{position:'bottom', labels:{color:'#cbd5e1',font:{size:11,weight:'600'},padding:14,usePointStyle:true,pointStyle:'circle',boxWidth:8}}, tooltip:{backgroundColor:'rgba(10,15,36,.97)',titleColor:'#fff',bodyColor:'#cbd5e1',padding:12,cornerRadius:10} }, scales: { r: { beginAtZero:true, max:100, ticks:{color:'#64748b',backdropColor:'transparent',stepSize:25}, pointLabels:{color:'#cbd5e1',font:{size:11,weight:'700'}}, grid:{color:'rgba(34,211,238,.15)'}, angleLines:{color:'rgba(34,211,238,.15)'} } } }
+    });
+  }
+
+  var brackets = {'Advancing (90+)':0,'Benchmarking (80-89)':0,'Connecting (75-79)':0,'Developing (65-74)':0,'Emerging (<65)':0};
+  complete.forEach(function(s){
+    if(s.grade>=90) brackets['Advancing (90+)']++;
+    else if(s.grade>=80) brackets['Benchmarking (80-89)']++;
+    else if(s.grade>=75) brackets['Connecting (75-79)']++;
+    else if(s.grade>=65) brackets['Developing (65-74)']++;
+    else brackets['Emerging (<65)']++;
+  });
+  var distCtx = el('distChart');
+  if(distCtx && typeof Chart !== 'undefined'){
+    currentDistChart = new Chart(distCtx, {
+      type:'doughnut',
+      data: { labels:Object.keys(brackets), datasets:[{data:Object.values(brackets), backgroundColor:['#22d3ee','#4ade80','#a3e635','#f59e0b','#ef4444'], borderColor:'#0a0f24', borderWidth:3, hoverOffset:10}]},
+      options: { responsive:true, maintainAspectRatio:false, cutout:'62%', plugins:{ legend:{position:'right',labels:{color:'#cbd5e1',font:{size:11,weight:'600'},padding:12,usePointStyle:true,pointStyle:'circle',boxWidth:10}}, tooltip:{backgroundColor:'rgba(10,15,36,.97)',titleColor:'#fff',bodyColor:'#cbd5e1',padding:12,cornerRadius:10} } }
+    });
+  }
+
+  var allRanked = completeWithRank.concat(incompleteRanked);
+  var labels2 = allRanked.map(function(s){ return s.name; });
+  var data2 = allRanked.map(function(s){ return s.grade===null ? 0 : s.grade; });
+  var colors = allRanked.map(function(s){ return s.grade===null ? '#334155' : gradeColor(s.grade); });
+  var wrap = el('rankChartWrap');
+  if(wrap) wrap.style.height = Math.max(400, allRanked.length * 28) + 'px';
+  var ctx = el('rankChart');
+  if(ctx && typeof Chart !== 'undefined'){
+    currentRankChart = new Chart(ctx, {
+      type:'bar',
+      data:{labels: labels2, datasets:[{label:'Transmuted Grade', data:data2, backgroundColor:colors, borderColor:colors, borderWidth:1.5, borderRadius:6, borderSkipped:false}]},
+      options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{backgroundColor:'rgba(10,15,36,.97)',titleColor:'#fff',bodyColor:'#cbd5e1',padding:14,cornerRadius:10,displayColors:false, callbacks:{title:function(items){return labels2[items[0].dataIndex];}, label:function(ctx){var s=allRanked[ctx.dataIndex];if(s.grade===null)return '⚠️ No scores';var d=descriptor(s.grade);return 'Grade: '+s.grade+' • '+d.label;}, afterLabel:function(ctx){var s=allRanked[ctx.dataIndex];if(s.grade===null)return '';return 'WW: '+(s.ww===null?'—':s.ww)+' | PT: '+(s.pt===null?'—':s.pt)+' | ST: '+(s.st===null?'—':s.st);}}}}, scales:{x:{beginAtZero:true,max:100,ticks:{color:'#94a3b8',font:{size:11,weight:'600'},stepSize:20},grid:{color:'rgba(255,255,255,.05)'}}, y:{ticks:{color:'#cbd5e1',font:{size:11,weight:'600'},autoSkip:false,callback:function(v){var l=this.getLabelForValue(v);return l.length>32?l.slice(0,32)+'…':l;}},grid:{display:false}}}}
+    });
+  }
+
+  var tbody = document.querySelector('#rankingTable tbody');
+  tbody.innerHTML = '';
+  var combined = completeWithRank.concat(incompleteRanked);
+  for(var k=0;k<combined.length;k++){
+    var s2 = combined[k], d2 = descriptor(s2.grade);
+    var rankCls = s2.rank===1?'gold':s2.rank===2?'silver':s2.rank===3?'bronze':'';
+    var medal = s2.rank===1?'🥇':s2.rank===2?'🥈':s2.rank===3?'🥉':'';
+    var cell = function(v){ return v === null ? '<span style="color:#475569">—</span>' : v; };
+    var statusTag;
+    if(s2.complete) statusTag = s2.grade>=75 ? '<span class="status-pill pass">PASSED</span>' : '<span class="status-pill fail">AT-RISK</span>';
+    else if(s2.noData) statusTag = '<span class="status-pill none">NO DATA</span>';
+    else statusTag = '<span class="status-pill inc">INCOMPLETE</span>';
+    var isMyRow = isStudent && (s2.name.toLowerCase() === myName);
+    var mineTag = isMyRow ? '<span class="mine-label">⭐ IYO ITO</span>' : '';
+    var tr = document.createElement('tr');
+    if(isMyRow) tr.className = 'my-row';
+    tr.innerHTML = '<td class="rank ' + rankCls + '">' + medal + ' ' + s2.rank + '</td><td class="name-cell">' + s2.name + mineTag + '</td><td>' + s2.sex + '</td><td>' + cell(s2.ww) + '</td><td>' + cell(s2.pt) + '</td><td>' + cell(s2.st) + '</td><td class="grade-cell" style="color:' + gradeColor(s2.grade) + '">' + (s2.grade===null?'—':s2.grade) + '</td><td>' + d2.label + '</td><td>' + statusTag + '</td>';
+    tbody.appendChild(tr);
+  }
+}
+
+function renderStudent(){
+  var subj = currentSubject, s = currentStudent;
+  var d = descriptor(s.grade);
+  var container = el('view-student');
+  var accent = s.complete ? gradeColor(s.grade) : (s.noData ? '#64748b' : '#f59e0b');
+  var statusText = s.complete ? (s.grade>=75?'PASSED':'AT-RISK') : (s.noData?'NO DATA':'INCOMPLETE');
+  var statusCls = s.complete ? (s.grade>=75?'pass':'fail') : (s.noData?'none':'inc');
+  var bodyHTML = '', chartData = null;
+
+  if(s.noData){
+    bodyHTML = '<div class="no-data-big"><div class="ico">🚫</div><h3>No Scores Recorded</h3><p>Wala pang scores para sa learner na ito.</p></div>';
+  } else {
+    var wwOk = s.ww!==null, ptOk = s.pt!==null, stOk = s.st!==null;
+    var scoreCards = '<div class="score-grid">' +
+      scoreCard('Written Works', s.ww, subj.max.ww, wwOk, s.wwPS, subj.weights.ww, '#22d3ee') +
+      scoreCard('Performance Tasks', s.pt, subj.max.pt, ptOk, s.ptPS, subj.weights.pt, '#a855f7') +
+      scoreCard('Summative Tests', s.st, subj.max.st, stOk, s.stPS, subj.weights.st, '#ec4899') + '</div>';
+    if(s.complete){
+      bodyHTML = scoreCards +
+        '<div class="analysis-grid"><div class="panel"><h4>Component Breakdown</h4><div class="chart-box"><canvas id="compChart"></canvas></div></div><div class="panel"><h4>Weighted Contribution</h4><div class="chart-box"><canvas id="weightChart"></canvas></div></div></div>' +
+        '<div class="verdict ' + statusCls + '"><div class="ico">' + (s.grade>=75?'🎯':'⚠️') + '</div><div><h5>' + (s.grade>=75?'Learner is Passing':'Learner Needs Intervention') + '</h5><p>' + (s.grade>=75 ? 'With a grade of <b>' + s.grade + '</b> (' + d.label + '), this learner meets the passing standard.' : 'Grade <b>' + s.grade + '</b> (' + d.label + ') is below passing.') + '</p></div></div>';
+      chartData = {wwPS:s.wwPS, ptPS:s.ptPS, stPS:s.stPS, wwWS:s.wwWS, ptWS:s.ptWS, stWS:s.stWS};
+    } else {
+      var missing = [];
+      if(!wwOk) missing.push('Written Works');
+      if(!ptOk) missing.push('Performance Tasks');
+      if(!stOk) missing.push('Summative Tests');
+      bodyHTML = scoreCards + '<div class="verdict inc"><div class="ico">⚠️</div><div><h5>Incomplete Record</h5><p>Missing: <b>' + missing.join(', ') + '</b>.</p></div></div>';
+    }
+  }
+
+  container.innerHTML = '<button class="back-btn" id="studentBack">← Back to ' + subj.grade + '</button>' +
+    '<div class="student-hero" style="--accent:' + accent + '">' +
+      '<div class="top"><div>' +
+        '<h2><span class="sex ' + s.sex + '" style="display:inline-block;margin-right:10px;vertical-align:middle">' + s.sex + '</span>' + s.name + '</h2>' +
+        '<div class="meta"><span>📚 <b>' + subj.name + '</b></span><span>🏫 ' + subj.grade + ' — ' + subj.section + '</span><span>👤 ' + subj.teacher + '</span></div></div>' +
+        '<div class="big-grade"><div class="n" style="color:' + accent + ';text-shadow:0 0 30px ' + accent + '">' + (s.grade===null?'—':s.grade) + '</div><div class="l">' + (s.complete?d.label:statusText) + '</div></div>' +
+      '</div></div>' + bodyHTML;
+
+  el('studentBack').onclick = function(){ goGrade(currentSubject.id); };
+  if(chartData) setTimeout(function(){ renderStudentCharts(chartData); }, 100);
+}
+
+function scoreCard(title, score, max, ok, pct, weight, color){
+  var display = ok ? (score + '<small>/' + max + '</small>') : '<span style="color:#475569">—</span>';
+  var pctDisplay = ok ? pct.toFixed(1) + '%' : 'Missing';
+  var barW = ok ? Math.min(pct, 100) : 0;
+  return '<div class="score-card"><div class="head"><div class="title">' + title + '</div><div class="pct" style="color:' + (ok?color:'#64748b') + '">' + pctDisplay + '</div></div><div class="val" style="color:' + (ok?color:'#475569') + '">' + display + '</div><div class="bar"><div style="width:' + barW + '%;background:' + color + '"></div></div><div class="weight">Weight: ' + (weight*100).toFixed(0) + '%</div></div>';
+}
+
+function renderStudentCharts(data){
+  var c1 = el('compChart');
+  if(c1 && typeof Chart !== 'undefined'){
+    new Chart(c1, { type:'bar', data:{labels:['Written Works','Performance Tasks','Summative Tests'], datasets:[{label:'% Score',data:[data.wwPS,data.ptPS,data.stPS], backgroundColor:['#22d3ee','#a855f7','#ec4899'], borderRadius:8, borderSkipped:false}]}, options:{responsive:true,maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(15,23,42,.95)',titleColor:'#fff',bodyColor:'#cbd5e1',padding:12,cornerRadius:8,displayColors:false, callbacks:{label:function(ctx){return ctx.parsed.y.toFixed(1)+'%';}}}}, scales:{y:{beginAtZero:true,max:100,ticks:{color:'#64748b',callback:function(v){return v+'%';}},grid:{color:'rgba(255,255,255,.05)'}},x:{ticks:{color:'#94a3b8'},grid:{display:false}}}} });
+  }
+  var c2 = el('weightChart');
+  if(c2 && typeof Chart !== 'undefined'){
+    new Chart(c2, { type:'doughnut', data:{labels:['Written Works','Performance Tasks','Summative Tests'], datasets:[{data:[data.wwWS,data.ptWS,data.stWS], backgroundColor:['#22d3ee','#a855f7','#ec4899'], borderWidth:3, borderColor:'#0a0f24', hoverOffset:8}]}, options:{responsive:true,maintainAspectRatio:false,cutout:'65%', plugins:{legend:{position:'bottom',labels:{color:'#cbd5e1',font:{size:11,weight:'600'},padding:14,usePointStyle:true,pointStyle:'circle'}},tooltip:{backgroundColor:'rgba(15,23,42,.95)',titleColor:'#fff',bodyColor:'#cbd5e1',padding:12,cornerRadius:8}}}});
+  }
+}
+
+init();
+</script>
+<!-- ============ 3-IN-1 HOLOGRAPHIC ITEM ANALYSIS VIEWER v2 ============ -->
+<style>
+.holo-overlay{position:fixed;inset:0;z-index:3000;background:radial-gradient(ellipse at center, #0a0f24 0%, #02040d 100%);display:none;flex-direction:column;overflow:hidden;animation:holoFadeIn .4s}
+.holo-overlay.show{display:flex}
+@keyframes holoFadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+.holo-overlay::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(34,211,238,.08) 1px, transparent 1px),linear-gradient(90deg, rgba(34,211,238,.08) 1px, transparent 1px);background-size:50px 50px;animation:holoGrid 20s linear infinite;pointer-events:none;opacity:.5}
+@keyframes holoGrid{to{background-position:50px 50px}}
+.holo-overlay::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(34,211,238,.03) 0px,rgba(34,211,238,.03) 1px,transparent 1px,transparent 3px);pointer-events:none;animation:holoScan 8s linear infinite}
+@keyframes holoScan{from{transform:translateY(0)}to{transform:translateY(50px)}}
+.holo-header{position:relative;z-index:2;padding:14px 24px;background:linear-gradient(90deg, rgba(20,28,56,.95), rgba(10,15,36,.98));border-bottom:1px solid rgba(34,211,238,.3);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 8px 40px -10px rgba(34,211,238,.5)}
+.holo-title{display:flex;align-items:center;gap:12px;color:#fff;font-weight:800;font-size:14px}
+.holo-title-icon{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#22d3ee,#a855f7);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 24px -4px rgba(34,211,238,.8);animation:holoPulse 2.4s ease-in-out infinite}
+@keyframes holoPulse{0%,100%{box-shadow:0 0 24px -4px rgba(34,211,238,.8)}50%{box-shadow:0 0 40px 0 rgba(34,211,238,1)}}
+.holo-title-text{display:flex;flex-direction:column;gap:2px}
+.holo-title-text small{font-size:10px;color:#22d3ee;letter-spacing:2px;text-transform:uppercase;font-weight:700;opacity:.8}
+.holo-title-text span{font-size:14px;font-weight:900;background:linear-gradient(90deg,#fff,#a5f3fc,#c4b5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.holo-actions{display:flex;gap:8px;flex-wrap:wrap}
+.holo-btn{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;transition:.25s;border:1px solid;display:inline-flex;align-items:center;gap:7px;background:transparent}
+.holo-btn.print{background:linear-gradient(135deg,rgba(34,211,238,.15),rgba(168,85,247,.15));border-color:rgba(34,211,238,.5);color:#67e8f9}
+.holo-btn.print:hover{background:linear-gradient(135deg,rgba(34,211,238,.3),rgba(168,85,247,.3));transform:translateY(-1px)}
+.holo-btn.download{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.45);color:#6ee7b7}
+.holo-btn.download:hover{background:rgba(16,185,129,.25);transform:translateY(-1px)}
+.holo-btn.upload{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(236,72,153,.15));border-color:rgba(251,191,36,.5);color:#fcd34d}
+.holo-btn.upload:hover{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(236,72,153,.3));transform:translateY(-1px)}
+.holo-btn.close{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.45);color:#fca5a5}
+.holo-btn.close:hover{background:rgba(239,68,68,.25);transform:translateY(-1px);color:#fecaca}
+.holo-body{flex:1;position:relative;z-index:2;overflow:hidden;padding:20px;display:flex}
+.holo-frame-wrap{flex:1;position:relative;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px rgba(34,211,238,.4), 0 0 60px -10px rgba(34,211,238,.5), 0 0 120px -40px rgba(168,85,247,.6);animation:holoGlow 3s ease-in-out infinite}
+@keyframes holoGlow{0%,100%{box-shadow:0 0 0 1px rgba(34,211,238,.4), 0 0 60px -10px rgba(34,211,238,.5)}50%{box-shadow:0 0 0 1px rgba(34,211,238,.7), 0 0 80px -5px rgba(34,211,238,.8)}}
+.holo-frame-wrap::before,.holo-frame-wrap::after{content:'';position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,#22d3ee,#a855f7,#ec4899,#22d3ee);background-size:300% auto;animation:holoBorder 3s linear infinite;z-index:3;pointer-events:none}
+.holo-frame-wrap::before{top:0}
+.holo-frame-wrap::after{bottom:0;animation-direction:reverse}
+@keyframes holoBorder{to{background-position:300% center}}
+.holo-frame{width:100%;height:100%;border:none;display:block;border-radius:15px;background:#fff}
+.holo-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(155deg, rgba(10,15,36,.98), rgba(20,28,56,.98));z-index:5;gap:24px;color:#a5f3fc}
+.holo-loading.hidden{display:none}
+.holo-loader{width:70px;height:70px;position:relative}
+.holo-loader::before,.holo-loader::after{content:'';position:absolute;inset:0;border-radius:30%;background:linear-gradient(135deg,#22d3ee,#a855f7);animation:holoMorphA 3s ease-in-out infinite}
+.holo-loader::after{background:linear-gradient(135deg,#ec4899,#fbbf24);animation:holoMorphB 3s ease-in-out infinite;mix-blend-mode:screen;opacity:.7}
+@keyframes holoMorphA{0%,100%{border-radius:30% 70% 70% 30% / 30% 30% 70% 70%;transform:rotate(0deg) scale(1)}50%{border-radius:58% 42% 33% 67% / 63% 47% 53% 37%;transform:rotate(180deg) scale(1.1)}}
+@keyframes holoMorphB{0%,100%{border-radius:66% 34% 42% 58% / 38% 55% 45% 62%;transform:rotate(0deg) scale(1)}50%{border-radius:42% 58% 62% 38% / 43% 62% 38% 57%;transform:rotate(-180deg) scale(.95)}}
+.holo-loading p{font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#67e8f9;animation:holoBlink 1.5s ease-in-out infinite}
+@keyframes holoBlink{50%{opacity:.5}}
+.holo-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(155deg, rgba(10,15,36,.98), rgba(20,28,56,.98));z-index:4;gap:20px;padding:40px;text-align:center;color:#a5f3fc}
+.holo-empty.hidden{display:none}
+.holo-empty .empty-icon{font-size:70px;filter:drop-shadow(0 0 20px rgba(34,211,238,.8));animation:holoFloat 3s ease-in-out infinite}
+@keyframes holoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.holo-empty h3{font-size:20px;font-weight:900;color:#fff;letter-spacing:.3px;margin-bottom:8px}
+.holo-empty p{font-size:13px;color:#a5f3fc;opacity:.85;max-width:520px;line-height:1.7;margin-bottom:8px}
+.holo-empty .upload-btn{margin-top:16px;padding:14px 28px;border-radius:12px;background:linear-gradient(135deg,#22d3ee,#a855f7);border:none;color:#fff;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:inherit;box-shadow:0 10px 30px -10px rgba(34,211,238,.6);transition:.3s;display:inline-flex;align-items:center;gap:10px}
+.holo-empty .upload-btn:hover{transform:translateY(-2px);box-shadow:0 15px 40px -10px rgba(168,85,247,.7)}
+.holo-empty .note{margin-top:20px;padding:12px 20px;border-radius:10px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.3);font-size:11.5px;color:#67e8f9;font-weight:600;max-width:520px;line-height:1.6}
+@media(max-width:600px){.holo-header{padding:10px 14px}.holo-title-text span{font-size:12px}.holo-body{padding:10px}.holo-btn{padding:7px 12px;font-size:11px}}
+</style>
+
+<script>
+<style>
+.ia-float{position:fixed;bottom:30px;right:30px;z-index:900;width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#a855f7);border:none;cursor:pointer;box-shadow:0 10px 40px -8px rgba(34,211,238,.8),0 0 0 0 rgba(34,211,238,.6);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-family:inherit;animation:iaPulse 2s ease-in-out infinite;transition:.3s}
+.ia-float:hover{transform:scale(1.1);box-shadow:0 15px 50px -8px rgba(34,211,238,1)}
+.ia-float .ia-icon{font-size:24px;line-height:1}
+.ia-float .ia-label{font-size:8px;font-weight:900;letter-spacing:.5px;margin-top:2px;text-transform:uppercase}
+@keyframes iaPulse{0%,100%{box-shadow:0 10px 40px -8px rgba(34,211,238,.8),0 0 0 0 rgba(34,211,238,.6)}50%{box-shadow:0 10px 40px -8px rgba(34,211,238,.8),0 0 0 15px rgba(34,211,238,0)}}
+.ia-overlay{position:fixed;inset:0;z-index:3000;background:radial-gradient(ellipse at center,#0a0f24,#02040d);display:none;flex-direction:column;overflow:hidden}
+.ia-overlay.show{display:flex;animation:iaFade .3s}
+@keyframes iaFade{from{opacity:0}to{opacity:1}}
+.ia-overlay::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(34,211,238,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.08) 1px,transparent 1px);background-size:50px 50px;animation:iaGrid 20s linear infinite;pointer-events:none;opacity:.5}
+@keyframes iaGrid{to{background-position:50px 50px}}
+.ia-header{position:relative;z-index:2;padding:14px 24px;background:linear-gradient(90deg,rgba(20,28,56,.95),rgba(10,15,36,.98));border-bottom:1px solid rgba(34,211,238,.3);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ia-title{display:flex;align-items:center;gap:12px;color:#fff}
+.ia-title .ia-ti{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#22d3ee,#a855f7);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 24px -4px rgba(34,211,238,.8)}
+.ia-title small{font-size:10px;color:#22d3ee;letter-spacing:2px;text-transform:uppercase;font-weight:700;display:block;margin-bottom:2px}
+.ia-title b{font-size:14px;font-weight:900;color:#fff;display:block}
+.ia-actions{display:flex;gap:8px;flex-wrap:wrap}
+.ia-btn{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;transition:.25s;border:1px solid;display:inline-flex;align-items:center;gap:7px;background:transparent}
+.ia-btn.up{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(236,72,153,.15));border-color:rgba(251,191,36,.5);color:#fcd34d}
+.ia-btn.up:hover{background:linear-gradient(135deg,rgba(251,191,36,.3),rgba(236,72,153,.3));transform:translateY(-1px)}
+.ia-btn.pr{background:linear-gradient(135deg,rgba(34,211,238,.15),rgba(168,85,247,.15));border-color:rgba(34,211,238,.5);color:#67e8f9}
+.ia-btn.pr:hover{background:linear-gradient(135deg,rgba(34,211,238,.3),rgba(168,85,247,.3));transform:translateY(-1px)}
+.ia-btn.cl{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.45);color:#fca5a5}
+.ia-btn.cl:hover{background:rgba(239,68,68,.25);transform:translateY(-1px)}
+.ia-body{flex:1;position:relative;z-index:2;padding:20px;display:flex}
+.ia-frame{flex:1;position:relative;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 0 0 1px rgba(34,211,238,.4),0 0 60px -10px rgba(34,211,238,.5),0 0 120px -40px rgba(168,85,247,.6)}
+.ia-frame::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#22d3ee,#a855f7,#ec4899,#22d3ee);background-size:300% auto;animation:iaBorder 3s linear infinite;z-index:3}
+@keyframes iaBorder{to{background-position:300% center}}
+.ia-frame iframe{width:100%;height:100%;border:none;display:block;background:#fff}
+.ia-empty{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(155deg,#0a0f24,#141c38);gap:20px;padding:40px;text-align:center;color:#a5f3fc;z-index:4}
+.ia-empty.show{display:flex}
+.ia-empty .ei{font-size:70px;filter:drop-shadow(0 0 20px rgba(34,211,238,.8))}
+.ia-empty h3{font-size:20px;font-weight:900;color:#fff;margin:0}
+.ia-empty p{font-size:13px;max-width:520px;line-height:1.7;color:#a5f3fc}
+.ia-empty .ub{margin-top:16px;padding:14px 28px;border-radius:12px;background:linear-gradient(135deg,#22d3ee,#a855f7);border:none;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:1px;text-transform:uppercase;box-shadow:0 10px 30px -10px rgba(34,211,238,.6)}
+.ia-empty .ub:hover{transform:translateY(-2px)}
+@media(max-width:600px){.ia-float{width:60px;height:60px;bottom:20px;right:20px}.ia-float .ia-icon{font-size:20px}.ia-float .ia-label{font-size:7px}.ia-header{padding:10px 14px}.ia-body{padding:10px}}
+</style>
+
+<button class="ia-float" id="iaFloatBtn" title="Item Analysis">
+  <span class="ia-icon">📊</span>
+  <span class="ia-label">Analysis</span>
+</button>
+
+<div class="ia-overlay" id="iaOverlay">
+  <div class="ia-header">
+    <div class="ia-title">
+      <div class="ia-ti" id="iaIcon">📊</div>
+      <div>
+        <small id="iaSubtitle">Loading...</small>
+        <b id="iaTitle">Item Analysis</b>
+      </div>
+    </div>
+    <div class="ia-actions">
+      <button class="ia-btn pr" id="iaPrint">🖨️ Print</button>
+      <button class="ia-btn up" id="iaUpload">📤 Upload</button>
+      <button class="ia-btn cl" id="iaClose">✕ Close</button>
+      <input type="file" id="iaFile" accept=".html,.htm" style="display:none">
+    </div>
+  </div>
+  <div class="ia-body">
+    <div class="ia-frame">
+      <div class="ia-empty" id="iaEmpty">
+        <div class="ei" id="iaEmptyIcon">📊</div>
+        <h3>Report Not Uploaded</h3>
+        <p>I-upload ang HTML file ng item analysis para sa subject na ito. One time lang.</p>
+        <button class="ub" id="iaEmptyUpload">📤 Upload Report</button>
+      </div>
+      <iframe id="iaIframe"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  console.log('📊 Floating Item Analysis button loaded');
+
+  var REPORTS = {
+    'genmath': { title:'General Mathematics', subtitle:'Grade 11 — St. Augustine', icon:'📐' },
+    'sci7': { title:'Science 7', subtitle:'Grade 7 — St. Michael', icon:'🧪' },
+    'sci8': { title:'Science 8', subtitle:'Grade 8 — St. Mark', icon:'🔬' }
+  };
+
+  function encodeUtf8(s){ try { return btoa(unescape(encodeURIComponent(s))); } catch(e){ return null; } }
+  function decodeUtf8(b){ try { return decodeURIComponent(escape(atob(b))); } catch(e){ return null; } }
+  function getRep(id){ try { var b = localStorage.getItem('pocmlc_rep_' + id); return b ? decodeUtf8(b) : null; } catch(e){ return null; } }
+  function setRep(id, h){ try { var b = encodeUtf8(h); if(!b) return false; localStorage.setItem('pocmlc_rep_' + id, b); return true; } catch(e){ alert('Storage full.'); return false; } }
+
+  var currentSubjId = null;
+
+  function getSubjId(){
+    // Try multiple sources
+    try {
+      if(window.currentSubject && window.currentSubject.id) return window.currentSubject.id;
+    } catch(e){}
+    return null;
+  }
+
+  document.getElementById('iaFloatBtn').onclick = function(){
+    var subjId = getSubjId();
+    if(!subjId){
+      alert('Pumunta muna sa Grade/Subject view para makita ang Item Analysis.\n\n1. Click sa Home\n2. Click sa Grade 7, Grade 8, o Grade 11 card');
+      return;
+    }
+    var rep = REPORTS[subjId];
+    if(!rep){
+      alert('Walang item analysis para sa subject na ito.');
+      return;
+    }
+    openIA(subjId, rep);
+  };
+
+  function openIA(subjId, rep){
+    currentSubjId = subjId;
+    document.getElementById('iaOverlay').classList.add('show');
+    document.getElementById('iaTitle').textContent = rep.title + ' — Item Analysis';
+    document.getElementById('iaSubtitle').textContent = rep.subtitle + ' • SY 2026–2027';
+    document.getElementById('iaIcon').textContent = rep.icon;
+    document.getElementById('iaEmptyIcon').textContent = rep.icon;
+    renderIA();
+  }
+
+  function renderIA(){
+    var html = getRep(currentSubjId);
+    var empty = document.getElementById('iaEmpty');
+    var iframe = document.getElementById('iaIframe');
+    if(!html){
+      empty.classList.add('show');
+      iframe.srcdoc = '<html><body></body></html>';
+      return;
+    }
+    empty.classList.remove('show');
+    iframe.srcdoc = html;
+  }
+
+  document.getElementById('iaClose').onclick = function(){ document.getElementById('iaOverlay').classList.remove('show'); };
+  document.getElementById('iaUpload').onclick = function(){ document.getElementById('iaFile').click(); };
+  document.getElementById('iaEmptyUpload').onclick = function(){ document.getElementById('iaFile').click(); };
+  document.getElementById('iaFile').onchange = function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var html = ev.target.result;
+      if(!html || html.length < 50){ alert('Invalid HTML file.'); return; }
+      if(!setRep(currentSubjId, html)) return;
+      alert('✅ Saved!');
+      renderIA();
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+  document.getElementById('iaPrint').onclick = function(){
+    try { document.getElementById('iaIframe').contentWindow.print(); } catch(e){ alert('Cannot print.'); }
+  };
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') document.getElementById('iaOverlay').classList.remove('show'); });
+
+  console.log('✅ Ready. Look for floating blue button bottom-right.');
+})();
+</script>
+<!-- ============ ITEM ANALYSIS VIEWER (SIMPLE) ============ -->
+<button id="iaBtn" style="position:fixed;bottom:30px;right:30px;z-index:9999;width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#a855f7);border:3px solid #fff;cursor:pointer;box-shadow:0 10px 40px -8px rgba(34,211,238,.8);color:#fff;font-family:Arial,sans-serif;font-size:28px;font-weight:bold">📊</button>
+
+<div id="iaModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.95);flex-direction:column">
+  <div style="padding:15px;background:#1a3a5c;color:white;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+    <div style="font-weight:bold;font-size:16px" id="iaModalTitle">📊 Item Analysis</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button id="iaUploadBtn" style="padding:10px 20px;background:#e8a838;color:white;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer">📤 Upload</button>
+      <button id="iaPrintBtn" style="padding:10px 20px;background:#27ae60;color:white;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer">🖨️ Print</button>
+      <button id="iaCloseBtn" style="padding:10px 20px;background:#e74c3c;color:white;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer">✕ Close</button>
+    </div>
+  </div>
+  <iframe id="iaFrame" style="flex:1;width:100%;border:none;background:white"></iframe>
+  <input type="file" id="iaFileInput" accept=".html,.htm" style="display:none">
+</div>
+
+<script>
+(function(){
+  console.log('📊 Simple IA loaded');
+  
+  var REPORTS = {
+    'genmath': { title:'General Mathematics', sub:'Grade 11 — St. Augustine' },
+    'sci7':    { title:'Science 7', sub:'Grade 7 — St. Michael' },
+    'sci8':    { title:'Science 8', sub:'Grade 8 — St. Mark' }
+  };
+  
+  function enc(s){ try { return btoa(unescape(encodeURIComponent(s))); } catch(e){ return null; } }
+  function dec(b){ try { return decodeURIComponent(escape(atob(b))); } catch(e){ return null; } }
+  function get(id){ try { var b = localStorage.getItem('pocmlc_rep_'+id); return b ? dec(b) : null; } catch(e){ return null; } }
+  function set(id, h){ try { var b = enc(h); if(!b) return false; localStorage.setItem('pocmlc_rep_'+id, b); return true; } catch(e){ alert('Storage full'); return false; } }
+  
+  var currentId = null;
+  
+  function getSubj(){
+    try {
+      if(window.currentSubject && window.currentSubject.id) return window.currentSubject.id;
+    } catch(e){}
+    return null;
+  }
+  
+  var btn = document.getElementById('iaBtn');
+  var modal = document.getElementById('iaModal');
+  var frame = document.getElementById('iaFrame');
+  var fileInput = document.getElementById('iaFileInput');
+  
+  btn.onclick = function(){
+    var id = getSubj();
+    if(!id || !REPORTS[id]){
+      alert('Pumunta muna sa Grade view:\n\n1. Click Home\n2. Click Grade 7, Grade 8, o Grade 11\n3. Click ang 📊 button ulit');
+      return;
+    }
+    currentId = id;
+    document.getElementById('iaModalTitle').textContent = '📊 ' + REPORTS[id].title + ' — ' + REPORTS[id].sub;
+    modal.style.display = 'flex';
+    loadReport();
+  };
+  
+  function loadReport(){
+    var html = get(currentId);
+    if(!html){
+      frame.srcdoc = '<html><body style="display:flex;align-items:center;justify-content:center;height:100%;margin:0;font-family:Arial;background:#f0f4f8;color:#1a3a5c;text-align:center"><div style="padding:40px"><div style="font-size:80px">📁</div><h2 style="margin:20px 0">Report Not Uploaded</h2><p style="margin-bottom:30px;max-width:500px">I-click ang <b>📤 Upload</b> sa taas para i-upload ang HTML file ng item analysis.</p></div></body></html>';
+      return;
+    }
+    frame.srcdoc = html;
+  }
+  
+  document.getElementById('iaCloseBtn').onclick = function(){
+    modal.style.display = 'none';
+    frame.srcdoc = '';
+  };
+  
+  document.getElementById('iaUploadBtn').onclick = function(){
+    if(!currentId){ alert('Pumunta muna sa Grade view.'); return; }
+    fileInput.click();
+  };
+  
+  fileInput.onchange = function(e){
+    var f = e.target.files[0];
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(ev){
+      var html = ev.target.result;
+      if(!html || html.length < 50){ alert('Invalid file'); return; }
+      if(!set(currentId, html)) return;
+      alert('✅ Saved! Lalabas na ang report.');
+      loadReport();
+    };
+    r.readAsText(f);
+    e.target.value = '';
+  };
+  
+  document.getElementById('iaPrintBtn').onclick = function(){
+    try { frame.contentWindow.print(); } catch(e){ alert('Cannot print'); }
+  };
+  
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      modal.style.display = 'none';
+      frame.srcdoc = '';
+    }
+  });
+  
+  console.log('✅ Ready! Click the 📊 button bottom-right.');
+})();
+</script>
+</body>
+</html>

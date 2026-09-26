@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Science 8 1st Term — Item Analysis Report</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary: #1a3a5c;
+    --primary-light: #2c5f8a;
+    --accent: #e8a838;
+    --accent-dark: #c88a20;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #e1e8ed;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 30px 20px;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(26, 58, 92, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(232, 168, 56, 0.04) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 60%, #3a7ca5 100%);
+    padding: 50px 50px 40px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(232,168,56,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -5%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero-content { position: relative; z-index: 2; }
+
+  .hero .school-name {
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-bottom: 3px;
+    font-weight: 500;
+  }
+
+  .hero .school-sub {
+    font-size: 12px;
+    opacity: 0.7;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .hero .school-name-main {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin: 15px 0 3px;
+    color: var(--accent);
+  }
+
+  .hero .school-address {
+    font-size: 12px;
+    opacity: 0.75;
+    letter-spacing: 0.5px;
+    margin-bottom: 25px;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero h1 .gold { color: var(--accent); }
+
+  .hero .subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    font-weight: 300;
+    margin-bottom: 30px;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 25px;
+  }
+
+  .meta-chip {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .meta-chip .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .teacher-badge {
+    display: inline-block;
+    background: rgba(232,168,56,0.15);
+    border: 1px solid rgba(232,168,56,0.4);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 20px;
+  }
+
+  .content { padding: 40px 50px 50px; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--primary);
+    margin: 45px 0 8px;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 5px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+    border-radius: 3px;
+  }
+
+  .section-sub {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 25px;
+    padding-left: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+  }
+
+  .section-title:first-of-type { margin-top: 0; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, #f8fafc, #eef3f8);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+  }
+
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(26,58,92,0.12);
+  }
+
+  .stat-card .label {
+    font-size: 11px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .stat-card .value {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  .stat-card .unit {
+    font-size: 14px;
+    color: var(--text-light);
+    font-weight: 400;
+    margin-left: 2px;
+  }
+
+  .stat-card.highlight-green { background: linear-gradient(135deg, #e8f8ee, #d5f5e3); }
+  .stat-card.highlight-green::before { background: linear-gradient(90deg, var(--success), #58d68d); }
+  .stat-card.highlight-green .value { color: var(--success); }
+
+  .stat-card.highlight-red { background: linear-gradient(135deg, #fdedec, #fadbd8); }
+  .stat-card.highlight-red::before { background: linear-gradient(90deg, var(--danger), #ec7063); }
+  .stat-card.highlight-red .value { color: var(--danger); }
+
+  .stat-card.highlight-gold { background: linear-gradient(135deg, #fef8e7, #fdf0d5); }
+  .stat-card.highlight-gold::before { background: linear-gradient(90deg, var(--accent), var(--accent-dark)); }
+  .stat-card.highlight-gold .value { color: var(--accent-dark); }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 25px;
+    font-size: 13px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  thead th {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #fff;
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: sticky;
+    top: 0;
+  }
+
+  tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    background: #fff;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: #fafbfd; }
+  tbody tr:hover td { background: #eef5fb; }
+
+  .center { text-align: center; }
+
+  tr.row-mastered td { background: #f0fbf4 !important; }
+  tr.row-mastered:hover td { background: #e0f5e8 !important; }
+
+  tr.row-least td { background: #fffbf0 !important; }
+  tr.row-least:hover td { background: #fdf3dc !important; }
+
+  tr.row-not td { background: #fef5f4 !important; }
+  tr.row-not:hover td { background: #fce4e1 !important; }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-green { background: #d5f5e3; color: #1e8449; }
+  .badge-yellow { background: #fef9e7; color: #b7950b; }
+  .badge-red { background: #fadbd8; color: #c0392b; }
+
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  @media (max-width: 800px) {
+    .chart-row { grid-template-columns: 1fr; }
+  }
+
+  .chart-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .chart-card h4 {
+    font-size: 14px;
+    color: var(--primary);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .donut-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    justify-content: center;
+  }
+
+  .donut {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .donut-inner {
+    position: absolute;
+    top: 25px; left: 25px; right: 25px; bottom: 25px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .donut-inner .big {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+  }
+
+  .donut-inner .small {
+    font-size: 10px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 3px;
+  }
+
+  .legend { flex: 1; }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .legend-item .name { flex: 1; color: var(--text); }
+  .legend-item .val { font-weight: 700; color: var(--primary); }
+
+  .bar-chart { margin-top: 10px; }
+
+  .bar-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 50px;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+
+  .bar-row .label { color: var(--text-light); font-weight: 500; }
+
+  .bar-track {
+    height: 22px;
+    background: #f0f4f8;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    transition: width 0.6s ease;
+  }
+
+  .bar-row .count {
+    text-align: right;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .rec-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .rec-card {
+    background: linear-gradient(135deg, #f8fafc, #eef3f8);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 12px;
+    padding: 18px 20px;
+    transition: all 0.3s ease;
+  }
+
+  .rec-card:hover {
+    transform: translateX(3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+  }
+
+  .rec-card .rec-num {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+
+  .rec-card .rec-text {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .rec-card .rec-text strong { color: var(--primary); }
+
+  .footer {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #fff;
+    padding: 30px 50px;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .footer .prepared {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
+  }
+
+  .footer .role {
+    font-size: 12px;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+  }
+
+  .footer .divider {
+    width: 60px;
+    height: 3px;
+    background: var(--accent);
+    margin: 15px auto;
+    border-radius: 2px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .container { box-shadow: none; border-radius: 0; }
+    .hero { padding: 30px 40px; }
+    .hero h1 { font-size: 30px; }
+    .content { padding: 30px 40px; }
+    .stat-card:hover, .rec-card:hover { transform: none; box-shadow: none; }
+    .section-title { page-break-after: avoid; }
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; }
+    thead { display: table-header-group; }
+    .chart-row { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-content">
+      <div class="school-name">Republic of the Philippines</div>
+      <div class="school-sub">Department of Education · Region XII</div>
+      <div class="school-sub">Schools Division of Sarangani</div>
+      <div class="school-name-main">PABLO OMEREZ CEDEÑO MEMORIAL LEARNING CENTER, INC.</div>
+      <div class="school-address">Lanzones St., Malungon, Sarangani</div>
+      <h1>Science 8<br><span class="gold">1st Term Item Analysis</span></h1>
+      <div class="subtitle">Item Analysis &amp; Student Performance Report</div>
+      <div class="hero-meta">
+        <div class="meta-chip"><span class="dot"></span> Grade 8 - Saint Marks</div>
+        <div class="meta-chip"><span class="dot"></span> 33 Students</div>
+        <div class="meta-chip"><span class="dot"></span> 50 Items</div>
+        <div class="meta-chip"><span class="dot"></span> Passing: 25/50</div>
+      </div>
+      <div class="teacher-badge">Teacher: Jemmuel A. Alon</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== PART 1 ===== -->
+    <div class="section-title">Student Performance</div>
+    <div class="section-sub">Part 1 — Descriptive Statistics &amp; Distribution</div>
+
+    <div class="stat-grid">
+      <div class="stat-card highlight-green">
+        <div class="label">Passing Rate</div>
+        <div class="value">93.94<span class="unit">%</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Mean Score</div>
+        <div class="value">40.91<span class="unit">/50</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Median</div>
+        <div class="value">43</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Mode</div>
+        <div class="value">46</div>
+      </div>
+      <div class="stat-card highlight-gold">
+        <div class="label">Highest</div>
+        <div class="value">49</div>
+      </div>
+      <div class="stat-card highlight-red">
+        <div class="label">Lowest</div>
+        <div class="value">18</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Std. Deviation</div>
+        <div class="value">7.51</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Range</div>
+        <div class="value">31</div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h4>Pass / Fail Distribution</h4>
+        <div class="donut-wrapper">
+          <div class="donut" style="background: conic-gradient(#27ae60 0% 93.94%, #e74c3c 93.94% 100%);">
+            <div class="donut-inner">
+              <div class="big">93.94%</div>
+              <div class="small">Passed</div>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#27ae60;"></div>
+              <div class="name">Passed (≥25)</div>
+              <div class="val">31</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#e74c3c;"></div>
+              <div class="name">Failed (&lt;25)</div>
+              <div class="val">2</div>
+            </div>
+            <div class="legend-item" style="margin-top:15px; border-top:1px solid #eee; padding-top:10px;">
+              <div class="name" style="font-weight:600;">Total Students</div>
+              <div class="val">33</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h4>Score Distribution</h4>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="label">45–50</div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%; background:linear-gradient(90deg,#27ae60,#58d68d);">Outstanding</div></div>
+            <div class="count">9</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">40–44</div>
+            <div class="bar-track"><div class="bar-fill" style="width:89%; background:linear-gradient(90deg,#2ecc71,#58d68d);">Very Good</div></div>
+            <div class="count">8</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">35–39</div>
+            <div class="bar-track"><div class="bar-fill" style="width:67%; background:linear-gradient(90deg,#f39c12,#f7c45e);">Good</div></div>
+            <div class="count">6</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">30–34</div>
+            <div class="bar-track"><div class="bar-fill" style="width:44%; background:linear-gradient(90deg,#e67e22,#f0a04b);">Satisfactory</div></div>
+            <div class="count">4</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">25–29</div>
+            <div class="bar-track"><div class="bar-fill" style="width:44%; background:linear-gradient(90deg,#f1c40f,#f7dc6f);">Passing</div></div>
+            <div class="count">4</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">20–24</div>
+            <div class="bar-track"><div class="bar-fill" style="width:11%; background:linear-gradient(90deg,#e74c3c,#ec7063);">Needs Imp.</div></div>
+            <div class="count">1</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">15–19</div>
+            <div class="bar-track"><div class="bar-fill" style="width:11%; background:linear-gradient(90deg,#c0392b,#e74c3c);">At Risk</div></div>
+            <div class="count">1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PART 2 ===== -->
+    <div class="section-title">Item Analysis</div>
+    <div class="section-sub">Part 2 — 50 Items with Mastery Levels</div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h4>Mastery Summary</h4>
+        <div class="donut-wrapper">
+          <div class="donut" style="background: conic-gradient(#27ae60 0% 44%, #f39c12 44% 98%, #e74c3c 98% 100%);">
+            <div class="donut-inner">
+              <div class="big">50</div>
+              <div class="small">Items</div>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#27ae60;"></div>
+              <div class="name">Mastered</div>
+              <div class="val">22 (44%)</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#f39c12;"></div>
+              <div class="name">Least Mastered</div>
+              <div class="val">27 (54%)</div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#e74c3c;"></div>
+              <div class="name">Not Mastered</div>
+              <div class="val">1 (2%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h4>Top 10 Hardest Items</h4>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="label">Item 47</div>
+            <div class="bar-track"><div class="bar-fill" style="width:16%; background:linear-gradient(90deg,#c0392b,#e74c3c);">15.2%</div></div>
+            <div class="count">15.2%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 24</div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%; background:linear-gradient(90deg,#e67e22,#f0a04b);">54.5%</div></div>
+            <div class="count">54.5%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 31</div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%; background:linear-gradient(90deg,#e67e22,#f0a04b);">54.5%</div></div>
+            <div class="count">54.5%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 33</div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%; background:linear-gradient(90deg,#e67e22,#f0a04b);">54.5%</div></div>
+            <div class="count">54.5%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 38</div>
+            <div class="bar-track"><div class="bar-fill" style="width:55%; background:linear-gradient(90deg,#e67e22,#f0a04b);">54.5%</div></div>
+            <div class="count">54.5%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 10</div>
+            <div class="bar-track"><div class="bar-fill" style="width:58%; background:linear-gradient(90deg,#f39c12,#f7c45e);">57.6%</div></div>
+            <div class="count">57.6%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 14</div>
+            <div class="bar-track"><div class="bar-fill" style="width:58%; background:linear-gradient(90deg,#f39c12,#f7c45e);">57.6%</div></div>
+            <div class="count">57.6%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 27</div>
+            <div class="bar-track"><div class="bar-fill" style="width:58%; background:linear-gradient(90deg,#f39c12,#f7c45e);">57.6%</div></div>
+            <div class="count">57.6%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 28</div>
+            <div class="bar-track"><div class="bar-fill" style="width:58%; background:linear-gradient(90deg,#f39c12,#f7c45e);">57.6%</div></div>
+            <div class="count">57.6%</div>
+          </div>
+          <div class="bar-row">
+            <div class="label">Item 35</div>
+            <div class="bar-track"><div class="bar-fill" style="width:58%; background:linear-gradient(90deg,#f39c12,#f7c45e);">57.6%</div></div>
+            <div class="count">57.6%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Topic / Skill Tested</th>
+          <th class="center">Errors</th>
+          <th class="center">Correct</th>
+          <th class="center">% Mastery</th>
+          <th class="center">Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-mastered"><td>1</td><td>Digestive tract organ</td><td class="center">7</td><td class="center">26</td><td class="center">78.79%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>2</td><td>Digestive process</td><td class="center">3</td><td class="center">30</td><td class="center">90.91%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>3</td><td>Plant organ (roots)</td><td class="center">6</td><td class="center">27</td><td class="center">81.82%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>4</td><td>Digestive + circulatory</td><td class="center">2</td><td class="center">31</td><td class="center">93.94%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>5</td><td>Indigestible materials</td><td class="center">12</td><td class="center">21</td><td class="center">63.64%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>6</td><td>Digestive + excretory</td><td class="center">5</td><td class="center">28</td><td class="center">84.85%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>7</td><td>Xylem and phloem</td><td class="center">8</td><td class="center">25</td><td class="center">75.76%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>8</td><td>Smooth muscle (esophagus)</td><td class="center">7</td><td class="center">26</td><td class="center">78.79%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>9</td><td>Kidney failure + circulatory</td><td class="center">9</td><td class="center">24</td><td class="center">72.73%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>10</td><td>Root system severed</td><td class="center">14</td><td class="center">19</td><td class="center">57.58%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>11</td><td>Alternative form of gene</td><td class="center">7</td><td class="center">26</td><td class="center">78.79%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>12</td><td>Genotype vs phenotype</td><td class="center">10</td><td class="center">23</td><td class="center">69.70%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>13</td><td>Pure-breeding cross (TT × tt)</td><td class="center">11</td><td class="center">22</td><td class="center">66.67%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>14</td><td>Monohybrid cross ratio</td><td class="center">14</td><td class="center">19</td><td class="center">57.58%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>15</td><td>Heterozygous carriers (Aa)</td><td class="center">8</td><td class="center">25</td><td class="center">75.76%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>16</td><td>Broadest rank (Domain)</td><td class="center">7</td><td class="center">26</td><td class="center">78.79%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>17</td><td>Kingdoms count</td><td class="center">6</td><td class="center">27</td><td class="center">81.82%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>18</td><td>Class of humans (Mammalia)</td><td class="center">7</td><td class="center">26</td><td class="center">78.79%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>19</td><td>Order Primates</td><td class="center">7</td><td class="center">26</td><td class="center">78.79%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>20</td><td>Archaea vs Bacteria</td><td class="center">8</td><td class="center">25</td><td class="center">75.76%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>21</td><td>Kingdom autotrophs</td><td class="center">6</td><td class="center">27</td><td class="center">81.82%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>22</td><td>Decomposer kingdom</td><td class="center">6</td><td class="center">27</td><td class="center">81.82%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>23</td><td>Taxonomic ranks sequence</td><td class="center">10</td><td class="center">23</td><td class="center">69.70%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>24</td><td>Humans vs chimpanzees</td><td class="center">15</td><td class="center">18</td><td class="center">54.55%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>25</td><td>Binomial nomenclature</td><td class="center">7</td><td class="center">26</td><td class="center">78.79%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>26</td><td>Photosynthesis organelle</td><td class="center">10</td><td class="center">23</td><td class="center">69.70%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>27</td><td>Cellular respiration organelle</td><td class="center">14</td><td class="center">19</td><td class="center">57.58%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>28</td><td>Raw materials photosynthesis</td><td class="center">14</td><td class="center">19</td><td class="center">57.58%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>29</td><td>Organic product photosynthesis</td><td class="center">8</td><td class="center">25</td><td class="center">75.76%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>30</td><td>Gas for cellular respiration</td><td class="center">10</td><td class="center">23</td><td class="center">69.70%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>31</td><td>Water cycle</td><td class="center">15</td><td class="center">18</td><td class="center">54.55%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>32</td><td>Carbon-oxygen cycle</td><td class="center">7</td><td class="center">26</td><td class="center">78.79%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>33</td><td>Photosynthesis vs respiration</td><td class="center">15</td><td class="center">18</td><td class="center">54.55%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>34</td><td>Decomposers in carbon cycle</td><td class="center">11</td><td class="center">22</td><td class="center">66.67%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>35</td><td>Sunlight needed for photosynthesis</td><td class="center">14</td><td class="center">19</td><td class="center">57.58%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>36</td><td>Photosynthesis + respiration balance</td><td class="center">12</td><td class="center">21</td><td class="center">63.64%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>37</td><td>Deforestation + carbon cycle</td><td class="center">7</td><td class="center">26</td><td class="center">78.79%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-least"><td>38</td><td>Controlled experiment variable</td><td class="center">15</td><td class="center">18</td><td class="center">54.55%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>39</td><td>Fossil fuels + carbon cycle</td><td class="center">14</td><td class="center">19</td><td class="center">57.58%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-least"><td>40</td><td>Iodine solution purpose</td><td class="center">14</td><td class="center">19</td><td class="center">57.58%</td><td class="center"><span class="badge badge-yellow">Least Mastered</span></td></tr>
+        <tr class="row-mastered"><td>41</td><td>Muscle cells + exercise</td><td class="center">0</td><td class="center">33</td><td class="center">100.00%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>42</td><td>No CO₂ → photosynthesis</td><td class="center">0</td><td class="center">33</td><td class="center">100.00%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>43</td><td>Stable O₂/CO₂ ratio</td><td class="center">0</td><td class="center">33</td><td class="center">100.00%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>44</td><td>Deforestation + transpiration</td><td class="center">0</td><td class="center">33</td><td class="center">100.00%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>45</td><td>Gas bubbles (aquatic plant)</td><td class="center">0</td><td class="center">33</td><td class="center">100.00%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>46</td><td>Plum Pudding Model (Thomson)</td><td class="center">0</td><td class="center">33</td><td class="center">100.00%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-not"><td>47</td><td>Gold Foil Experiment (Rutherford)</td><td class="center">28</td><td class="center">5</td><td class="center">15.15%</td><td class="center"><span class="badge badge-red">Not Mastered</span></td></tr>
+        <tr class="row-mastered"><td>48</td><td>Bohr model electrons</td><td class="center">0</td><td class="center">33</td><td class="center">100.00%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>49</td><td>Dalton's model revised</td><td class="center">0</td><td class="center">33</td><td class="center">100.00%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+        <tr class="row-mastered"><td>50</td><td>Neutral atom electrons</td><td class="center">0</td><td class="center">33</td><td class="center">100.00%</td><td class="center"><span class="badge badge-green">Mastered</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- ===== PART 3 ===== -->
+    <div class="section-title">Summary &amp; Recommendations</div>
+    <div class="section-sub">Part 3 — Findings and Action Plan</div>
+
+    <div class="rec-grid">
+      <div class="rec-card">
+        <span class="rec-num">1</span>
+        <span class="rec-text"><strong>Re-teaching needed:</strong> Genetics (monohybrid cross, genotype vs phenotype)</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">2</span>
+        <span class="rec-text"><strong>Visual aids needed:</strong> Biogeochemical cycles (water cycle, carbon cycle)</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">3</span>
+        <span class="rec-text"><strong>Comparison chart:</strong> Photosynthesis vs respiration</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">4</span>
+        <span class="rec-text"><strong>Video demonstration:</strong> Rutherford's Gold Foil Experiment</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">5</span>
+        <span class="rec-text"><strong>Remediation:</strong> 2 students below passing (scores 18 and 22)</span>
+      </div>
+      <div class="rec-card">
+        <span class="rec-num">6</span>
+        <span class="rec-text"><strong>Intervention program:</strong> Outliers and at-risk students</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="prepared">JEMMUEL A. ALON</div>
+    <div class="role">Teacher</div>
+    <div class="divider"></div>
+    <div>PABLO OMEREZ CEDEÑO MEMORIAL LEARNING CENTER, INC.</div>
+    <div style="opacity:0.7; margin-top:5px;">Science 8 1st Term — Item Analysis Report</div>
+  </div>
+
+</div>
+</body>
+</html>
