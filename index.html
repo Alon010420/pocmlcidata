@@ -2259,51 +2259,54 @@ init();
   console.log('✅ Ready. Look for floating blue button bottom-right.');
 })();
 </script>
-<!-- ============ ITEM ANALYSIS VIEWER (SIMPLE) ============ -->
-<button id="iaBtn" style="position:fixed;bottom:30px;right:30px;z-index:9999;width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#a855f7);border:3px solid #fff;cursor:pointer;box-shadow:0 10px 40px -8px rgba(34,211,238,.8);color:#fff;font-family:Arial,sans-serif;font-size:28px;font-weight:bold">📊</button>
+<!-- ============ ITEM ANALYSIS VIEWER (AUTO-LOAD) ============ -->
+<button id="iaBtn" style="position:fixed;bottom:30px;right:30px;z-index:9999;width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#22d3ee,#a855f7);border:3px solid #fff;cursor:pointer;box-shadow:0 10px 40px -8px rgba(34,211,238,.8);color:#fff;font-family:Arial,sans-serif;font-size:28px;font-weight:bold;animation:iaPulseBtn 2s infinite">📊</button>
+
+<style>
+@keyframes iaPulseBtn{0%,100%{box-shadow:0 10px 40px -8px rgba(34,211,238,.8)}50%{box-shadow:0 10px 60px -4px rgba(168,85,247,1)}}
+@keyframes iaSpin{to{transform:rotate(360deg)}}
+</style>
 
 <div id="iaModal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.95);flex-direction:column">
   <div style="padding:15px;background:#1a3a5c;color:white;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
     <div style="font-weight:bold;font-size:16px" id="iaModalTitle">📊 Item Analysis</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button id="iaUploadBtn" style="padding:10px 20px;background:#e8a838;color:white;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer">📤 Upload</button>
       <button id="iaPrintBtn" style="padding:10px 20px;background:#27ae60;color:white;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer">🖨️ Print</button>
       <button id="iaCloseBtn" style="padding:10px 20px;background:#e74c3c;color:white;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer">✕ Close</button>
     </div>
   </div>
-  <iframe id="iaFrame" style="flex:1;width:100%;border:none;background:white"></iframe>
-  <input type="file" id="iaFileInput" accept=".html,.htm" style="display:none">
+  <div id="iaLoading" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(155deg,#0a0f24,#141c38);color:#a5f3fc;font-family:Arial">
+    <div style="font-size:60px;animation:iaSpin 2s linear infinite">⚙️</div>
+    <p style="margin-top:20px;font-weight:bold;letter-spacing:2px;text-transform:uppercase">Loading Report...</p>
+  </div>
+  <iframe id="iaFrame" style="flex:1;width:100%;border:none;background:white;display:none"></iframe>
 </div>
 
 <script>
 (function(){
-  console.log('📊 Simple IA loaded');
-  
+  console.log('📊 Auto-load IA viewer loaded');
+
   var REPORTS = {
-    'genmath': { title:'General Mathematics', sub:'Grade 11 — St. Augustine' },
-    'sci7':    { title:'Science 7', sub:'Grade 7 — St. Michael' },
-    'sci8':    { title:'Science 8', sub:'Grade 8 — St. Mark' }
+    'genmath': { title:'General Mathematics', sub:'Grade 11 — St. Augustine', file:'General Mathematics.html' },
+    'sci7':    { title:'Science 7',           sub:'Grade 7 — St. Michael',      file:'Science 7 Analysis.html' },
+    'sci8':    { title:'Science 8',           sub:'Grade 8 — St. Mark',         file:'Science 8 Analysis.html' }
   };
-  
-  function enc(s){ try { return btoa(unescape(encodeURIComponent(s))); } catch(e){ return null; } }
-  function dec(b){ try { return decodeURIComponent(escape(atob(b))); } catch(e){ return null; } }
-  function get(id){ try { var b = localStorage.getItem('pocmlc_rep_'+id); return b ? dec(b) : null; } catch(e){ return null; } }
-  function set(id, h){ try { var b = enc(h); if(!b) return false; localStorage.setItem('pocmlc_rep_'+id, b); return true; } catch(e){ alert('Storage full'); return false; } }
-  
-  var currentId = null;
-  
+
+  var cache = {};
+
   function getSubj(){
     try {
       if(window.currentSubject && window.currentSubject.id) return window.currentSubject.id;
     } catch(e){}
     return null;
   }
-  
+
   var btn = document.getElementById('iaBtn');
   var modal = document.getElementById('iaModal');
   var frame = document.getElementById('iaFrame');
-  var fileInput = document.getElementById('iaFileInput');
-  
+  var loading = document.getElementById('iaLoading');
+  var currentId = null;
+
   btn.onclick = function(){
     var id = getSubj();
     if(!id || !REPORTS[id]){
@@ -2311,57 +2314,66 @@ init();
       return;
     }
     currentId = id;
-    document.getElementById('iaModalTitle').textContent = '📊 ' + REPORTS[id].title + ' — ' + REPORTS[id].sub;
+    var rep = REPORTS[id];
+    document.getElementById('iaModalTitle').textContent = '📊 ' + rep.title + ' — ' + rep.sub;
     modal.style.display = 'flex';
-    loadReport();
+    loadReport(id, rep);
   };
-  
-  function loadReport(){
-    var html = get(currentId);
-    if(!html){
-      frame.srcdoc = '<html><body style="display:flex;align-items:center;justify-content:center;height:100%;margin:0;font-family:Arial;background:#f0f4f8;color:#1a3a5c;text-align:center"><div style="padding:40px"><div style="font-size:80px">📁</div><h2 style="margin:20px 0">Report Not Uploaded</h2><p style="margin-bottom:30px;max-width:500px">I-click ang <b>📤 Upload</b> sa taas para i-upload ang HTML file ng item analysis.</p></div></body></html>';
+
+  function loadReport(id, rep){
+    loading.style.display = 'flex';
+    frame.style.display = 'none';
+    frame.srcdoc = '';
+
+    if(cache[id]){
+      console.log('📦 Using cached report for', id);
+      showHtml(cache[id]);
       return;
     }
+
+    console.log('🌐 Fetching', rep.file);
+    fetch(rep.file)
+      .then(function(r){
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function(html){
+        if(!html || html.length < 50) throw new Error('Empty file');
+        cache[id] = html;
+        console.log('✅ Loaded', rep.file, '(' + Math.round(html.length/1024) + 'KB)');
+        showHtml(html);
+      })
+      .catch(function(err){
+        console.error('❌ Fetch failed:', err);
+        loading.style.display = 'none';
+        frame.style.display = 'block';
+        frame.srcdoc = '<html><body style="display:flex;align-items:center;justify-content:center;height:100%;margin:0;font-family:Arial;background:#f0f4f8;color:#1a3a5c;text-align:center;padding:40px"><div><div style="font-size:80px">⚠️</div><h2 style="margin:20px 0">Hindi ma-load ang report</h2><p style="max-width:500px;line-height:1.7">Siguraduhing may file na <b>' + rep.file + '</b> sa parehong folder ng <b>index.html</b>.</p><p style="margin-top:20px;font-size:12px;opacity:.7">Error: ' + err.message + '</p></div></body></html>';
+      });
+  }
+
+  function showHtml(html){
+    loading.style.display = 'none';
+    frame.style.display = 'block';
     frame.srcdoc = html;
   }
-  
+
   document.getElementById('iaCloseBtn').onclick = function(){
     modal.style.display = 'none';
     frame.srcdoc = '';
   };
-  
-  document.getElementById('iaUploadBtn').onclick = function(){
-    if(!currentId){ alert('Pumunta muna sa Grade view.'); return; }
-    fileInput.click();
-  };
-  
-  fileInput.onchange = function(e){
-    var f = e.target.files[0];
-    if(!f) return;
-    var r = new FileReader();
-    r.onload = function(ev){
-      var html = ev.target.result;
-      if(!html || html.length < 50){ alert('Invalid file'); return; }
-      if(!set(currentId, html)) return;
-      alert('✅ Saved! Lalabas na ang report.');
-      loadReport();
-    };
-    r.readAsText(f);
-    e.target.value = '';
-  };
-  
+
   document.getElementById('iaPrintBtn').onclick = function(){
     try { frame.contentWindow.print(); } catch(e){ alert('Cannot print'); }
   };
-  
+
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){
       modal.style.display = 'none';
       frame.srcdoc = '';
     }
   });
-  
-  console.log('✅ Ready! Click the 📊 button bottom-right.');
+
+  console.log('✅ Ready! Reports auto-load from GitHub.');
 })();
 </script>
 </body>
