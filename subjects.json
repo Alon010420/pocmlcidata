@@ -1,0 +1,649 @@
+[
+  {
+    "id": "genmath",
+    "name": "General Mathematics",
+    "code": "MATH 11",
+    "grade": "Grade 11",
+    "section": "St. Augustine",
+    "teacher": "Jemmuel A. Alon",
+    "accent": "#22d3ee",
+    "accentGlow": "rgba(34,211,238,.35)",
+    "weights": {
+      "ww": 0.2,
+      "pt": 0.5,
+      "st": 0.3
+    },
+    "max": {
+      "ww": 10,
+      "pt": 40,
+      "st": 60
+    },
+    "students": [
+      {
+        "name": "ALEGARIO, JOEMARIE JR.",
+        "sex": "M",
+        "ww": 10,
+        "pt": 37,
+        "st": 47
+      },
+      {
+        "name": "BANTILING, MIKO CERBO",
+        "sex": "M",
+        "ww": 10,
+        "pt": 32,
+        "st": 44
+      },
+      {
+        "name": "DEALA, KARL EMMANUEL COBER",
+        "sex": "M",
+        "ww": 10,
+        "pt": 36,
+        "st": 46
+      },
+      {
+        "name": "DULAY, RYAN MARTINA",
+        "sex": "M",
+        "ww": 10,
+        "pt": null,
+        "st": null
+      },
+      {
+        "name": "GENTILES, LUIGI BUENDIA",
+        "sex": "M",
+        "ww": 10,
+        "pt": 34,
+        "st": 36
+      },
+      {
+        "name": "GEONZON, KENT ASH CASTILLO",
+        "sex": "M",
+        "ww": 10,
+        "pt": 33,
+        "st": 45
+      },
+      {
+        "name": "HIPULAN, KIRTH JOSHUA",
+        "sex": "M",
+        "ww": 10,
+        "pt": 34,
+        "st": null
+      },
+      {
+        "name": "HOCAMIS, LANZ TANCONTIAN",
+        "sex": "M",
+        "ww": 10,
+        "pt": 34,
+        "st": 44
+      },
+      {
+        "name": "LIRAY, GLENN C.",
+        "sex": "M",
+        "ww": 10,
+        "pt": 33,
+        "st": 44
+      },
+      {
+        "name": "PACHECO, ALJUR TABEROS",
+        "sex": "M",
+        "ww": 10,
+        "pt": 33,
+        "st": 48
+      },
+      {
+        "name": "SONGCOG, JUNE RIANE DOMOCOL",
+        "sex": "M",
+        "ww": 10,
+        "pt": 32,
+        "st": 44
+      },
+      {
+        "name": "TOL, JOHN ZEDRICK HIPULAN",
+        "sex": "M",
+        "ww": 10,
+        "pt": 32,
+        "st": 40
+      },
+      {
+        "name": "AZUCENA, RHIZZEL KATE BITOONON",
+        "sex": "F",
+        "ww": 10,
+        "pt": 33,
+        "st": 44
+      },
+      {
+        "name": "BALOO, REGINE TOTO",
+        "sex": "F",
+        "ww": 10,
+        "pt": 33,
+        "st": 43
+      },
+      {
+        "name": "CABISTANTE, DANICA TANTING",
+        "sex": "F",
+        "ww": 10,
+        "pt": 34,
+        "st": 40
+      },
+      {
+        "name": "CARGASON, PRINCESS SOFIA MORALES",
+        "sex": "F",
+        "ww": 10,
+        "pt": 34,
+        "st": 31
+      },
+      {
+        "name": "DAGOHOY, RECY MAE LAPIS",
+        "sex": "F",
+        "ww": 10,
+        "pt": 36,
+        "st": 39
+      },
+      {
+        "name": "LAGSILA, ABIGAIL ABA",
+        "sex": "F",
+        "ww": 10,
+        "pt": 35,
+        "st": null
+      },
+      {
+        "name": "LANGOTE, RENA SHANE COLIS",
+        "sex": "F",
+        "ww": 10,
+        "pt": 35,
+        "st": 29
+      },
+      {
+        "name": "PANDATO, AVELLA BACUS",
+        "sex": "F",
+        "ww": 10,
+        "pt": 34,
+        "st": null
+      },
+      {
+        "name": "PANDIAN, BEA ATHENA LUANA",
+        "sex": "F",
+        "ww": 10,
+        "pt": 35,
+        "st": 39
+      },
+      {
+        "name": "PANGILAN, SHAYNE AKEASHA MANDUON",
+        "sex": "F",
+        "ww": 10,
+        "pt": 35,
+        "st": 31
+      },
+      {
+        "name": "SABA, HONEY SUMANDIG",
+        "sex": "F",
+        "ww": 10,
+        "pt": 35,
+        "st": 25
+      }
+    ]
+  },
+  {
+    "id": "sci7",
+    "name": "Science 7",
+    "code": "SCI 7",
+    "grade": "Grade 7",
+    "section": "St. Michael",
+    "teacher": "Jemmuel A. Alon",
+    "accent": "#a855f7",
+    "accentGlow": "rgba(168,85,247,.35)",
+    "weights": {
+      "ww": 0.2,
+      "pt": 0.5,
+      "st": 0.3
+    },
+    "max": {
+      "ww": 20,
+      "pt": 30,
+      "st": 50
+    },
+    "students": [
+      {
+        "name": "AMPON, ARCHIE, ESCOBAR",
+        "sex": "M",
+        "ww": 17,
+        "pt": 28,
+        "st": 42
+      },
+      {
+        "name": "CARGASON, PRINCE ZHOUREN, SUELLO",
+        "sex": "M",
+        "ww": 18,
+        "pt": 25,
+        "st": 40
+      },
+      {
+        "name": "DAGOHOY, YUAN JHON, LAPIZ",
+        "sex": "M",
+        "ww": 17,
+        "pt": 25,
+        "st": 31
+      },
+      {
+        "name": "GOMEZ, KEAN ELEAZAR, WALO",
+        "sex": "M",
+        "ww": 20,
+        "pt": 25,
+        "st": 41
+      },
+      {
+        "name": "GRAVATA, KHEN CEDRIC, SANCOVER",
+        "sex": "M",
+        "ww": 17,
+        "pt": 25,
+        "st": 44
+      },
+      {
+        "name": "PAGAGAO, WINDELL, ABA",
+        "sex": "M",
+        "ww": 17,
+        "pt": 26,
+        "st": 36
+      },
+      {
+        "name": "SABID, JHON PAUL, PANDAYAN",
+        "sex": "M",
+        "ww": 20,
+        "pt": 25,
+        "st": 36
+      },
+      {
+        "name": "SABID, JHON PETER, PANDAYAN",
+        "sex": "M",
+        "ww": 20,
+        "pt": 25,
+        "st": 36
+      },
+      {
+        "name": "TABORADA, BRYANT CHRIS, CAMINGAWAN",
+        "sex": "M",
+        "ww": 20,
+        "pt": 25,
+        "st": 32
+      },
+      {
+        "name": "ANTONIO, PRINCESS KAYE, TOSAN",
+        "sex": "F",
+        "ww": 19,
+        "pt": 25,
+        "st": 31
+      },
+      {
+        "name": "DAGOHOY, JAYMAE, INSEPIDO",
+        "sex": "F",
+        "ww": 18,
+        "pt": 27,
+        "st": 41
+      },
+      {
+        "name": "GALLARDO, ZHEINNADEN, LOPEZ",
+        "sex": "F",
+        "ww": 17,
+        "pt": 27,
+        "st": 38
+      },
+      {
+        "name": "JUMAWID, JOELIANA DHARLIZ, DIOQUINO",
+        "sex": "F",
+        "ww": null,
+        "pt": null,
+        "st": null
+      },
+      {
+        "name": "LAYA, ARIAN, BUDIONG",
+        "sex": "F",
+        "ww": 20,
+        "pt": 29,
+        "st": 44
+      },
+      {
+        "name": "MAGPANULONG, JENNELYN, SANIEL",
+        "sex": "F",
+        "ww": 20,
+        "pt": 26,
+        "st": 20
+      },
+      {
+        "name": "OMAS, PRECIOUS KHATE, PELAYO",
+        "sex": "F",
+        "ww": null,
+        "pt": null,
+        "st": null
+      },
+      {
+        "name": "PALAPAN, RICH MAE, LEYA",
+        "sex": "F",
+        "ww": 18,
+        "pt": 28,
+        "st": 34
+      },
+      {
+        "name": "PANDATU, JENEROSE, ALINSUNOG",
+        "sex": "F",
+        "ww": 17,
+        "pt": 25,
+        "st": 39
+      },
+      {
+        "name": "RAFAEL, JASMINE, TALINO",
+        "sex": "F",
+        "ww": 17,
+        "pt": 28,
+        "st": 36
+      },
+      {
+        "name": "SERINO, RHEIAN KHATE, OSOTEO",
+        "sex": "F",
+        "ww": 18,
+        "pt": 28,
+        "st": 36
+      },
+      {
+        "name": "TIPDAS, ALTHEA, BALOLO",
+        "sex": "F",
+        "ww": 17,
+        "pt": 28,
+        "st": 39
+      },
+      {
+        "name": "VIGAFRIA, REIDONNA THESSIA, MAQUITED",
+        "sex": "F",
+        "ww": 20,
+        "pt": 29,
+        "st": 40
+      },
+      {
+        "name": "VILLAGONZALO, DYAN BEATRIX, VIGAFRIA",
+        "sex": "F",
+        "ww": 20,
+        "pt": 29,
+        "st": 44
+      }
+    ]
+  },
+  {
+    "id": "sci8",
+    "name": "Science 8",
+    "code": "SCI 8",
+    "grade": "Grade 8",
+    "section": "St. Mark",
+    "teacher": "Jemmuel A. Alon",
+    "accent": "#ec4899",
+    "accentGlow": "rgba(236,72,153,.35)",
+    "weights": {
+      "ww": 0.2,
+      "pt": 0.5,
+      "st": 0.3
+    },
+    "max": {
+      "ww": 10,
+      "pt": 30,
+      "st": 100
+    },
+    "students": [
+      {
+        "name": "ARTIAGA, PATRICK, MATUS",
+        "sex": "M",
+        "ww": 10,
+        "pt": 20,
+        "st": 77
+      },
+      {
+        "name": "AYAO, FRANCIS, REMANDO",
+        "sex": "M",
+        "ww": null,
+        "pt": null,
+        "st": null
+      },
+      {
+        "name": "BACOMO, BRYAN JIN, -",
+        "sex": "M",
+        "ww": 10,
+        "pt": 30,
+        "st": 89
+      },
+      {
+        "name": "BALBUENA, JHON CUPID, MIRAFUENTES",
+        "sex": "M",
+        "ww": 10,
+        "pt": 28,
+        "st": 90
+      },
+      {
+        "name": "BALIGUAT, JAYVE, YBANEZ",
+        "sex": "M",
+        "ww": 10,
+        "pt": 23,
+        "st": 66
+      },
+      {
+        "name": "BERNARDINO, LEXUS JAY, ESPAÑOLA",
+        "sex": "M",
+        "ww": 10,
+        "pt": 23,
+        "st": 61
+      },
+      {
+        "name": "CAGNAAN, JOHN GERRY, CARGASON",
+        "sex": "M",
+        "ww": 10,
+        "pt": 25,
+        "st": 75
+      },
+      {
+        "name": "DEALA, JAN IAN KIER, COBER",
+        "sex": "M",
+        "ww": 10,
+        "pt": 25,
+        "st": 77
+      },
+      {
+        "name": "DIALANE, DENNIS, JR MANIALON",
+        "sex": "M",
+        "ww": 10,
+        "pt": 27,
+        "st": 62
+      },
+      {
+        "name": "DURADO, PRINCE DAVID, PROVIDO",
+        "sex": "M",
+        "ww": 10,
+        "pt": 25,
+        "st": 46
+      },
+      {
+        "name": "EMEJAS, JOSHUA, JEMENIS",
+        "sex": "M",
+        "ww": 10,
+        "pt": 27,
+        "st": 75
+      },
+      {
+        "name": "GONZALES, NAJ EINO, LIRAY",
+        "sex": "M",
+        "ww": 10,
+        "pt": 20,
+        "st": 85
+      },
+      {
+        "name": "LIRAY, JAN NICO MARI, COBER",
+        "sex": "M",
+        "ww": 10,
+        "pt": 20,
+        "st": 72
+      },
+      {
+        "name": "MALAYON, ROMAR, ELON",
+        "sex": "M",
+        "ww": 6,
+        "pt": 29,
+        "st": 53
+      },
+      {
+        "name": "MANZANO, JAMES CARL, JUMAMOY",
+        "sex": "M",
+        "ww": 10,
+        "pt": 27,
+        "st": 78
+      },
+      {
+        "name": "MARTINEZ, EMMANUEL, COLOBONG",
+        "sex": "M",
+        "ww": 10,
+        "pt": 27,
+        "st": 65
+      },
+      {
+        "name": "MASUCOL, CLARK KENT, PALLADO",
+        "sex": "M",
+        "ww": 9,
+        "pt": 26,
+        "st": 55
+      },
+      {
+        "name": "NUCOS, ARIEL, LOPEZ",
+        "sex": "M",
+        "ww": 4,
+        "pt": 27,
+        "st": 61
+      },
+      {
+        "name": "OCHIA, YUHAN, DAVIS",
+        "sex": "M",
+        "ww": 9,
+        "pt": 26,
+        "st": 65
+      },
+      {
+        "name": "PANDAYAN, CHRIS JOHN REY, TAGUSE",
+        "sex": "M",
+        "ww": 9,
+        "pt": 24,
+        "st": 43
+      },
+      {
+        "name": "PANGILAN, FRITZ BON JAMES, MALILA",
+        "sex": "M",
+        "ww": 10,
+        "pt": 25,
+        "st": 66
+      },
+      {
+        "name": "PANTINOPLE, ROSH NATHAN, SARDIDO",
+        "sex": "M",
+        "ww": 10,
+        "pt": 27,
+        "st": 71
+      },
+      {
+        "name": "RIMANDO, JUNREY, REMOLLO",
+        "sex": "M",
+        "ww": 8,
+        "pt": 20,
+        "st": 67
+      },
+      {
+        "name": "TAWARO, REYMARK JOHN, PANDATO",
+        "sex": "M",
+        "ww": 5,
+        "pt": 27,
+        "st": 58
+      },
+      {
+        "name": "TUBO, NELMARK, AVELINO",
+        "sex": "M",
+        "ww": null,
+        "pt": null,
+        "st": null
+      },
+      {
+        "name": "APAYART, VICTORIA, ANSAN",
+        "sex": "F",
+        "ww": 10,
+        "pt": 28,
+        "st": 83
+      },
+      {
+        "name": "CALAMAGAN, MARA, AVELINO",
+        "sex": "F",
+        "ww": 6,
+        "pt": null,
+        "st": 31
+      },
+      {
+        "name": "CAMEROS, AYISHA DAWN, ALINDAO",
+        "sex": "F",
+        "ww": 10,
+        "pt": 29,
+        "st": 92
+      },
+      {
+        "name": "CASADOR, JEHARAH MARIONNE, AGUILA",
+        "sex": "F",
+        "ww": 10,
+        "pt": 27,
+        "st": 79
+      },
+      {
+        "name": "FERNANDO, CRISTAL KATE, -",
+        "sex": "F",
+        "ww": 5,
+        "pt": 27,
+        "st": 51
+      },
+      {
+        "name": "GELDORE, PRINCESS, MANSIGIN",
+        "sex": "F",
+        "ww": 8,
+        "pt": 20,
+        "st": 63
+      },
+      {
+        "name": "GEVELA, ALYSSA, CAÑETE",
+        "sex": "F",
+        "ww": 10,
+        "pt": 20,
+        "st": 86
+      },
+      {
+        "name": "MACATONAO, FIONA VENIZE, GOTONG",
+        "sex": "F",
+        "ww": 10,
+        "pt": 20,
+        "st": 66
+      },
+      {
+        "name": "MANANGKA, JASMINE, SALAN",
+        "sex": "F",
+        "ww": null,
+        "pt": null,
+        "st": null
+      },
+      {
+        "name": "MILLAMA, SOPHIA GLAE, LEGASPI",
+        "sex": "F",
+        "ww": 10,
+        "pt": 30,
+        "st": 82
+      },
+      {
+        "name": "PARDILLA, ASHLEY NICOLE, PANERIO",
+        "sex": "F",
+        "ww": 9,
+        "pt": 28,
+        "st": 64
+      },
+      {
+        "name": "YATA, MICHELLE S.",
+        "sex": "F",
+        "ww": 9,
+        "pt": 20,
+        "st": 66
+      }
+    ]
+  }
+]
