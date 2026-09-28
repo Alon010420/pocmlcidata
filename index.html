@@ -2682,5 +2682,446 @@ if(name.length < 3) continue;
   else setTimeout(init, 500);
 })();
 </script>   
+ <!-- ============ ROBUST SAVE + NAME EDIT FIX ============ -->
+<script>
+(function(){
+  'use strict';
+  console.log('🔧 Robust Save Fix loading...');
+
+  function el(id){ return document.getElementById(id); }
+
+  // ===== FORCE SAVE WITH VISUAL FEEDBACK =====
+  window.saveAllGrades = function(){
+    console.log('💾 Save triggered');
+
+    var sel = el('studentSubjectSelect');
+    if(!sel){ alert('❌ Walang subject selector'); return; }
+
+    var idx = parseInt(sel.value);
+    if(isNaN(idx)) idx = 0;
+
+    // Get subjects — use window._liveSubjects if available
+    var all;
+    try {
+      all = (window._liveSubjects && window._liveSubjects.length) 
+        ? JSON.parse(JSON.stringify(window._liveSubjects)) 
+        : (typeof getSubjects === 'function' ? JSON.parse(JSON.stringify(getSubjects())) : null);
+    } catch(e){
+      console.error('❌ Error getting subjects:', e);
+      alert('❌ Error: ' + e.message);
+      return;
+    }
+
+    if(!all || !all[idx]){ alert('❌ Walang subject sa index ' + idx); return; }
+
+    // Get form data
+    var forms = document.querySelectorAll('#studentsEditor .edit-form');
+    console.log('📋 Forms found:', forms.length);
+
+    if(!forms.length){ alert('❌ Walang forms sa editor'); return; }
+
+    var newStudents = [];
+    var errors = [];
+
+    for(var i = 0; i < forms.length; i++){
+      var form = forms[i];
+      try {
+        var nameInp = form.querySelector('.edit-name');
+        var sexInp = form.querySelector('.edit-sex');
+        var wwInp = form.querySelector('.edit-ww');
+        var ptInp = form.querySelector('.edit-pt');
+        var stInp = form.querySelector('.edit-st');
+
+        if(!nameInp || !sexInp || !wwInp || !ptInp || !stInp){
+          errors.push('Form ' + (i+1) + ': missing inputs');
+          continue;
+        }
+
+        // ⭐ PRESERVE EXACT STRING — don't trim too much
+        var name = nameInp.value;
+        // Trim only leading/trailing spaces
+        name = name.replace(/^\s+|\s+$/g, '');
+
+        // Skip empty rows
+        if(!name) continue;
+
+        var wwV = wwInp.value.trim();
+        var ptV = ptInp.value.trim();
+        var stV = stInp.value.trim();
+
+        var ww = wwV === '' ? null : parseFloat(wwV);
+        var pt = ptV === '' ? null : parseFloat(ptV);
+        var st = stV === '' ? null : parseFloat(stV);
+
+        if(ww !== null && isNaN(ww)) ww = null;
+        if(pt !== null && isNaN(pt)) pt = null;
+        if(st !== null && isNaN(st)) st = null;
+
+        newStudents.push({
+          name: name,
+          sex: sexInp.value,
+          ww: ww,
+          pt: pt,
+          st: st
+        });
+      } catch(e){
+        errors.push('Form ' + (i+1) + ': ' + e.message);
+      }
+    }
+
+    if(!newStudents.length){
+      alert('❌ Walang valid students. Errors: ' + errors.join('; '));
+      return;
+    }
+
+    if(errors.length){
+      console.warn('⚠️ Some errors:', errors);
+    }
+
+    // Save
+    all[idx].students = newStudents;
+
+    try {
+      // Save to localStorage
+      localStorage.setItem('pocmlc_subjects', JSON.stringify(all));
+
+      // Update memory
+      window._liveSubjects = all;
+
+      // Also update via original function if exists
+      if(typeof _origSaveSubjects === 'function'){
+        _origSaveSubjects(all);
+      }
+
+      console.log('✅ Saved', newStudents.length, 'students to localStorage');
+    } catch(e){
+      console.error('❌ Save failed:', e);
+      alert('❌ Save failed: ' + e.message);
+      return;
+    }
+
+    // Re-render
+    if(typeof renderStudentsEditor === 'function'){
+      try { renderStudentsEditor(); } catch(e){ console.warn(e); }
+    }
+    if(typeof renderHome === 'function'){
+      try { renderHome(); } catch(e){ console.warn(e); }
+    }
+
+    // Success feedback — big toast
+    showBigToast('✅ Saved ' + newStudents.length + ' students!\n\n' +
+                 '⚠️ IMPORTANTE: Pumunta sa 💾 Data tab → click "🚀 Download subjects.json" → upload sa GitHub para makita ng lahat.');
+  };
+
+  // ===== BIG TOAST =====
+  function showBigToast(msg){
+    var old = document.getElementById('bigToast');
+    if(old) old.remove();
+
+    var t = document.createElement('div');
+    t.id = 'bigToast';
+    t.style.cssText = 'position:fixed;top:30px;left:50%;transform:translateX(-50%);z-index:99999;padding:20px 30px;border-radius:14px;background:linear-gradient(135deg,rgba(16,185,129,.95),rgba(5,150,105,.95));border:2px solid rgba(255,255,255,.3);color:#fff;font-size:14px;font-weight:700;box-shadow:0 20px 60px -10px rgba(16,185,129,.8);max-width:90vw;text-align:center;white-space:pre-line;line-height:1.6;font-family:Arial';
+
+    t.textContent = msg;
+    document.body.appendChild(t);
+
+    setTimeout(function(){
+      t.style.transition = 'all .5s';
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(-30px)';
+      setTimeout(function(){ t.remove(); }, 500);
+    }, 4000);
+  }
+
+  // ===== WIRE SAVE BUTTON =====
+  function wireSaveBtn(){
+    var btn = el('saveGradesBtn');
+    if(!btn) return;
+    if(btn.dataset.wired === 'yes') return;
+
+    var clone = btn.cloneNode(true);
+    btn.parentNode.replaceChild(clone, btn);
+    clone.onclick = window.saveAllGrades;
+    clone.dataset.wired = 'yes';
+    console.log('🔧 Save button wired');
+  }
+
+  // ===== AUTO-SAVE ON BLUR =====
+  function enableAutoSave(){
+    var editor = el('studentsEditor');
+    if(!editor) return;
+    if(editor.dataset.autosave === 'on') return;
+
+    editor.addEventListener('change', function(e){
+      var target = e.target;
+      if(target.classList.contains('edit-name') ||
+         target.classList.contains('edit-sex') ||
+         target.classList.contains('edit-ww') ||
+         target.classList.contains('edit-pt') ||
+         target.classList.contains('edit-st')){
+        console.log('✏️ Field changed — saving...');
+        setTimeout(window.saveAllGrades, 200);
+      }
+    });
+
+    editor.dataset.autosave = 'on';
+    console.log('🔧 Auto-save enabled');
+  }
+
+  // ===== INIT =====
+  function init(){
+    setTimeout(function(){
+      wireSaveBtn();
+      enableAutoSave();
+    }, 1000);
+
+    // Re-hook on tab change
+    document.querySelectorAll('.admin-tab').forEach(function(t){
+      t.addEventListener('click', function(){
+        setTimeout(function(){
+          wireSaveBtn();
+          enableAutoSave();
+        }, 300);
+      });
+    });
+
+    // Observer for editor changes
+    var obs = new MutationObserver(function(){
+      wireSaveBtn();
+      enableAutoSave();
+    });
+    var ed = el('studentsEditor');
+    if(ed) obs.observe(ed, { childList: true, subtree: false });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    setTimeout(init, 800);
+  }
+
+  console.log('✅ Robust Save Fix loaded!');
+})();
+</script><!-- ============ ROBUST SAVE + NAME EDIT FIX ============ -->
+<script>
+(function(){
+  'use strict';
+  console.log('🔧 Robust Save Fix loading...');
+
+  function el(id){ return document.getElementById(id); }
+
+  // ===== FORCE SAVE WITH VISUAL FEEDBACK =====
+  window.saveAllGrades = function(){
+    console.log('💾 Save triggered');
+
+    var sel = el('studentSubjectSelect');
+    if(!sel){ alert('❌ Walang subject selector'); return; }
+
+    var idx = parseInt(sel.value);
+    if(isNaN(idx)) idx = 0;
+
+    // Get subjects — use window._liveSubjects if available
+    var all;
+    try {
+      all = (window._liveSubjects && window._liveSubjects.length) 
+        ? JSON.parse(JSON.stringify(window._liveSubjects)) 
+        : (typeof getSubjects === 'function' ? JSON.parse(JSON.stringify(getSubjects())) : null);
+    } catch(e){
+      console.error('❌ Error getting subjects:', e);
+      alert('❌ Error: ' + e.message);
+      return;
+    }
+
+    if(!all || !all[idx]){ alert('❌ Walang subject sa index ' + idx); return; }
+
+    // Get form data
+    var forms = document.querySelectorAll('#studentsEditor .edit-form');
+    console.log('📋 Forms found:', forms.length);
+
+    if(!forms.length){ alert('❌ Walang forms sa editor'); return; }
+
+    var newStudents = [];
+    var errors = [];
+
+    for(var i = 0; i < forms.length; i++){
+      var form = forms[i];
+      try {
+        var nameInp = form.querySelector('.edit-name');
+        var sexInp = form.querySelector('.edit-sex');
+        var wwInp = form.querySelector('.edit-ww');
+        var ptInp = form.querySelector('.edit-pt');
+        var stInp = form.querySelector('.edit-st');
+
+        if(!nameInp || !sexInp || !wwInp || !ptInp || !stInp){
+          errors.push('Form ' + (i+1) + ': missing inputs');
+          continue;
+        }
+
+        // ⭐ PRESERVE EXACT STRING — don't trim too much
+        var name = nameInp.value;
+        // Trim only leading/trailing spaces
+        name = name.replace(/^\s+|\s+$/g, '');
+
+        // Skip empty rows
+        if(!name) continue;
+
+        var wwV = wwInp.value.trim();
+        var ptV = ptInp.value.trim();
+        var stV = stInp.value.trim();
+
+        var ww = wwV === '' ? null : parseFloat(wwV);
+        var pt = ptV === '' ? null : parseFloat(ptV);
+        var st = stV === '' ? null : parseFloat(stV);
+
+        if(ww !== null && isNaN(ww)) ww = null;
+        if(pt !== null && isNaN(pt)) pt = null;
+        if(st !== null && isNaN(st)) st = null;
+
+        newStudents.push({
+          name: name,
+          sex: sexInp.value,
+          ww: ww,
+          pt: pt,
+          st: st
+        });
+      } catch(e){
+        errors.push('Form ' + (i+1) + ': ' + e.message);
+      }
+    }
+
+    if(!newStudents.length){
+      alert('❌ Walang valid students. Errors: ' + errors.join('; '));
+      return;
+    }
+
+    if(errors.length){
+      console.warn('⚠️ Some errors:', errors);
+    }
+
+    // Save
+    all[idx].students = newStudents;
+
+    try {
+      // Save to localStorage
+      localStorage.setItem('pocmlc_subjects', JSON.stringify(all));
+
+      // Update memory
+      window._liveSubjects = all;
+
+      // Also update via original function if exists
+      if(typeof _origSaveSubjects === 'function'){
+        _origSaveSubjects(all);
+      }
+
+      console.log('✅ Saved', newStudents.length, 'students to localStorage');
+    } catch(e){
+      console.error('❌ Save failed:', e);
+      alert('❌ Save failed: ' + e.message);
+      return;
+    }
+
+    // Re-render
+    if(typeof renderStudentsEditor === 'function'){
+      try { renderStudentsEditor(); } catch(e){ console.warn(e); }
+    }
+    if(typeof renderHome === 'function'){
+      try { renderHome(); } catch(e){ console.warn(e); }
+    }
+
+    // Success feedback — big toast
+    showBigToast('✅ Saved ' + newStudents.length + ' students!\n\n' +
+                 '⚠️ IMPORTANTE: Pumunta sa 💾 Data tab → click "🚀 Download subjects.json" → upload sa GitHub para makita ng lahat.');
+  };
+
+  // ===== BIG TOAST =====
+  function showBigToast(msg){
+    var old = document.getElementById('bigToast');
+    if(old) old.remove();
+
+    var t = document.createElement('div');
+    t.id = 'bigToast';
+    t.style.cssText = 'position:fixed;top:30px;left:50%;transform:translateX(-50%);z-index:99999;padding:20px 30px;border-radius:14px;background:linear-gradient(135deg,rgba(16,185,129,.95),rgba(5,150,105,.95));border:2px solid rgba(255,255,255,.3);color:#fff;font-size:14px;font-weight:700;box-shadow:0 20px 60px -10px rgba(16,185,129,.8);max-width:90vw;text-align:center;white-space:pre-line;line-height:1.6;font-family:Arial';
+
+    t.textContent = msg;
+    document.body.appendChild(t);
+
+    setTimeout(function(){
+      t.style.transition = 'all .5s';
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(-30px)';
+      setTimeout(function(){ t.remove(); }, 500);
+    }, 4000);
+  }
+
+  // ===== WIRE SAVE BUTTON =====
+  function wireSaveBtn(){
+    var btn = el('saveGradesBtn');
+    if(!btn) return;
+    if(btn.dataset.wired === 'yes') return;
+
+    var clone = btn.cloneNode(true);
+    btn.parentNode.replaceChild(clone, btn);
+    clone.onclick = window.saveAllGrades;
+    clone.dataset.wired = 'yes';
+    console.log('🔧 Save button wired');
+  }
+
+  // ===== AUTO-SAVE ON BLUR =====
+  function enableAutoSave(){
+    var editor = el('studentsEditor');
+    if(!editor) return;
+    if(editor.dataset.autosave === 'on') return;
+
+    editor.addEventListener('change', function(e){
+      var target = e.target;
+      if(target.classList.contains('edit-name') ||
+         target.classList.contains('edit-sex') ||
+         target.classList.contains('edit-ww') ||
+         target.classList.contains('edit-pt') ||
+         target.classList.contains('edit-st')){
+        console.log('✏️ Field changed — saving...');
+        setTimeout(window.saveAllGrades, 200);
+      }
+    });
+
+    editor.dataset.autosave = 'on';
+    console.log('🔧 Auto-save enabled');
+  }
+
+  // ===== INIT =====
+  function init(){
+    setTimeout(function(){
+      wireSaveBtn();
+      enableAutoSave();
+    }, 1000);
+
+    // Re-hook on tab change
+    document.querySelectorAll('.admin-tab').forEach(function(t){
+      t.addEventListener('click', function(){
+        setTimeout(function(){
+          wireSaveBtn();
+          enableAutoSave();
+        }, 300);
+      });
+    });
+
+    // Observer for editor changes
+    var obs = new MutationObserver(function(){
+      wireSaveBtn();
+      enableAutoSave();
+    });
+    var ed = el('studentsEditor');
+    if(ed) obs.observe(ed, { childList: true, subtree: false });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    setTimeout(init, 800);
+  }
+
+  console.log('✅ Robust Save Fix loaded!');
+})();
+</script>
 </body>
 </html>
