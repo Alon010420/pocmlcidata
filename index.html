@@ -2533,13 +2533,31 @@ init();
         var currentSex = 'M';
         var startRow = maleRow >= 0 ? maleRow + 1 : 11;
         for(var i = startRow; i < rows.length; i++){
-          var first = String(rows[i][0] || '').trim().toUpperCase();
-          if(first.indexOf('FEMALE') !== -1){ currentSex = 'F'; continue; }
-          if(!first) continue;
-          if(/^\d+$/.test(first)) continue;
+          // Auto-detect: if column A is number, use column B for name
+var colA = String(rows[i][0] || '').trim();
+var colB = String(rows[i][1] || '').trim();
 
-          var name = String(rows[i][0] || '').trim();
-          if(name.length < 3) continue;
+// Skip section headers
+var colAUpper = colA.toUpperCase();
+var colBUpper = colB.toUpperCase();
+if(colAUpper.indexOf('FEMALE') !== -1){ currentSex = 'F'; continue; }
+if(colAUpper.indexOf('MALE') !== -1 && colA.length < 8) continue;
+if(colAUpper.indexOf('LEARNERS') !== -1) continue;
+if(colBUpper.indexOf('LEARNERS') !== -1) continue;
+if(colAUpper.indexOf('HIGHEST') !== -1) continue;
+if(colAUpper.indexOf('SCORE') !== -1) continue;
+
+// Detect name — from column A or B
+var name = '';
+if(/^\d+$/.test(colA) && colB.length > 3){
+  name = colB;  // Excel row number pattern — name in column B
+} else if(colA.length > 3 && !/^\d+$/.test(colA)){
+  name = colA;  // Name in column A
+} else {
+  continue;  // Skip empty rows
+}
+
+if(name.length < 3) continue;
 
           var ww = parseFloat(rows[i][colWW]);
           var pt = parseFloat(rows[i][colPT]);
