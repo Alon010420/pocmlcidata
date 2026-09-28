@@ -3471,5 +3471,313 @@ body.light-theme .admin-term-mini button{color:#475569}
   console.log('✅ Term Selector add-on loaded!');
 })();
 </script>
+ <!-- ============ MAINTENANCE MODE ============ -->
+<script>
+(function(){
+  'use strict';
+  console.log('🚧 Maintenance Mode loading...');
+
+  function el(id){ return document.getElementById(id); }
+  function sGet(k, def){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } }
+  function sSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+
+  var OVERLAY_ID = 'maintenanceOverlay';
+
+  function getMaintenanceState(){
+    var state = sGet('pocmlc_maintenance', null);
+    if (!state) return { active: false, message: '' };
+    return state;
+  }
+
+  function isAdmin(){
+    try {
+      var sess = sGet('pocmlc_session', null);
+      return sess && sess.type === 'admin';
+    } catch(e){ return false; }
+  }
+
+  function showMaintenanceOverlay(state){
+    if (el(OVERLAY_ID)) return;
+
+    var overlay = document.createElement('div');
+    overlay.id = OVERLAY_ID;
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:radial-gradient(ellipse at center,#0a0f24 0%,#02040d 100%);display:flex;align-items:center;justify-content:center;padding:20px;font-family:Arial,sans-serif;overflow:hidden';
+
+    overlay.innerHTML =
+      '<div style="position:absolute;inset:0;background-image:linear-gradient(rgba(34,211,238,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.05) 1px,transparent 1px);background-size:50px 50px;animation:mtGrid 20s linear infinite;pointer-events:none"></div>' +
+      '<div style="position:relative;max-width:640px;width:100%;padding:50px 40px;border-radius:28px;background:linear-gradient(155deg,rgba(20,28,56,.9),rgba(10,15,36,.95));border:1px solid rgba(251,191,36,.5);box-shadow:0 40px 100px -20px rgba(251,191,36,.5),0 0 120px -40px rgba(236,72,153,.5);text-align:center;animation:mtIn .8s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(24px)">' +
+        '<div style="font-size:90px;margin-bottom:20px;animation:mtBounce 2s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(251,191,36,.9))">🚧</div>' +
+        '<h1 style="font-size:32px;font-weight:900;letter-spacing:-.5px;margin-bottom:12px;background:linear-gradient(90deg,#fbbf24,#ec4899,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% auto;animation:mtShine 4s linear infinite">Under Maintenance</h1>' +
+        '<div style="width:80px;height:3px;background:linear-gradient(90deg,#fbbf24,#ec4899);margin:0 auto 24px;border-radius:2px"></div>' +
+        '<p id="mtMsg" style="font-size:16px;line-height:1.7;color:#cbd5e1;margin-bottom:28px;white-space:pre-wrap;font-weight:500"></p>' +
+        '<div style="display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;color:#67e8f9;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:14px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.3);flex-wrap:wrap">' +
+          '<span style="width:8px;height:8px;border-radius:50%;background:#22d3ee;box-shadow:0 0 12px #22d3ee;animation:mtBlink 1.5s infinite"></span>' +
+          '<span>Please Standby • Live Updates in Progress</span>' +
+        '</div>' +
+        '<div style="margin-top:24px;font-size:11px;color:#64748b;letter-spacing:1px">' +
+          '<div>PABLO OMEREZ CEDEÑO MEMORIAL LEARNING CENTER, INC.</div>' +
+          '<div style="margin-top:6px" id="mtTime"></div>' +
+        '</div>' +
+      '</div>' +
+      '<style>' +
+        '@keyframes mtGrid{to{background-position:50px 50px}}' +
+        '@keyframes mtIn{from{opacity:0;transform:translateY(40px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}' +
+        '@keyframes mtBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}' +
+        '@keyframes mtShine{to{background-position:200% center}}' +
+        '@keyframes mtBlink{50%{opacity:.4}}' +
+        '@keyframes mtParticleFly{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--tx),var(--ty))}}' +
+        '.mt-particle{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:2147483647;animation:mtParticleFly 4s linear infinite}' +
+      '</style>';
+
+    document.body.appendChild(overlay);
+
+    el('mtMsg').textContent = state.message || 'This page is under updating, please standby.';
+
+    var timeEl = el('mtTime');
+    function updateTime(){
+      if (!timeEl) return;
+      timeEl.textContent = 'Status as of ' + new Date().toLocaleString();
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    var pColors = ['#22d3ee','#a855f7','#ec4899','#fbbf24','#10b981'];
+    setInterval(function(){
+      if (!el(OVERLAY_ID)) return;
+      var p = document.createElement('div');
+      p.className = 'mt-particle';
+      var col = pColors[Math.floor(Math.random() * pColors.length)];
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = '100vh';
+      p.style.background = col;
+      p.style.boxShadow = '0 0 20px ' + col;
+      p.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+      p.style.setProperty('--ty', -(400 + Math.random() * 400) + 'px');
+      document.body.appendChild(p);
+      setTimeout(function(x){ x.remove(); }, 4000, p);
+    }, 400);
+  }
+
+  function forceLogout(){
+    try { localStorage.removeItem('pocmlc_session'); } catch(e){}
+  }
+
+  function checkMaintenance(){
+    fetch('subjects.json?v=' + Date.now())
+      .then(function(r){ if (!r.ok) throw new Error('no file'); return r.json(); })
+      .then(function(data){
+        var remoteMaint = (data && data.maintenance) ? data.maintenance : null;
+        var local = getMaintenanceState();
+        var active = false;
+        var msg = '';
+
+        if (remoteMaint && remoteMaint.active) {
+          active = true;
+          msg = remoteMaint.message || 'This page is under updating, please standby.';
+        } else if (local && local.active) {
+          active = true;
+          msg = local.message || 'This page is under updating, please standby.';
+        }
+
+        if (active) {
+          sSet('pocmlc_maintenance', { active: true, message: msg, activatedAt: Date.now() });
+          if (isAdmin()) {
+            showAdminWarning(msg);
+          } else {
+            forceLogout();
+            showMaintenanceOverlay({ active: true, message: msg });
+          }
+        } else {
+          sSet('pocmlc_maintenance', { active: false, message: '' });
+        }
+      })
+      .catch(function(){
+        var local = getMaintenanceState();
+        if (local && local.active && !isAdmin()) {
+          forceLogout();
+          showMaintenanceOverlay(local);
+        }
+      });
+  }
+
+  function showAdminWarning(msg){
+    if (el('adminMaintBanner')) return;
+    var banner = document.createElement('div');
+    banner.id = 'adminMaintBanner';
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99998;background:linear-gradient(135deg,#fbbf24,#ec4899);color:#fff;padding:10px 20px;text-align:center;font-family:Arial;font-size:12px;font-weight:800;letter-spacing:1px;box-shadow:0 4px 20px rgba(0,0,0,.4)';
+    banner.innerHTML = '⚠️ MAINTENANCE MODE ACTIVE — Students cannot access. <button id="adminGoToMaint" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.4);color:#fff;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;margin-left:8px;font-family:inherit">Open Maintenance Tab</button>';
+    document.body.appendChild(banner);
+    document.body.style.paddingTop = '40px';
+
+    el('adminGoToMaint').onclick = function(){
+      var panel = el('adminPanel');
+      if (panel) {
+        panel.classList.add('show');
+        var tab = document.querySelector('.admin-tab[data-tab="maintenance"]');
+        if (tab) tab.click();
+      }
+    };
+  }
+
+  function addMaintenanceTab(){
+    var dataTab = document.querySelector('.admin-tab[data-tab="data"]');
+    if (!dataTab || document.querySelector('.admin-tab[data-tab="maintenance"]')) return;
+    var btn = document.createElement('button');
+    btn.className = 'admin-tab';
+    btn.setAttribute('data-tab', 'maintenance');
+    btn.textContent = '🚧 Maintenance';
+    dataTab.parentNode.insertBefore(btn, dataTab);
+
+    var dataSection = el('tab-data');
+    if (!dataSection) return;
+    var section = document.createElement('div');
+    section.className = 'admin-section';
+    section.id = 'tab-maintenance';
+    section.innerHTML =
+      '<div class="admin-card" style="border:2px solid rgba(251,191,36,.5);background:linear-gradient(135deg,rgba(251,191,36,.05),rgba(236,72,153,.05))">' +
+        '<h3>🚧 Maintenance Mode <span id="maintStatus" style="font-size:11px;font-weight:800;margin-left:8px"></span></h3>' +
+        '<div class="info-box warn">Kapag ACTIVE ito, lahat ng users (students) ay hindi makaka-access. Automatic silang ilo-logout at may full-screen notification na lalabas. Admin lang ang may access para i-off ito.</div>' +
+        '<div class="form-field" style="margin-top:12px">' +
+          '<label>Maintenance Message</label>' +
+          '<textarea id="maintMessage" style="min-height:120px;padding:14px;border-radius:10px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:13px;font-family:inherit;width:100%;resize:vertical;line-height:1.6" placeholder="This page is under updating, please standby...">This page is under updating, please standby.
+
+We are currently updating our system to serve you better.
+
+Please check back in a few minutes.</textarea>' +
+        '</div>' +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">' +
+          '<button class="btn danger" id="maintEnableBtn" style="padding:14px 28px;font-size:13px">🔴 Enable Maintenance Mode</button>' +
+          '<button class="btn success" id="maintDisableBtn" style="padding:14px 28px;font-size:13px">🟢 Disable Maintenance Mode</button>' +
+          '<button class="btn primary" id="maintPreviewBtn" style="padding:14px 28px;font-size:13px">👁️ Preview</button>' +
+        '</div>' +
+        '<div class="info-box" style="margin-top:16px">' +
+          '<b>📋 PAANO I-PUBLISH SA LAHAT:</b><br>' +
+          '1. Click <b>"🔴 Enable Maintenance Mode"</b><br>' +
+          '2. Pumunta sa <b>💾 Data</b> tab<br>' +
+          '3. Click <b>"🚀 Download subjects.json"</b><br>' +
+          '4. Upload sa GitHub → Commit<br>' +
+          '5. Wait 2 min → ✅ Lahat ng students blocked na!' +
+        '</div>' +
+      '</div>';
+
+    dataSection.parentNode.insertBefore(section, dataSection);
+
+    btn.onclick = function(){
+      document.querySelectorAll('.admin-tab').forEach(function(t){ t.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.admin-section').forEach(function(s){ s.classList.remove('active'); });
+      el('tab-maintenance').classList.add('active');
+      renderMaintStatus();
+    };
+
+    el('maintEnableBtn').onclick = function(){
+      var msg = el('maintMessage').value.trim();
+      if (!msg) { alert('Magsulat ng message.'); return; }
+      if (!confirm('⚠️ ENABLE MAINTENANCE MODE?\n\nLahat ng students ay ma-force logout at hindi makaka-access hanggang i-disable mo ito.')) return;
+      sSet('pocmlc_maintenance', { active: true, message: msg, activatedAt: Date.now() });
+      renderMaintStatus();
+      if (typeof showToast === 'function') showToast('🔴 Maintenance ON (local). Publish sa GitHub para lahat blocked.', 'success');
+      else alert('✅ Maintenance ON locally.\n\n⚠️ I-publish sa GitHub:\n💾 Data tab → 🚀 Download subjects.json → Upload sa GitHub');
+    };
+
+    el('maintDisableBtn').onclick = function(){
+      if (!confirm('Disable maintenance mode?')) return;
+      sSet('pocmlc_maintenance', { active: false, message: '' });
+      renderMaintStatus();
+      if (typeof showToast === 'function') showToast('🟢 Maintenance OFF (local). Publish para lahat access na.', 'success');
+      else alert('✅ Maintenance OFF locally.\n\n⚠️ I-publish ulit sa GitHub para lahat makapasok.');
+    };
+
+    el('maintPreviewBtn').onclick = function(){
+      var msg = el('maintMessage').value.trim() || 'This page is under updating, please standby.';
+      showMaintenanceOverlay({ active: true, message: msg });
+      // Add close button in preview mode
+      setTimeout(function(){
+        var ov = el(OVERLAY_ID);
+        if (ov && !el('mtPreviewClose')) {
+          var closeBtn = document.createElement('button');
+          closeBtn.id = 'mtPreviewClose';
+          closeBtn.textContent = '✕ Close Preview';
+          closeBtn.style.cssText = 'position:fixed;top:20px;right:20px;z-index:2147483647;background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.6);color:#fca5a5;padding:10px 20px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:Arial';
+          closeBtn.onclick = function(){ ov.remove(); closeBtn.remove(); };
+          document.body.appendChild(closeBtn);
+        }
+      }, 500);
+    };
+  }
+
+  function renderMaintStatus(){
+    var state = getMaintenanceState();
+    var st = el('maintStatus');
+    if (st) {
+      st.innerHTML = state.active
+        ? '<span style="color:#ef4444">🔴 ACTIVE</span>'
+        : '<span style="color:#10b981">🟢 INACTIVE</span>';
+    }
+    var ta = el('maintMessage');
+    if (ta && state.message) ta.value = state.message;
+  }
+
+  function hookPublish(){
+    var btn = el('publishBtn');
+    if (!btn || btn.dataset.maintHooked === 'yes') return;
+    var clone = btn.cloneNode(true);
+    btn.parentNode.replaceChild(clone, btn);
+    clone.dataset.maintHooked = 'yes';
+    clone.onclick = function(){
+      var allTerms = {};
+      [1,2,3].forEach(function(t){
+        var d = sGet('pocmlc_subjects_term' + t, null);
+        if (d && d.length) allTerms[t] = d;
+      });
+      var maint = getMaintenanceState();
+      var payload = {
+        version: 2,
+        currentTerm: sGet('pocmlc_current_term', 1),
+        terms: allTerms,
+        maintenance: { active: !!maint.active, message: maint.message || '' },
+        exportedAt: new Date().toISOString()
+      };
+      var json = JSON.stringify(payload, null, 2);
+      var blob = new Blob([json], { type:'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'subjects.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      if (typeof showToast === 'function') showToast('✅ subjects.json downloaded (with maintenance state)!', 'success');
+      else alert('✅ subjects.json downloaded!');
+    };
+  }
+
+  function init(){
+    setTimeout(checkMaintenance, 600);
+    setTimeout(addMaintenanceTab, 1500);
+    setTimeout(hookPublish, 1800);
+
+    document.querySelectorAll('.admin-tab').forEach(function(t){
+      t.addEventListener('click', function(){
+        setTimeout(addMaintenanceTab, 200);
+        setTimeout(hookPublish, 300);
+      });
+    });
+
+    var obs = new MutationObserver(function(){
+      if (el('adminPanel') && el('adminPanel').classList.contains('show')) {
+        setTimeout(addMaintenanceTab, 300);
+        setTimeout(hookPublish, 400);
+      }
+    });
+    var panel = el('adminPanel');
+    if (panel) obs.observe(panel, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 700);
+
+  console.log('✅ Maintenance Mode loaded!');
+})();
+</script>
 </body>
 </html>
