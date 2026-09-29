@@ -3656,25 +3656,17 @@ body.light-theme .admin-term-mini button{color:#475569}
           msg = local.message || 'This page is under updating, please standby.';
         }
 
-        if (active) {
+               if (active) {
           sSet('pocmlc_maintenance', { active: true, message: msg, activatedAt: Date.now() });
-          if (isAdmin()) {
-            showAdminWarning(msg);
-          } else {
-            forceLogout();
-            showMaintenanceOverlay({ active: true, message: msg });
-          }
+          // ⭐ Store for later use — huwag i-show sa login screen
+          window._maintMsg = msg;
+          window._maintActive = true;
+          console.log('⚠️ Maintenance is ACTIVE (message stored)');
         } else {
           sSet('pocmlc_maintenance', { active: false, message: '' });
+          window._maintMsg = '';
+          window._maintActive = false;
         }
-      })
-      .catch(function(){
-        var local = getMaintenanceState();
-        if (local && local.active && !isAdmin()) {
-          forceLogout();
-          showMaintenanceOverlay(local);
-        }
-      });
   }
 
   function showAdminWarning(msg){
