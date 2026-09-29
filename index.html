@@ -3557,12 +3557,89 @@ body.light-theme .admin-term-mini button{color:#475569}
       setTimeout(function(x){ x.remove(); }, 4000, p);
     }, 400);
   }
+  // ⭐ Check kung dapat i-block ang user AFTER login
+  function checkAndBlockAfterLogin(){
+    if (!window._maintActive) return false;
+    if (isAdmin()) return false;
+    showMaintenanceFor10s();
+    return true;
+  }
+
+  // ⭐ Show maintenance popup for 10 seconds, then logout
+  function showMaintenanceFor10s(){
+    var msg = window._maintMsg || 'This page is under updating, please standby.';
+    if (el(OVERLAY_ID)) return;
+    var overlay = document.createElement('div');
+    overlay.id = OVERLAY_ID;
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:radial-gradient(ellipse at center,#0a0f24 0%,#02040d 100%);display:flex;align-items:center;justify-content:center;padding:20px;font-family:Arial,sans-serif;overflow:hidden';
+    overlay.innerHTML =
+      '<div style="position:absolute;inset:0;background-image:linear-gradient(rgba(34,211,238,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(34,211,238,.05) 1px,transparent 1px);background-size:50px 50px;animation:mtGrid 20s linear infinite;pointer-events:none"></div>' +
+      '<div style="position:relative;max-width:640px;width:100%;padding:50px 40px;border-radius:28px;background:linear-gradient(155deg,rgba(20,28,56,.9),rgba(10,15,36,.95));border:1px solid rgba(251,191,36,.5);box-shadow:0 40px 100px -20px rgba(251,191,36,.5);text-align:center;backdrop-filter:blur(24px)">' +
+        '<div style="font-size:90px;margin-bottom:20px;animation:mtBounce 2s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(251,191,36,.9))">🚧</div>' +
+        '<h1 style="font-size:32px;font-weight:900;letter-spacing:-.5px;margin-bottom:12px;background:linear-gradient(90deg,#fbbf24,#ec4899,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Under Maintenance</h1>' +
+        '<div style="width:80px;height:3px;background:linear-gradient(90deg,#fbbf24,#ec4899);margin:0 auto 24px;border-radius:2px"></div>' +
+        '<p style="font-size:16px;line-height:1.7;color:#cbd5e1;margin-bottom:28px;white-space:pre-wrap;font-weight:500">' + msg + '</p>' +
+        '<div style="display:flex;align-items:center;justify-content:center;gap:10px;font-size:12px;color:#67e8f9;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:14px;border-radius:12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.3)">' +
+          '<span style="width:8px;height:8px;border-radius:50%;background:#22d3ee;box-shadow:0 0 12px #22d3ee;animation:mtBlink 1.5s infinite"></span>' +
+          '<span>Auto-redirect in <b id="mtCountdown">10</b> seconds</span>' +
+        '</div>' +
+      '</div>' +
+      '<style>@keyframes mtGrid{to{background-position:50px 50px}}@keyframes mtBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}@keyframes mtBlink{50%{opacity:.4}}</style>';
+    document.body.appendChild(overlay);
+    var count = 10;
+    var countEl = el('mtCountdown');
+    var timer = setInterval(function(){
+      count--;
+      if (countEl) countEl.textContent = count;
+      if (count <= 0) {
+        clearInterval(timer);
+        try { localStorage.removeItem('pocmlc_session'); } catch(e){}
+        window.location.reload();
+      }
+    }, 1000);
+  }
 
   function forceLogout(){
     try { localStorage.removeItem('pocmlc_session'); } catch(e){}
   }
 
   function checkMaintenance(){
+    fetch('subjects.json?v=' + Date.now())
+      .then(function(r){ if (!r.ok) throw new Error('no file'); return r.json(); })
+      .then(function(data){
+        var remoteMaint = (data && data.maintenance) ? data.maintenance : null;
+        var local = getMaintenanceState();
+        var active = false;
+        var msg = '';
+
+        if (remoteMaint && remoteMaint.active) {
+          active = true;
+          msg = remoteMaint.message || 'This page is under updating, please standby.';
+        } else if (local && local.active) {
+          active = true;
+          msg = local.message || 'This page is under updating, please standby.';
+        }
+
+        if (active) {
+          sSet('pocmlc_maintenance', { active: true, message: msg, activatedAt: Date.now() });
+          // ⭐ Store for later use — huwag i-show sa login screen
+          window._maintMsg = msg;
+          window._maintActive = true;
+          console.log('⚠️ Maintenance is ACTIVE (message stored)');
+        } else {
+          sSet('pocmlc_maintenance', { active: false, message: '' });
+          window._maintMsg = '';
+          window._maintActive = false;
+        }
+      })
+      .catch(function(){ 
+        var local = getMaintenanceState();
+        if (local && local.active) {
+          window._maintMsg = local.message || 'This page is under updating, please standby.';
+          window._maintActive = true;
+        }
+      });
+  }
     fetch('subjects.json?v=' + Date.now())
       .then(function(r){ if (!r.ok) throw new Error('no file'); return r.json(); })
       .then(function(data){
@@ -3751,6 +3828,29 @@ body.light-theme .admin-term-mini button{color:#475569}
     setTimeout(checkMaintenance, 600);
     setTimeout(addMaintenanceTab, 1500);
     setTimeout(hookPublish, 1800);
+       // ⭐ Hook login button for maintenance check
+    setTimeout(function(){
+      var loginBtn = el('loginBtn');
+      if (loginBtn && !loginBtn.dataset.maintHooked) {
+        var origOnclick = loginBtn.onclick;
+        loginBtn.onclick = function(e){
+          if (origOnclick) origOnclick.call(this, e);
+          setTimeout(function(){
+            var sess = sGet('pocmlc_session', null);
+            if (sess && sess.type !== 'admin' && window._maintActive) {
+              setTimeout(function(){
+                var sess2 = sGet('pocmlc_session', null);
+                if (sess2 && sess2.type !== 'admin' && window._maintActive) {
+                  showMaintenanceFor10s();
+                }
+              }, 400);
+            }
+          }, 500);
+        };
+        loginBtn.dataset.maintHooked = 'yes';
+        console.log('✅ Login hooked for maintenance');
+      }
+    }, 2000);
 
     document.querySelectorAll('.admin-tab').forEach(function(t){
       t.addEventListener('click', function(){
