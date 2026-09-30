@@ -3948,5 +3948,167 @@ body.light-theme .admin-term-mini button{color:#475569}
   console.log('✅ Maintenance Mode loaded!');
 })();
 </script>
+ <!-- ============ LOGO SYNC (ALL USERS + LOGIN SCREEN) ============ -->
+<script>
+(function(){
+  'use strict';
+  console.log('🎨 Logo Sync loading...');
+
+  function el(id){ return document.getElementById(id); }
+  function sGet(k, def){ try{ var v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } }
+  function sSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return true; }catch(e){ return false; } }
+
+  function getLogo(){ return sGet('pocmlc_logo', null); }
+
+  function applyLogo(){
+    var logo = getLogo();
+
+    // ⭐ 1. Apply to LOGIN SCREEN
+    var loginLogo = document.querySelector('.login-logo');
+    if (loginLogo) {
+      var oldImg = loginLogo.querySelector('.custom-logo-img');
+      var emoji = loginLogo.querySelector('span');
+      if (logo) {
+        if (oldImg) oldImg.remove();
+        if (emoji) emoji.style.display = 'none';
+        var img = document.createElement('img');
+        img.className = 'custom-logo-img';
+        img.src = logo;
+        img.alt = 'Logo';
+        img.style.cssText = 'position:relative;z-index:2;max-width:70%;max-height:70%;object-fit:contain;filter:drop-shadow(0 0 12px rgba(34,211,238,.8))';
+        loginLogo.appendChild(img);
+      } else {
+        if (oldImg) oldImg.remove();
+        if (emoji) emoji.style.display = '';
+      }
+    }
+
+    // ⭐ 2. Apply to all morph-icon (topbar, banner, etc.)
+    document.querySelectorAll('.morph-icon').forEach(function(icon){
+      var old = icon.querySelector('.custom-logo');
+      if (old) old.remove();
+      var emoji = icon.querySelector('.emoji');
+      if (logo) {
+        var img = document.createElement('img');
+        img.className = 'custom-logo';
+        img.src = logo;
+        img.alt = 'Logo';
+        if (emoji) emoji.style.display = 'none';
+        icon.appendChild(img);
+      } else {
+        if (emoji) emoji.style.display = '';
+      }
+    });
+  }
+
+  // ⭐ 3. LOAD LOGO FROM subjects.json (shared sa lahat ng users)
+  fetch('subjects.json?v=' + Date.now())
+    .then(function(r){ if (!r.ok) throw new Error('no file'); return r.json(); })
+    .then(function(data){
+      if (data && data.logo) {
+        sSet('pocmlc_logo', data.logo);
+        console.log('✅ Logo loaded from GitHub (shared)');
+        applyLogo();
+      } else {
+        console.log('ℹ️ No logo sa subjects.json — gamit ang local logo');
+        applyLogo();
+      }
+    })
+    .catch(function(){
+      console.log('ℹ️ Cannot fetch subjects.json — using local logo');
+      applyLogo();
+    });
+
+  // ⭐ 4. OVERRIDE PUBLISH — isama ang logo sa subjects.json
+  function hookPublishForLogo(){
+    var btn = el('publishBtn');
+    if (!btn || btn.dataset.logoSyncHooked === 'yes') return;
+    var clone = btn.cloneNode(true);
+    btn.parentNode.replaceChild(clone, btn);
+    clone.dataset.logoSyncHooked = 'yes';
+    clone.onclick = function(){
+      var allTerms = {};
+      [1,2,3].forEach(function(t){
+        var d = sGet('pocmlc_subjects_term' + t, null);
+        if (d && d.length) allTerms[t] = d;
+      });
+      var maint = sGet('pocmlc_maintenance', null) || { active: false, message: '' };
+      var payload = {
+        version: 2,
+        currentTerm: sGet('pocmlc_current_term', 1),
+        terms: allTerms,
+        maintenance: { active: !!maint.active, message: maint.message || '' },
+        logo: getLogo() || null,
+        exportedAt: new Date().toISOString()
+      };
+      var json = JSON.stringify(payload, null, 2);
+      var blob = new Blob([json], { type:'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'subjects.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      alert('✅ subjects.json downloaded!\n\nKasama:\n• Lahat ng terms\n• Maintenance state\n• Logo\n\nI-upload sa GitHub para makita ng LAHAT.');
+    };
+  }
+
+  // ⭐ 5. Auto-apply logo pagkatapos mag-upload
+  function hookLogoUpload(){
+    var input = el('logoFileInput');
+    if (!input || input.dataset.logoSynced === 'yes') return;
+    input.dataset.logoSynced = 'yes';
+    input.addEventListener('change', function(){
+      setTimeout(function(){
+        applyLogo();
+        console.log('🎨 Logo applied after upload');
+      }, 300);
+    });
+  }
+
+  function hookRemoveLogo(){
+    var btn = el('removeLogoBtn');
+    if (!btn || btn.dataset.logoSynced === 'yes') return;
+    btn.dataset.logoSynced = 'yes';
+    btn.addEventListener('click', function(){
+      setTimeout(applyLogo, 300);
+    });
+  }
+
+  function init(){
+    // Initial apply
+    setTimeout(applyLogo, 300);
+    setTimeout(applyLogo, 1000);
+
+    // Hooks
+    setTimeout(hookPublishForLogo, 1500);
+    setTimeout(hookLogoUpload, 1800);
+    setTimeout(hookRemoveLogo, 2000);
+
+    // Watch for DOM changes — apply logo lagi
+    var obs = new MutationObserver(function(){
+      applyLogo();
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+
+    // Re-hook on tab change
+    document.querySelectorAll('.admin-tab').forEach(function(t){
+      t.addEventListener('click', function(){
+        setTimeout(hookPublishForLogo, 300);
+        setTimeout(hookLogoUpload, 400);
+        setTimeout(hookRemoveLogo, 500);
+      });
+    });
+
+    // Safety net: apply logo every 2 seconds (for login screen changes)
+    setInterval(applyLogo, 2000);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 500);
+
+  console.log('✅ Logo Sync loaded!');
+})();
+</script>D
 </body>
 </html>
