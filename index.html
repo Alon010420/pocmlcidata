@@ -3667,6 +3667,14 @@ body.light-theme .admin-term-mini button{color:#475569}
           window._maintMsg = '';
           window._maintActive = false;
         }
+        })
+      .catch(function(){
+        var local = getMaintenanceState();
+        if (local && local.active) {
+          window._maintMsg = local.message || 'This page is under updating, please standby.';
+          window._maintActive = true;
+        }
+      });
   }
 
   function showAdminWarning(msg){
